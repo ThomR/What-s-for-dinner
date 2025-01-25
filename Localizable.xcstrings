@@ -79,6 +79,22 @@
         }
       }
     },
+    "completed_dishes_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed meals"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afgestreepte gerechten"
+          }
+        }
+      }
+    },
     "days_instead_of_numbers" : {
       "localizations" : {
         "en" : {
@@ -112,20 +128,7 @@
       }
     },
     "empty_state_message" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add a meal"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voeg een gerecht toe"
-          }
-        }
-      }
+
     },
     "floating_button" : {
       "extractionState" : "manual",
@@ -192,22 +195,6 @@
         }
       }
     },
-    "Hier komt het logboek met alle activiteiten." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TBD"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hier komt het logboek met alle activiteiten."
-          }
-        }
-      }
-    },
     "history" : {
       "localizations" : {
         "en" : {
@@ -220,22 +207,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bekijk je geschiedenis"
-          }
-        }
-      }
-    },
-    "history_title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meal history"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geschiedenis van gerechten"
           }
         }
       }
@@ -267,6 +238,23 @@
         }
       }
     },
+    "logbook_navigation_title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logboek"
+          }
+        }
+      }
+    },
     "monday" : {
       "localizations" : {
         "en" : {
@@ -279,6 +267,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ma"
+          }
+        }
+      }
+    },
+    "no_completed_dishes_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No completed meals"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen afgestreepte gerechten"
           }
         }
       }

@@ -45,4 +45,33 @@ class DishesViewModel: ObservableObject {
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
+    
+    @Published var completedDishes: [Dish] = []
+
+    // Show all completed dishes in Logboek
+    func loadCompletedDishes() {
+        let userDefaults = UserDefaults(suiteName: appGroup)
+        if let decoded = try? JSONDecoder().decode([Dish].self, from: userDefaults?.data(forKey: "completedDishes") ?? Data()) {
+            DispatchQueue.main.async {
+                self.completedDishes = decoded
+            }
+        }
+    }
+
+    // Save dishes to CompletedDishes
+    func saveCompletedDishes() {
+        if let encoded = try? JSONEncoder().encode(completedDishes) {
+            let userDefaults = UserDefaults(suiteName: appGroup)
+            DispatchQueue.main.async {
+                userDefaults?.set(encoded, forKey: "completedDishes")
+            }
+        }
+    }
+
+    func addToCompleted(_ dish: Dish) {
+        var completedDish = dish
+        completedDish.completedDate = Date() // Voeg huidige datum toe
+        completedDishes.append(completedDish)
+        saveCompletedDishes()
+    }
 }

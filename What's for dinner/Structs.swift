@@ -6,6 +6,7 @@ struct Dish: Identifiable, Codable, Equatable {
     let id: UUID
     var name: String
     var emoji: String
+    var completedDate: Date? = nil
 }
 
 struct EmojiMapping {

@@ -91,8 +91,12 @@ struct ContentView: View {
         newDishName = ""
     }
 
-    // Function to delete dishes
+    // Function to delete dishes and save to completed dishes
     private func deleteDish(at offsets: IndexSet) {
+        for index in offsets {
+            let dish = viewModel.dishes[index]
+            viewModel.addToCompleted(dish)
+        }
         viewModel.dishes.remove(atOffsets: offsets)
         viewModel.notifyWidgetIfFirstDishChanged()
     }
