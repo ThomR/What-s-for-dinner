@@ -1,17 +1,16 @@
-//
-//  DinnerWidgetBundle.swift
-//  DinnerWidget
-//
-//  Created by Thom Rietberg on 21/12/2024.
-//
-
 import WidgetKit
 import SwiftUI
 
 @main
-struct DinnerWidgetBundle: WidgetBundle {
-    var body: some Widget {
-        DinnerWidget()
-        DinnerWidgetControl()
+struct DinnerWidget: Widget {
+    let kind: String = "DinnerWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: DinnerWidgetProvider()) { entry in
+            DinnerWidgetView(entry: entry)
+        }
+        .configurationDisplayName("What's For Dinner")
+        .description("Shows the top dish in your list.")
+        .supportedFamilies([.systemSmall])
     }
 }

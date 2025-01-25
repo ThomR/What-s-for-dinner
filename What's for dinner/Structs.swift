@@ -1,59 +1,63 @@
 import SwiftUI
 import Foundation
 
-private func addDish() {
-    guard !newDishName.isEmpty else { return }
-    let emojis = detectEmojis(for: newDishName)
-    dishes.append(Dish(id: UUID(), name: newDishName, emoji: emojis))
-    newDishName = ""
+struct Dish: Identifiable, Codable, Equatable {
+    let id: UUID
+    var name: String
+    var emoji: String
 }
 
-private func detectEmojis(for dishName: String) -> String {
-    let matchedEmojis = EmojiMapping.mappings.compactMap { mapping -> String? in
-        mapping.value.contains(where: dishName.lowercased().contains) ? mapping.key : nil
-    }
-    let defaultEmoji = "🍽️" // Default emoji
-    return matchedEmojis.isEmpty ? defaultEmoji : matchedEmojis.prefix(3).joined(separator: " ")
-}
-
-private func deleteDish(at offsets: IndexSet) {
-    dishes.remove(atOffsets: offsets)
-}
-
-private func resetDishes() {
-    dishes.removeAll()
-}
-
-private func loadDishes() {
-    if let decoded = try? JSONDecoder().decode([Dish].self, from: storedDishes) {
-        dishes = decoded
-    }
-}
-
-private func saveDishes() {
-    DispatchQueue.global(qos: .background).async {
-        if let encoded = try? JSONEncoder().encode(dishes) {
-            DispatchQueue.main.async {
-                storedDishes = encoded
-            }
-        }
-    }
-}
-
-private func toggleLock(_ dish: Dish) {
-    if lockedItems.contains(dish.id) {
-        lockedItems.remove(dish.id)
-    } else {
-        lockedItems.insert(dish.id)
-    }
-}
-
-private func moveDish(from source: IndexSet, to destination: Int) {
-    guard let sourceIndex = source.first else { return }
-    guard destination >= 0 && destination <= dishes.count else { return }
-
-    let movingDish = dishes[sourceIndex]
-    if lockedItems.contains(movingDish.id) { return } // Prevent moving locked dishes
-
-    dishes.move(fromOffsets: source, toOffset: destination)
+struct EmojiMapping {
+    static let mappings: [String: [String]] = [
+        "🍔": ["hamburger", "burger"],
+        "🍣": ["sushi", "nigiri", "maki"],
+        "🌯": ["burrito"],
+        "🍕": ["pizza", "focaccia", "flammkuchen"],
+        "🍝": ["pasta", "spaghetti"],
+        "🥙": ["falafel", "shawarma", "shoarma", "doner"],
+        "🥗": ["salad", "salade"],
+        "🥔": ["potato", "aardappel", "stamppot", "rösti", "latke"],
+        "🍟": ["fries", "friet", "patat", "frites"],
+        "🥩": ["beef", "pork", "vlees", "steak", "biefstuk"],
+        "🐟": ["fish", "vis", "zalm", "salmon"],
+        "🌶️": ["chilli", "chili"],
+        "🌭": ["hotdog", "sausage", "worst"],
+        "🍗": ["chicken", "kip"],
+        "🥘": ["stew", "stoof", "goulash", "paella"],
+        "🍚": ["rice", "rijst"],
+        "🍲": ["soup", "soep", "reshteh", "bibimbap"],
+        "🥓": ["bacon", "spek", "carbonara"],
+        "🫓": ["flat bread", "platbrood"],
+        "🌮": ["taco", "taco", "quesadilla"],
+        "🍛": ["curry", "curry"],
+        "🍤": ["shrimp", "garnaal"],
+        "🫘": ["bean", "bonen"],
+        "🧑‍🍳": ["restaurant", "uiteten"],
+        "🥬": ["kale", "kool"],
+        "🍆": ["aubergine", "melanzane", "eggplant"],
+        "🥦": ["broccoli", "broccollini"],
+        "🫑": ["bell peper", "paprika"],
+        "🥑": ["avocado", "guacamole"],
+        "🥥": ["coconut", "kokos"],
+        "🍅": ["tomato", "tomaat", "tomaten"],
+        "🧅": ["onions", "uien"],
+        "🥕": ["carrot", "wortel"],
+        "🧀": ["cheese", "kaas", "paneer", "mozzarella"],
+        "🌽": ["corn", "mais", "polenta"],
+        "🥟": ["gyoza", "dumpling", "pierogi", "gnocchi"],
+        "🥞": ["pancakes", "pannenkoeken", "poffertjes"],
+        "🧇": ["waffles", "wavels"],
+        "🥧": ["pie", "quiche"],
+        "🔥": ["bbq", "barbeque", "teppanyaki", "gourmet"],
+        "🍄‍🟫": ["mushroom", "paddestoel", "champignons", "zwammen"],
+        "🧈": ["butter", "boter"],
+        "🌱": ["basil", "herbs", "kruiden"],
+        "🍞": ["bread"],
+        "🥠": ["samosa"],
+        "🥯": ["buns", "bagel"],
+        "🍖": ["ribs"],
+        "🍜": ["ramen"],
+        "🍥": ["chashu"],
+        "🍱": ["bento"]
+    ]
 }

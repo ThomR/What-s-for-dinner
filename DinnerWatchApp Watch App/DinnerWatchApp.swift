@@ -1,17 +1,10 @@
-//
-//  DinnerWatchAppApp.swift
-//  DinnerWatchApp Watch App
-//
-//  Created by Thom Rietberg on 22/12/2024.
-//
-
 import SwiftUI
 
 @main
-struct DinnerWatchApp_Watch_AppApp: App {
+struct DinnerWatchApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WatchAppView()
         }
     }
 }

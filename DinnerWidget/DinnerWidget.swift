@@ -1,84 +1,96 @@
-//
-//  DinnerWidget.swift
-//  DinnerWidget
-//
-//  Created by Thom Rietberg on 21/12/2024.
-//
-
 import WidgetKit
 import SwiftUI
 
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+struct DinnerWidgetEntry: TimelineEntry {
+    let date: Date
+    let dish: Dish?
+}
+
+struct DinnerWidgetProvider: TimelineProvider {
+    private let appGroup = "group.nl.hoyapp.client.dinner"
+    private let widgetUpdateNotification = Notification.Name("WidgetUpdateNotification")
+
+    init() {
+        NotificationCenter.default.addObserver(forName: widgetUpdateNotification, object: nil, queue: .main) { _ in
+            print("Widget notification received.")
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
+    
+    func placeholder(in context: Context) -> DinnerWidgetEntry {
+        DinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Placeholder", emoji: "🍔"))
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
+    func getSnapshot(in context: Context, completion: @escaping (DinnerWidgetEntry) -> ()) {
+        let entry = DinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Pizza", emoji: "🍕"))
         completion(entry)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
+    func getTimeline(in context: Context, completion: @escaping (Timeline<DinnerWidgetEntry>) -> ()) {
+        let userDefaults = UserDefaults(suiteName: appGroup)
+        let storedDishes = userDefaults?.data(forKey: "dishes")
+        let decodedDishes = storedDishes.flatMap { try? JSONDecoder().decode([Dish].self, from: $0) }
+        print("Decoded dishes in widget: \(decodedDishes ?? [])") // Debug log
 
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
-        }
+        let firstDish = decodedDishes?.first
+        let entry = DinnerWidgetEntry(date: Date(), dish: firstDish)
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: [entry], policy: .atEnd)
         completion(timeline)
     }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
 }
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
-    let emoji: String
-}
-
-struct DinnerWidgetEntryView : View {
-    var entry: Provider.Entry
+struct DinnerWidgetView: View {
+    let entry: DinnerWidgetEntry
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
-
-            Text("Emoji:")
-            Text(entry.emoji)
-        }
-    }
-}
-
-struct DinnerWidget: Widget {
-    let kind: String = "DinnerWidget"
-
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                DinnerWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+        VStack(alignment: .leading) {
+            Text(LocalizedStringKey("today"))
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .fontDesign(.rounded)
+                .foregroundColor(.blue)
+                .padding(.bottom, -5)
+            if let dish = entry.dish {
+                Text(dish.name)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .fontDesign(.rounded)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .padding(.leading, 0)
+                Spacer()
+                HStack {
+                    Spacer()
+                    Text(dish.emoji)
+                        .font(.largeTitle)
+                }
             } else {
-                DinnerWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
+                Text(LocalizedStringKey("no_dish"))
+                    .font(.headline)
+                    .fontDesign(.rounded)
+                    .foregroundColor(.gray)
+                    .padding(.leading, 10)
             }
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .containerBackground(Color.clear, for: .widget)
     }
 }
 
-#Preview(as: .systemSmall) {
-    DinnerWidget()
-} timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+struct DinnerWidget_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            DinnerWidgetView(entry: DinnerWidgetEntry(
+                date: Date(),
+                dish: Dish(id: UUID(), name: "Pizza Calzone", emoji: "🍕")
+            ))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+
+            DinnerWidgetView(entry: DinnerWidgetEntry(
+                date: Date(),
+                dish: Dish(id: UUID(), name: "Sushi", emoji: "🍣")
+            ))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+        }
+    }
 }
