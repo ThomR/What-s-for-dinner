@@ -15,7 +15,7 @@ struct EmojiMapping {
         "🍣": ["sushi", "nigiri", "maki"],
         "🌯": ["burrito"],
         "🍕": ["pizza", "focaccia", "flammkuchen"],
-        "🍝": ["pasta", "spaghetti"],
+        "🍝": ["pasta", "spaghetti", "linguine", "pappardelle"],
         "🥙": ["falafel", "shawarma", "shoarma", "doner"],
         "🥗": ["salad", "salade"],
         "🥔": ["potato", "aardappel", "stamppot", "rösti", "latke"],
@@ -60,6 +60,8 @@ struct EmojiMapping {
         "🍖": ["ribs"],
         "🍜": ["ramen"],
         "🍥": ["chashu"],
-        "🍱": ["bento"]
+        "🍱": ["bento"],
+        "🇮🇹": ["cannelloni"],
+        "🍠": ["beet", "biet"]
     ]
 }
