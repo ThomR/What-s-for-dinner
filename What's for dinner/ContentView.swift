@@ -4,11 +4,12 @@ import WidgetKit
 struct ContentView: View {
     @StateObject private var viewModel = DishesViewModel()
     @State private var newDishName: String = ""
+    @State private var editingDish: Dish? = nil
     @State private var showResetAlert: Bool = false
     @State private var showAddAlert: Bool = false
+    @State private var showEditAlert: Bool = false
     @State private var showSettings: Bool = false
-    @State private var lockedItems: Set<UUID> = []
-    @FocusState private var isTextFieldFocused: Bool // Focus state toegevoegd
+    @FocusState private var isTextFieldFocused: Bool
 
     // Body of the app -- shows all the content
     var body: some View {
@@ -30,12 +31,11 @@ struct ContentView: View {
                         List {
                             ForEach(viewModel.dishes.indices, id: \ .self) { index in
                                 let dish = viewModel.dishes[index]
-                                DishRow(dish: dish, index: index, isLocked: lockedItems.contains(dish.id)) {
-                                    toggleLock(dish)
-                                } onDelete: {
+                                DishRow(dish: dish, index: index, onEdit: {
+                                    startEditing(dish)
+                                }, onDelete: {
                                     deleteDish(at: IndexSet(integer: index))
-                                }
-                                .moveDisabled(lockedItems.contains(dish.id))
+                                })
                             }
                             .onMove(perform: { source, destination in
                                 withAnimation {
@@ -57,20 +57,34 @@ struct ContentView: View {
                 }
             }
             .navigationTitle(LocalizedStringKey("title"))
-            .onAppear(perform: viewModel.loadDishes)
-            .onChange(of: viewModel.dishes) { oldValue, newValue in
+            .onAppear {
+                viewModel.loadDishes()
+                viewModel.loadCompletedDishes()
+            }
+            .onChange(of: viewModel.dishes) { _, _ in
                 viewModel.saveDishes()
                 viewModel.notifyWidgetIfFirstDishChanged()
             }
             .alert(LocalizedStringKey("add_alert_title"), isPresented: $showAddAlert) {
                 TextField(LocalizedStringKey("add_alert_placeholder"), text: $newDishName)
-                    .focused($isTextFieldFocused) // Focus state gekoppeld aan het tekstveld
+                    .focused($isTextFieldFocused)
                 Button(LocalizedStringKey("add"), action: {
                     addDish()
-                    isTextFieldFocused = false // Focus verwijderen
+                    isTextFieldFocused = false
                 })
                 Button(LocalizedStringKey("cancel"), role: .cancel, action: {
-                    isTextFieldFocused = false // Focus verwijderen
+                    isTextFieldFocused = false
+                })
+            }
+            .alert(LocalizedStringKey("edit_alert_title"), isPresented: $showEditAlert) {
+                TextField(LocalizedStringKey("edit_alert_placeholder"), text: $newDishName)
+                    .focused($isTextFieldFocused)
+                Button(LocalizedStringKey("save"), action: {
+                    saveEditedDish()
+                    isTextFieldFocused = false
+                })
+                Button(LocalizedStringKey("cancel"), role: .cancel, action: {
+                    isTextFieldFocused = false
                 })
             }
             .alert(LocalizedStringKey("reset_alert_title"), isPresented: $showResetAlert) {
@@ -98,22 +112,14 @@ struct ContentView: View {
             viewModel.addToCompleted(dish)
         }
         viewModel.dishes.remove(atOffsets: offsets)
+        viewModel.saveCompletedDishes()
         viewModel.notifyWidgetIfFirstDishChanged()
     }
-
+    
     // Function to reset/delete all dishes
     private func resetDishes() {
         viewModel.dishes.removeAll()
         viewModel.notifyWidgetIfFirstDishChanged()
-    }
-
-    // Function to lock dishes on a day/priority
-    private func toggleLock(_ dish: Dish) {
-        if lockedItems.contains(dish.id) {
-            lockedItems.remove(dish.id)
-        } else {
-            lockedItems.insert(dish.id)
-        }
     }
 
     // Function to detect which emoji fits (from Structs.swift)
@@ -123,6 +129,24 @@ struct ContentView: View {
         }
         let defaultEmoji = "🍽️"
         return matchedEmojis.isEmpty ? defaultEmoji : matchedEmojis.prefix(3).joined(separator: " ")
+    }
+    
+    private func startEditing(_ dish: Dish) {
+            editingDish = dish
+            newDishName = dish.name
+            showEditAlert = true
+        }
+
+    private func saveEditedDish() {
+        guard let dish = editingDish else { return }
+        if let index = viewModel.dishes.firstIndex(where: { $0.id == dish.id }) {
+            let updatedDish = Dish(id: dish.id, name: newDishName, emoji: detectEmojis(for: newDishName))
+            viewModel.dishes[index] = updatedDish
+        }
+        newDishName = ""
+        editingDish = nil
+        showEditAlert = false
+        viewModel.notifyWidgetIfFirstDishChanged()
     }
 }
 

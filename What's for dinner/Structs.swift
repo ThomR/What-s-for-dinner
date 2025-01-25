@@ -42,7 +42,7 @@ struct EmojiMapping {
         "🥑": ["avocado", "guacamole"],
         "🥥": ["coconut", "kokos"],
         "🍅": ["tomato", "tomaat", "tomaten"],
-        "🧅": ["onions", "uien"],
+        "🧅": ["onion", "uien"],
         "🥕": ["carrot", "wortel"],
         "🧀": ["cheese", "kaas", "paneer", "mozzarella"],
         "🌽": ["corn", "mais", "polenta"],

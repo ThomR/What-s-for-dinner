@@ -5,10 +5,9 @@ import Foundation
 struct DishRow: View {
     let dish: Dish
     let index: Int
-    let isLocked: Bool
-    let onToggleLock: () -> Void
+    let onEdit: () -> Void
     let onDelete: () -> Void
-
+    
     @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
 
     private let daysOfWeek: [LocalizedStringKey] = [
@@ -37,20 +36,19 @@ struct DishRow: View {
             Text(dish.emoji)
                 .font(.largeTitle)
         }
-        .opacity(isLocked ? 0.6 : 1.0)
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
-            Button(action: onToggleLock) {
-                Label(isLocked ? "Unlock" : "Lock", systemImage: isLocked ? "lock.open" : "lock")
-                    .font(.system(size: 20, weight: .bold))
+            Button(action: onEdit) {
+                Label(LocalizedStringKey("edit"), systemImage: "pencil")
+                    .font(Font.title.weight(.bold))
             }
-            .tint(.orange)
+            .tint(.blue)
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive, action: onDelete) {
-                Label("Delete", systemImage: "checkmark")
+                Label(LocalizedStringKey("clear"), systemImage: "trash")
                     .font(Font.title.weight(.bold))
             }
-            .tint(.green)
+            .tint(.red)
         }
     }
 

@@ -79,6 +79,22 @@
         }
       }
     },
+    "clear" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwijder"
+          }
+        }
+      }
+    },
     "completed_dishes_title" : {
       "localizations" : {
         "en" : {
@@ -111,24 +127,69 @@
         }
       }
     },
-    "Delete" : {
+    "edit" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete"
+            "value" : "Edit"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwijder"
+            "value" : "Pas aan"
+          }
+        }
+      }
+    },
+    "edit_alert_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dish name"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naam van gerecht"
+          }
+        }
+      }
+    },
+    "edit_alert_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit dish name"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas naam aan"
           }
         }
       }
     },
     "empty_state_message" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start by adding a new meal"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begin door een gerecht toe te voegen"
+          }
+        }
+      }
     },
     "floating_button" : {
       "extractionState" : "manual",
@@ -222,39 +283,6 @@
         }
       }
     },
-    "Lock" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lock"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zet vast"
-          }
-        }
-      }
-    },
-    "logbook_navigation_title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "History"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logboek"
-          }
-        }
-      }
-    },
     "monday" : {
       "localizations" : {
         "en" : {
@@ -333,6 +361,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Za"
+          }
+        }
+      }
+    },
+    "save" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sla op"
           }
         }
       }
@@ -463,22 +507,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Di"
-          }
-        }
-      }
-    },
-    "Unlock" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unlock"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maak los"
           }
         }
       }
