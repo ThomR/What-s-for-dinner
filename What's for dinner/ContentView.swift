@@ -10,6 +10,7 @@ struct ContentView: View {
     @State private var lockedItems: Set<UUID> = []
     @FocusState private var isTextFieldFocused: Bool // Focus state toegevoegd
 
+    // Body of the app -- shows all the content
     var body: some View {
         NavigationStack {
             ZStack {
@@ -82,6 +83,7 @@ struct ContentView: View {
         }
     }
 
+    // Function to add dishes
     private func addDish() {
         guard !newDishName.isEmpty else { return }
         let emojis = detectEmojis(for: newDishName)
@@ -89,16 +91,19 @@ struct ContentView: View {
         newDishName = ""
     }
 
+    // Function to delete dishes
     private func deleteDish(at offsets: IndexSet) {
         viewModel.dishes.remove(atOffsets: offsets)
         viewModel.notifyWidgetIfFirstDishChanged()
     }
 
+    // Function to reset/delete all dishes
     private func resetDishes() {
         viewModel.dishes.removeAll()
         viewModel.notifyWidgetIfFirstDishChanged()
     }
 
+    // Function to lock dishes on a day/priority
     private func toggleLock(_ dish: Dish) {
         if lockedItems.contains(dish.id) {
             lockedItems.remove(dish.id)
@@ -107,6 +112,7 @@ struct ContentView: View {
         }
     }
 
+    // Function to detect which emoji fits (from Structs.swift)
     private func detectEmojis(for dishName: String) -> String {
         let matchedEmojis = EmojiMapping.mappings.compactMap { mapping -> String? in
             mapping.value.contains(where: dishName.lowercased().contains) ? mapping.key : nil

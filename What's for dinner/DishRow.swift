@@ -1,6 +1,7 @@
 import SwiftUI
 import Foundation
 
+// Variables in Dishrow
 struct DishRow: View {
     let dish: Dish
     let index: Int
@@ -14,6 +15,7 @@ struct DishRow: View {
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
     ]
 
+    // View for each Dish row
     var body: some View {
         HStack {
             Circle()
@@ -52,6 +54,7 @@ struct DishRow: View {
         }
     }
 
+    // The blue circle for days/priority number
     private var circleContent: LocalizedStringKey {
         if daysInsteadOfNumbers {
             let todayIndex = (Calendar.current.component(.weekday, from: Date()) + 5) % 7

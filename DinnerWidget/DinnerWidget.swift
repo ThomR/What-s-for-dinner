@@ -6,6 +6,7 @@ struct DinnerWidgetEntry: TimelineEntry {
     let dish: Dish?
 }
 
+// Connection from the app
 struct DinnerWidgetProvider: TimelineProvider {
     private let appGroup = "group.nl.hoyapp.client.dinner"
     private let widgetUpdateNotification = Notification.Name("WidgetUpdateNotification")
@@ -17,15 +18,18 @@ struct DinnerWidgetProvider: TimelineProvider {
         }
     }
     
+    // Show something when data is loading
     func placeholder(in context: Context) -> DinnerWidgetEntry {
         DinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Placeholder", emoji: "🍔"))
     }
 
+    // Show something when data isn't available
     func getSnapshot(in context: Context, completion: @escaping (DinnerWidgetEntry) -> ()) {
         let entry = DinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Pizza", emoji: "🍕"))
         completion(entry)
     }
 
+    // Receiving data for filling in the data
     func getTimeline(in context: Context, completion: @escaping (Timeline<DinnerWidgetEntry>) -> ()) {
         let userDefaults = UserDefaults(suiteName: appGroup)
         let storedDishes = userDefaults?.data(forKey: "dishes")
@@ -40,6 +44,7 @@ struct DinnerWidgetProvider: TimelineProvider {
     }
 }
 
+// View for the UI of the widget
 struct DinnerWidgetView: View {
     let entry: DinnerWidgetEntry
 

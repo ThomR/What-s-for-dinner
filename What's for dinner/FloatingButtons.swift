@@ -5,6 +5,7 @@ struct FloatingButtons: View {
     @Binding var showResetAlert: Bool
     @Binding var showSettings: Bool
 
+    // The view for the 3 buttons in the app (add, delete, settings)
     var body: some View {
         HStack(spacing: 10) {
             Button(action: onAdd) {

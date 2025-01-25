@@ -9,6 +9,7 @@ class DishesViewModel: ObservableObject {
 
     private let appGroup = "group.nl.hoyapp.client.dinner"
 
+    // Function to load dishes from UserDefaults
     func loadDishes() {
         let userDefaults = UserDefaults(suiteName: appGroup)
         if let decoded = try? JSONDecoder().decode([Dish].self, from: userDefaults?.data(forKey: "dishes") ?? Data()) {
@@ -18,6 +19,7 @@ class DishesViewModel: ObservableObject {
         }
     }
 
+    // Function to save dishes into UserDefaults
     func saveDishes() {
         saveDebouncer?.cancel()
         let workItem = DispatchWorkItem {
@@ -32,6 +34,7 @@ class DishesViewModel: ObservableObject {
         DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
 
+    // Function to notify widget to update
     func notifyWidgetIfFirstDishChanged() {
         guard dishes.first != lastFirstDish else { return }
         lastFirstDish = dishes.first
