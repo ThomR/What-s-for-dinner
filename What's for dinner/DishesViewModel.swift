@@ -9,6 +9,20 @@ class DishesViewModel: ObservableObject {
 
     private let appGroup = "group.nl.hoyapp.client.dinner"
 
+    // Export dishes as JSON
+        func exportDishesAsJSON() -> Data? {
+            return try? JSONEncoder().encode(dishes)
+        }
+
+    // Import dishes from JSON
+    func importDishes(from jsonData: Data) {
+        if let importedDishes = try? JSONDecoder().decode([Dish].self, from: jsonData) {
+            DispatchQueue.main.async {
+                self.dishes = importedDishes
+            }
+        }
+    }
+    
     // Function to load dishes from UserDefaults
     func loadDishes() {
         let userDefaults = UserDefaults(suiteName: appGroup)
@@ -67,6 +81,7 @@ class DishesViewModel: ObservableObject {
             }
         }
     }
+    
 
     func addToCompleted(_ dish: Dish) {
         var completedDish = dish

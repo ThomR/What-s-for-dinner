@@ -1,12 +1,19 @@
 import SwiftUI
 import Foundation
+import UniformTypeIdentifiers
 
 // Variables for each Dish
-struct Dish: Identifiable, Codable, Equatable {
+
+struct Dish: Identifiable, Codable, Equatable, Transferable {
     let id: UUID
     var name: String
     var emoji: String
     var completedDate: Date? = nil
+
+    // Voor Transferable
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .json)
+    }
 }
 
 struct EmojiMapping {

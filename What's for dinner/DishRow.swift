@@ -18,12 +18,13 @@ struct DishRow: View {
     var body: some View {
         HStack {
             Circle()
-                .fill(Color("InfoColor"))
+                .fill(Color("InfoColor-500"))
                 .fontDesign(.rounded)
                 .frame(width: 30, height: 30)
                 .overlay(
                     Text(circleContent)
                         .font(.subheadline)
+                        .fontDesign(.rounded)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
                 )
@@ -45,10 +46,10 @@ struct DishRow: View {
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive, action: onDelete) {
-                Label(LocalizedStringKey("clear"), systemImage: "trash")
+                Label(LocalizedStringKey("clear"), systemImage: "checkmark")
                     .font(Font.title.weight(.bold))
             }
-            .tint(.red)
+            .tint(.green)
         }
     }
 

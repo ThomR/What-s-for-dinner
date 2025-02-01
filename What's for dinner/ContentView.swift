@@ -1,5 +1,6 @@
 import SwiftUI
 import WidgetKit
+import UniformTypeIdentifiers
 
 struct ContentView: View {
     @StateObject private var viewModel = DishesViewModel()
@@ -8,10 +9,12 @@ struct ContentView: View {
     @State private var showResetAlert: Bool = false
     @State private var showAddAlert: Bool = false
     @State private var showEditAlert: Bool = false
+    @State private var isSharing: Bool = false
+    @State private var sharedDishes: [Dish]? = nil
     @State private var showSettings: Bool = false
+
     @FocusState private var isTextFieldFocused: Bool
 
-    // Body of the app -- shows all the content
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,36 +30,51 @@ struct ContentView: View {
                             .padding(.bottom, 60)
                     }
                 } else {
-                    VStack {
-                        List {
-                            ForEach(viewModel.dishes.indices, id: \ .self) { index in
-                                let dish = viewModel.dishes[index]
-                                DishRow(dish: dish, index: index, onEdit: {
-                                    startEditing(dish)
-                                }, onDelete: {
-                                    deleteDish(at: IndexSet(integer: index))
-                                })
-                            }
-                            .onMove(perform: { source, destination in
-                                withAnimation {
-                                    viewModel.dishes.move(fromOffsets: source, toOffset: destination)
-                                }
-                                viewModel.notifyWidgetIfFirstDishChanged()
+                    List {
+                        ForEach(viewModel.dishes.indices, id: \.self) { index in
+                            let dish = viewModel.dishes[index]
+                            DishRow(dish: dish, index: index, onEdit: {
+                                startEditing(dish)
+                            }, onDelete: {
+                                deleteDish(at: IndexSet(integer: index))
                             })
                         }
+                        .onMove(perform: { source, destination in
+                            withAnimation {
+                                viewModel.dishes.move(fromOffsets: source, toOffset: destination)
+                            }
+                            viewModel.notifyWidgetIfFirstDishChanged()
+                        })
                     }
                 }
 
                 VStack {
                     Spacer()
-                    FloatingButtons(
-                        onAdd: { showAddAlert = true },
-                        showResetAlert: $showResetAlert,
-                        showSettings: $showSettings
-                    )
+                    HStack(spacing: 16) {
+                        FloatingButtons(
+                            onAdd: { showAddAlert = true },
+                            showSettings: $showSettings
+                        )
+                    }
+                    .padding()
                 }
             }
             .navigationTitle(LocalizedStringKey("title"))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: { isSharing = true }) {
+                            Label(LocalizedStringKey("share"), systemImage: "square.and.arrow.up")
+                        }
+                        Button(role: .destructive, action: { showResetAlert = true }) {
+                            Label(LocalizedStringKey("reset"), systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.title2)
+                    }
+                }
+            }
             .onAppear {
                 viewModel.loadDishes()
                 viewModel.loadCompletedDishes()
@@ -87,56 +105,43 @@ struct ContentView: View {
                     isTextFieldFocused = false
                 })
             }
+            // Alert voor het resetten van gerechten
             .alert(LocalizedStringKey("reset_alert_title"), isPresented: $showResetAlert) {
                 Button(LocalizedStringKey("yes"), role: .destructive, action: resetDishes)
                 Button(LocalizedStringKey("cancel"), role: .cancel) {}
             }
+            // Deel gerechten via een ShareSheet
+            .sheet(isPresented: $isSharing) {
+                if let data = viewModel.exportDishesAsJSON() {
+                    ShareSheet(activityItems: [data])
+                }
+            }
+            // Instellingen openen
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
         }
     }
-
     // Function to add dishes
     private func addDish() {
         guard !newDishName.isEmpty else { return }
         let emojis = detectEmojis(for: newDishName)
         viewModel.dishes.append(Dish(id: UUID(), name: newDishName, emoji: emojis))
-        newDishName = ""
     }
-
-    // Function to delete dishes and save to completed dishes
-    private func deleteDish(at offsets: IndexSet) {
-        for index in offsets {
-            let dish = viewModel.dishes[index]
-            viewModel.addToCompleted(dish)
-        }
-        viewModel.dishes.remove(atOffsets: offsets)
-        viewModel.saveCompletedDishes()
-        viewModel.notifyWidgetIfFirstDishChanged()
-    }
-    
-    // Function to reset/delete all dishes
+    // Functie om alle gerechten te resetten
     private func resetDishes() {
         viewModel.dishes.removeAll()
         viewModel.notifyWidgetIfFirstDishChanged()
     }
 
-    // Function to detect which emoji fits (from Structs.swift)
-    private func detectEmojis(for dishName: String) -> String {
-        let matchedEmojis = EmojiMapping.mappings.compactMap { mapping -> String? in
-            mapping.value.contains(where: dishName.lowercased().contains) ? mapping.key : nil
-        }
-        let defaultEmoji = "🍽️"
-        return matchedEmojis.isEmpty ? defaultEmoji : matchedEmojis.prefix(3).joined(separator: " ")
-    }
-    
+    // Functie om een gerecht te bewerken
     private func startEditing(_ dish: Dish) {
-            editingDish = dish
-            newDishName = dish.name
-            showEditAlert = true
-        }
+        editingDish = dish
+        newDishName = dish.name
+        showEditAlert = true
+    }
 
+    // Functie om een bewerkt gerecht op te slaan
     private func saveEditedDish() {
         guard let dish = editingDish else { return }
         if let index = viewModel.dishes.firstIndex(where: { $0.id == dish.id }) {
@@ -148,8 +153,34 @@ struct ContentView: View {
         showEditAlert = false
         viewModel.notifyWidgetIfFirstDishChanged()
     }
+
+    // Functie om gerechten te delen
+    private func shareDishes() {
+        isSharing = true
+    }
+
+    // Functie om een gerecht te verwijderen
+    private func deleteDish(at offsets: IndexSet) {
+        for index in offsets {
+            let dish = viewModel.dishes[index]
+            viewModel.addToCompleted(dish)
+        }
+        viewModel.dishes.remove(atOffsets: offsets)
+        viewModel.saveCompletedDishes()
+        viewModel.notifyWidgetIfFirstDishChanged()
+    }
+
+    // Functie om emoji’s te detecteren voor een gerecht
+    private func detectEmojis(for dishName: String) -> String {
+        let matchedEmojis = EmojiMapping.mappings.compactMap { mapping -> String? in
+            mapping.value.contains(where: dishName.lowercased().contains) ? mapping.key : nil
+        }
+        let defaultEmoji = "🍽️"
+        return matchedEmojis.isEmpty ? defaultEmoji : matchedEmojis.prefix(3).joined(separator: " ")
+    }
 }
 
+// Preview van ContentView
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

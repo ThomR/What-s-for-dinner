@@ -2,10 +2,8 @@ import SwiftUI
 
 struct FloatingButtons: View {
     let onAdd: () -> Void
-    @Binding var showResetAlert: Bool
     @Binding var showSettings: Bool
 
-    // The view for the 3 buttons in the app (add, delete, settings)
     var body: some View {
         HStack(spacing: 10) {
             Button(action: onAdd) {
@@ -24,18 +22,6 @@ struct FloatingButtons: View {
                         .shadow(color: Color("SuccessColor-700"), radius: 0, x: 0, y: 4)
                 )
                 .foregroundColor(.white)
-            }
-
-            Button(action: { showResetAlert = true }) {
-                Image(systemName: "trash.fill")
-                    .foregroundColor(Color.white)
-                    .padding(12)
-                    .font(.system(size: 24))
-                    .background(
-                        Circle()
-                            .fill(Color("WarningColor-500"))
-                            .shadow(color: Color("WarningColor-700"), radius: 0, x: 0, y: 4)
-                    )
             }
 
             Button(action: { showSettings = true }) {
