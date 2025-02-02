@@ -1,7 +1,6 @@
 import SwiftUI
 import Foundation
 
-// Variables in Dishrow
 struct DishRow: View {
     let dish: Dish
     let index: Int
@@ -13,8 +12,14 @@ struct DishRow: View {
     private let daysOfWeek: [LocalizedStringKey] = [
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
     ]
+    
+    // Een statische property die de berekende huidige dag cachet (bij opstart)
+    private static let cachedTodayIndex: Int = {
+        // De kalender geeft 1 voor zondag, 2 voor maandag, enz.
+        // Door +5 en modulo 7 te doen, transformeer je dit naar een index waarbij maandag 0 wordt.
+        return (Calendar.current.component(.weekday, from: Date()) + 5) % 7
+    }()
 
-    // View for each Dish row
     var body: some View {
         HStack {
             Circle()
@@ -53,11 +58,10 @@ struct DishRow: View {
         }
     }
 
-    // The blue circle for days/priority number
+    // Gebruik de gecachte waarde in plaats van telkens Calendar.current te raadplegen.
     private var circleContent: LocalizedStringKey {
         if daysInsteadOfNumbers {
-            let todayIndex = (Calendar.current.component(.weekday, from: Date()) + 5) % 7
-            let dayIndex = (todayIndex + index) % 7
+            let dayIndex = (DishRow.cachedTodayIndex + index) % 7
             return daysOfWeek[dayIndex]
         } else {
             return LocalizedStringKey("\(index + 1)")

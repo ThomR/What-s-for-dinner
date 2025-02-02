@@ -3,6 +3,7 @@ import WidgetKit
 import UniformTypeIdentifiers
 
 struct ContentView: View {
+    // MARK: - Properties
     @StateObject private var viewModel = DishesViewModel()
     @State private var newDishName: String = ""
     @State private var editingDish: Dish? = nil
@@ -15,162 +16,207 @@ struct ContentView: View {
 
     @FocusState private var isTextFieldFocused: Bool
 
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             ZStack {
                 if viewModel.dishes.isEmpty {
-                    VStack {
-                        Image(systemName: "fork.knife")
-                            .font(.system(size: 40))
-                            .foregroundColor(Color.gray)
-                            .padding(.bottom, 20)
-                        Text(LocalizedStringKey("empty_state_message"))
-                            .font(.headline)
-                            .foregroundColor(Color.gray)
-                            .padding(.bottom, 60)
-                    }
+                    emptyStateView
                 } else {
-                    List {
-                        ForEach(viewModel.dishes.indices, id: \.self) { index in
-                            let dish = viewModel.dishes[index]
-                            DishRow(dish: dish, index: index, onEdit: {
-                                startEditing(dish)
-                            }, onDelete: {
-                                deleteDish(at: IndexSet(integer: index))
-                            })
-                        }
-                        .onMove(perform: { source, destination in
-                            withAnimation {
-                                viewModel.dishes.move(fromOffsets: source, toOffset: destination)
-                            }
-                            viewModel.notifyWidgetIfFirstDishChanged()
-                        })
-                    }
+                    dishesListView
                 }
-
-                VStack {
-                    Spacer()
-                    HStack(spacing: 16) {
-                        FloatingButtons(
-                            onAdd: { showAddAlert = true },
-                            showSettings: $showSettings
-                        )
-                    }
-                    .padding()
-                }
+                floatingButtonsView
             }
             .navigationTitle(LocalizedStringKey("title"))
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: { isSharing = true }) {
-                            Label(LocalizedStringKey("share"), systemImage: "square.and.arrow.up")
-                        }
-                        Button(role: .destructive, action: { showResetAlert = true }) {
-                            Label(LocalizedStringKey("reset"), systemImage: "trash")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title2)
-                    }
-                }
-            }
+            .toolbar { toolbarContent }
             .onAppear {
                 viewModel.loadDishes()
                 viewModel.loadCompletedDishes()
             }
             .onChange(of: viewModel.dishes) { _, _ in
-                viewModel.saveDishes()
-                viewModel.notifyWidgetIfFirstDishChanged()
-            }
+               viewModel.saveDishes()
+               viewModel.notifyWidgetIfFirstDishChanged()
+           }
             .alert(LocalizedStringKey("add_alert_title"), isPresented: $showAddAlert) {
-                TextField(LocalizedStringKey("add_alert_placeholder"), text: $newDishName)
-                    .focused($isTextFieldFocused)
-                Button(LocalizedStringKey("add"), action: {
-                    addDish()
-                    isTextFieldFocused = false
-                })
-                Button(LocalizedStringKey("cancel"), role: .cancel, action: {
-                    isTextFieldFocused = false
-                })
+                addAlertContent
             }
             .alert(LocalizedStringKey("edit_alert_title"), isPresented: $showEditAlert) {
-                TextField(LocalizedStringKey("edit_alert_placeholder"), text: $newDishName)
-                    .focused($isTextFieldFocused)
-                Button(LocalizedStringKey("save"), action: {
-                    saveEditedDish()
-                    isTextFieldFocused = false
-                })
-                Button(LocalizedStringKey("cancel"), role: .cancel, action: {
-                    isTextFieldFocused = false
-                })
+                editAlertContent
             }
-            // Alert voor het resetten van gerechten
             .alert(LocalizedStringKey("reset_alert_title"), isPresented: $showResetAlert) {
-                Button(LocalizedStringKey("yes"), role: .destructive, action: resetDishes)
-                Button(LocalizedStringKey("cancel"), role: .cancel) {}
+                resetAlertContent
             }
-            // Deel gerechten via een ShareSheet
             .sheet(isPresented: $isSharing) {
                 if let data = viewModel.exportDishesAsJSON() {
                     ShareSheet(activityItems: [data])
                 }
             }
-            // Instellingen openen
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
         }
     }
-    // Function to add dishes
+    
+    // MARK: - Subviews
+    
+    private var emptyStateView: some View {
+        VStack {
+            Image(systemName: "fork.knife")
+                .font(.system(size: 40))
+                .foregroundColor(Color.gray)
+                .padding(.bottom, 20)
+            Text(LocalizedStringKey("empty_state_message"))
+                .font(.headline)
+                .foregroundColor(Color.gray)
+                .padding(.bottom, 60)
+        }
+    }
+    
+    private var dishesListView: some View {
+        List {
+            ForEach(viewModel.dishes.indices, id: \.self) { index in
+                let dish = viewModel.dishes[index]
+                DishRow(dish: dish, index: index, onEdit: {
+                    startEditing(dish)
+                }, onDelete: {
+                    deleteDish(at: IndexSet(integer: index))
+                })
+            }
+            .onMove(perform: { source, destination in
+                withAnimation {
+                    viewModel.dishes.move(fromOffsets: source, toOffset: destination)
+                }
+                viewModel.notifyWidgetIfFirstDishChanged()
+            })
+        }
+    }
+    
+    private var floatingButtonsView: some View {
+        VStack {
+            Spacer()
+            HStack(spacing: 16) {
+                FloatingButtons(
+                    onAdd: { showAddAlert = true },
+                    showSettings: $showSettings
+                )
+            }
+            .padding()
+        }
+    }
+    
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Menu {
+                Button(action: { isSharing = true }) {
+                    Label(LocalizedStringKey("share"), systemImage: "square.and.arrow.up")
+                }
+                Button(role: .destructive, action: { showResetAlert = true }) {
+                    Label(LocalizedStringKey("reset"), systemImage: "trash")
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .font(.title2)
+            }
+        }
+    }
+    
+    private var addAlertContent: some View {
+        Group {
+            TextField(LocalizedStringKey("add_alert_placeholder"), text: $newDishName)
+                .focused($isTextFieldFocused)
+            Button(LocalizedStringKey("add"), action: {
+                addDish()
+                dismissKeyboard()
+            })
+            Button(LocalizedStringKey("cancel"), role: .cancel, action: {
+                dismissKeyboard()
+            })
+        }
+    }
+    
+    private var editAlertContent: some View {
+        Group {
+            TextField(LocalizedStringKey("edit_alert_placeholder"), text: $newDishName)
+                .focused($isTextFieldFocused)
+            Button(LocalizedStringKey("save"), action: {
+                saveEditedDish()
+                dismissKeyboard()
+            })
+            Button(LocalizedStringKey("cancel"), role: .cancel, action: {
+                dismissKeyboard()
+            })
+        }
+    }
+    
+    private var resetAlertContent: some View {
+        Group {
+            Button(LocalizedStringKey("yes"), role: .destructive, action: resetDishes)
+            Button(LocalizedStringKey("cancel"), role: .cancel) {}
+        }
+    }
+    
+    // MARK: - Functions
+    
+    /// Sluit het toetsenbord af
+    private func dismissKeyboard() {
+        isTextFieldFocused = false
+    }
+    
+    /// Voeg een nieuw gerecht toe
     private func addDish() {
         guard !newDishName.isEmpty else { return }
-        let emojis = detectEmojis(for: newDishName)
-        viewModel.dishes.append(Dish(id: UUID(), name: newDishName, emoji: emojis))
+        withAnimation {
+            let emojis = detectEmojis(for: newDishName)
+            viewModel.dishes.append(Dish(id: UUID(), name: newDishName, emoji: emojis))
+            // Reset het inputveld na toevoegen
+            newDishName = ""
+        }
     }
-    // Functie om alle gerechten te resetten
+    
+    /// Reset alle gerechten
     private func resetDishes() {
-        viewModel.dishes.removeAll()
-        viewModel.notifyWidgetIfFirstDishChanged()
+        withAnimation {
+            viewModel.dishes.removeAll()
+            viewModel.notifyWidgetIfFirstDishChanged()
+        }
     }
-
-    // Functie om een gerecht te bewerken
+    
+    /// Start met het bewerken van een gerecht
     private func startEditing(_ dish: Dish) {
         editingDish = dish
         newDishName = dish.name
         showEditAlert = true
     }
-
-    // Functie om een bewerkt gerecht op te slaan
+    
+    /// Sla een bewerkt gerecht op
     private func saveEditedDish() {
         guard let dish = editingDish else { return }
         if let index = viewModel.dishes.firstIndex(where: { $0.id == dish.id }) {
             let updatedDish = Dish(id: dish.id, name: newDishName, emoji: detectEmojis(for: newDishName))
-            viewModel.dishes[index] = updatedDish
+            withAnimation {
+                viewModel.dishes[index] = updatedDish
+            }
         }
         newDishName = ""
         editingDish = nil
         showEditAlert = false
         viewModel.notifyWidgetIfFirstDishChanged()
     }
-
-    // Functie om gerechten te delen
-    private func shareDishes() {
-        isSharing = true
-    }
-
-    // Functie om een gerecht te verwijderen
+    
+    /// Verwijder een gerecht en voeg het toe aan de 'voltooide' lijst
     private func deleteDish(at offsets: IndexSet) {
-        for index in offsets {
-            let dish = viewModel.dishes[index]
-            viewModel.addToCompleted(dish)
+        withAnimation {
+            for index in offsets {
+                let dish = viewModel.dishes[index]
+                viewModel.addToCompleted(dish)
+            }
+            viewModel.dishes.remove(atOffsets: offsets)
+            viewModel.saveCompletedDishes()
+            viewModel.notifyWidgetIfFirstDishChanged()
         }
-        viewModel.dishes.remove(atOffsets: offsets)
-        viewModel.saveCompletedDishes()
-        viewModel.notifyWidgetIfFirstDishChanged()
     }
-
-    // Functie om emoji’s te detecteren voor een gerecht
+    
+    /// Detecteer emoji’s op basis van de naam van het gerecht
     private func detectEmojis(for dishName: String) -> String {
         let matchedEmojis = EmojiMapping.mappings.compactMap { mapping -> String? in
             mapping.value.contains(where: dishName.lowercased().contains) ? mapping.key : nil
@@ -180,7 +226,7 @@ struct ContentView: View {
     }
 }
 
-// Preview van ContentView
+// MARK: - Preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

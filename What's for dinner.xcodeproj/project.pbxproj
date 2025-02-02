@@ -75,6 +75,7 @@
 		938BED522D1818BE00786B1E /* DinnerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DinnerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		93B189B52D18C3650025FAE0 /* DinnerWatchApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DinnerWatchApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B4ADD42D18C8AE00F20E86 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.2.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
+		93D65DA92D4FF9FF0030EA6F /* DinnerWatchApp Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DinnerWatchApp Watch App.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -174,6 +175,7 @@
 				938BED312D1779DD00786B1E /* Frameworks */,
 				931DED232D0E200200D22CB3 /* Products */,
 				938BED522D1818BE00786B1E /* DinnerWidgetExtension.entitlements */,
+				93D65DA92D4FF9FF0030EA6F /* DinnerWatchApp Watch App.entitlements */,
 			);
 			sourceTree = "<group>";
 		};
@@ -633,7 +635,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "DinnerWatchApp Watch App/DinnerWatchApp Watch App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "DinnerWatchApp Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DinnerWatchApp Watch App/Preview Content\"";
@@ -666,7 +668,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "DinnerWatchApp Watch App/DinnerWatchApp Watch App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "DinnerWatchApp Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DinnerWatchApp Watch App/Preview Content\"";
