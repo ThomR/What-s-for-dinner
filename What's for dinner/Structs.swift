@@ -20,7 +20,7 @@ struct EmojiMapping {
     static let mappings: [String: [String]] = [
         "🍔": ["hamburger", "burger"],
         "🍣": ["sushi", "nigiri", "maki"],
-        "🌯": ["burrito"],
+        "🌯": ["burrito", "lumpia", "summer rolls", "loempia"],
         "🍕": ["pizza", "focaccia", "flammkuchen"],
         "🍝": ["pasta", "spaghetti", "linguine", "pappardelle"],
         "🥙": ["falafel", "shawarma", "shoarma", "doner"],
@@ -28,7 +28,7 @@ struct EmojiMapping {
         "🥔": ["potato", "aardappel", "stamppot", "rösti", "latke"],
         "🍟": ["fries", "friet", "patat", "frites"],
         "🥩": ["beef", "pork", "vlees", "steak", "biefstuk"],
-        "🐟": ["fish", "vis", "zalm", "salmon"],
+        "🐟": ["fish", "vis", "zalm", "salmon", "kibbeling"],
         "🌶️": ["chilli", "chili"],
         "🌭": ["hotdog", "sausage", "worst"],
         "🍗": ["chicken", "kip"],
@@ -38,9 +38,10 @@ struct EmojiMapping {
         "🥓": ["bacon", "spek", "carbonara"],
         "🫓": ["flat bread", "platbrood"],
         "🌮": ["taco", "taco", "quesadilla"],
-        "🍛": ["curry", "curry"],
-        "🍤": ["shrimp", "garnaal"],
-        "🫘": ["bean", "bonen"],
+        "🍛": ["curry", "curry", "tonkatsu"],
+        "🍤": ["shrimp", "garnaal", "ebi"],
+        "🫘": ["bean", "boon"],
+        "🫛": ["french beans", "sperziebonen", "edameme"],
         "🧑‍🍳": ["restaurant", "uiteten"],
         "🥬": ["kale", "kool"],
         "🍆": ["aubergine", "melanzane", "eggplant"],
@@ -69,6 +70,7 @@ struct EmojiMapping {
         "🍥": ["chashu"],
         "🍱": ["bento"],
         "🇮🇹": ["cannelloni"],
-        "🍠": ["beet", "biet"]
+        "🍠": ["beet", "biet"],
+        "🥚": ["omelet", "omelette", "frittata"]
     ]
 }

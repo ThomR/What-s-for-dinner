@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 
 struct ContentView: View {
     // MARK: - Properties
-    @StateObject private var viewModel = DishesViewModel()
+    @EnvironmentObject var viewModel: DishesViewModel  // ✅ Correcte binding
     @State private var newDishName: String = ""
     @State private var editingDish: Dish? = nil
     @State private var showResetAlert: Bool = false
@@ -47,8 +47,8 @@ struct ContentView: View {
                 resetAlertContent
             }
             .sheet(isPresented: $isSharing) {
-                if let data = viewModel.exportDishesAsJSON() {
-                    ShareSheet(activityItems: [data])
+                if let fileURL = viewModel.exportDishesFileURL() {
+                    ShareSheet(activityItems: [fileURL])
                 }
             }
             .sheet(isPresented: $showSettings) {
