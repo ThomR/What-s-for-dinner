@@ -3,11 +3,13 @@ import SwiftUI
 @main
 struct DinnerApp: App {
     @StateObject private var viewModel = DishesViewModel() // ✅ Correcte StateObject
+    @StateObject private var dateTracker = DateTracker()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(viewModel) // ✅ Deel het ViewModel met de hele app
+                .environmentObject(dateTracker)
                 .onOpenURL { url in
                     handleIncomingJSON(url: url)
                 }

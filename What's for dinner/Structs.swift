@@ -29,7 +29,7 @@ struct EmojiMapping {
         "🍟": ["fries", "friet", "patat", "frites"],
         "🥩": ["beef", "pork", "vlees", "steak", "biefstuk"],
         "🐟": ["fish", "vis", "zalm", "salmon", "kibbeling"],
-        "🌶️": ["chilli", "chili"],
+        "🌶️": ["chilli", "chili", "spicy", "pittig"],
         "🌭": ["hotdog", "sausage", "worst"],
         "🍗": ["chicken", "kip"],
         "🥘": ["stew", "stoof", "goulash", "paella"],
@@ -71,6 +71,7 @@ struct EmojiMapping {
         "🍱": ["bento"],
         "🇮🇹": ["cannelloni"],
         "🍠": ["beet", "biet"],
-        "🥚": ["omelet", "omelette", "frittata"]
+        "🥚": ["omelet", "omelette", "frittata"],
+        "🥡": ["take-out", "takeout"]
     ]
 }

@@ -1,5 +1,31 @@
 import SwiftUI
 import Foundation
+import Combine
+
+class DateTracker: ObservableObject {
+    @Published var currentDayIndex: Int = DateTracker.calculateTodayIndex()
+    private var timer: AnyCancellable?
+    
+    init() {
+        startDailyUpdate()
+    }
+    
+    private func startDailyUpdate() {
+        let now = Date()
+        let midnight = Calendar.current.startOfDay(for: now).addingTimeInterval(86400)
+        let timeInterval = midnight.timeIntervalSince(now)
+        
+        timer = Timer.publish(every: timeInterval, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.currentDayIndex = DateTracker.calculateTodayIndex()
+            }
+    }
+    
+    static func calculateTodayIndex() -> Int {
+        return (Calendar.current.component(.weekday, from: Date()) + 5) % 7
+    }
+}
 
 struct DishRow: View {
     let dish: Dish
@@ -8,18 +34,12 @@ struct DishRow: View {
     let onDelete: () -> Void
     
     @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
+    @EnvironmentObject var dateTracker: DateTracker
 
     private let daysOfWeek: [LocalizedStringKey] = [
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
     ]
     
-    // Een statische property die de berekende huidige dag cachet (bij opstart)
-    private static let cachedTodayIndex: Int = {
-        // De kalender geeft 1 voor zondag, 2 voor maandag, enz.
-        // Door +5 en modulo 7 te doen, transformeer je dit naar een index waarbij maandag 0 wordt.
-        return (Calendar.current.component(.weekday, from: Date()) + 5) % 7
-    }()
-
     var body: some View {
         HStack {
             Circle()
@@ -58,10 +78,9 @@ struct DishRow: View {
         }
     }
 
-    // Gebruik de gecachte waarde in plaats van telkens Calendar.current te raadplegen.
     private var circleContent: LocalizedStringKey {
         if daysInsteadOfNumbers {
-            let dayIndex = (DishRow.cachedTodayIndex + index) % 7
+            let dayIndex = (dateTracker.currentDayIndex + index) % 7
             return daysOfWeek[dayIndex]
         } else {
             return LocalizedStringKey("\(index + 1)")
