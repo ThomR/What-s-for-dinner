@@ -8,12 +8,10 @@ struct DinnerWidgetEntry: TimelineEntry {
 
 // Connection from the app
 struct DinnerWidgetProvider: TimelineProvider {
-    private let appGroup = "group.nl.hoyapp.client.dinner"
-    private let widgetUpdateNotification = Notification.Name("WidgetUpdateNotification")
-
+    private let dataManager = DataManager.shared
+    
     init() {
-        NotificationCenter.default.addObserver(forName: widgetUpdateNotification, object: nil, queue: .main) { _ in
-            print("Widget notification received.")
+        NotificationCenter.default.addObserver(forName: Notification.Name("DishesUpdated"), object: nil, queue: .main) { _ in
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
@@ -22,23 +20,19 @@ struct DinnerWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> DinnerWidgetEntry {
         DinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Placeholder", emoji: "🍔"))
     }
-
+    
     // Show something when data isn't available
     func getSnapshot(in context: Context, completion: @escaping (DinnerWidgetEntry) -> ()) {
-        let entry = DinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Pizza", emoji: "🍕"))
+        let dishes = dataManager.loadDishes()
+        let entry = DinnerWidgetEntry(date: Date(), dish: dishes.first)
         completion(entry)
     }
-
-    // Receiving data for filling in the data
+    
+    // Receiving data for filling in the widget
     func getTimeline(in context: Context, completion: @escaping (Timeline<DinnerWidgetEntry>) -> ()) {
-        let userDefaults = UserDefaults(suiteName: appGroup)
-        let storedDishes = userDefaults?.data(forKey: "dishes")
-        let decodedDishes = storedDishes.flatMap { try? JSONDecoder().decode([Dish].self, from: $0) }
-        print("Decoded dishes in widget: \(decodedDishes ?? [])") // Debug log
-
-        let firstDish = decodedDishes?.first
+        let dishes = dataManager.loadDishes()
+        let firstDish = dishes.first
         let entry = DinnerWidgetEntry(date: Date(), dish: firstDish)
-
         let timeline = Timeline(entries: [entry], policy: .atEnd)
         completion(timeline)
     }
@@ -84,18 +78,10 @@ struct DinnerWidgetView: View {
 
 struct DinnerWidget_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            DinnerWidgetView(entry: DinnerWidgetEntry(
-                date: Date(),
-                dish: Dish(id: UUID(), name: "Pizza Calzone", emoji: "🍕")
-            ))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-
-            DinnerWidgetView(entry: DinnerWidgetEntry(
-                date: Date(),
-                dish: Dish(id: UUID(), name: "Sushi", emoji: "🍣")
-            ))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-        }
+        DinnerWidgetView(entry: DinnerWidgetEntry(
+            date: Date(),
+            dish: Dish(id: UUID(), name: "Pizza Calzone", emoji: "🍕")
+        ))
+        .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

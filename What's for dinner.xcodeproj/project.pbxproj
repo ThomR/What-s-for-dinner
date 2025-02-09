@@ -82,6 +82,7 @@
 		938BED4B2D177BBC00786B1E /* Exceptions for "What's for dinner" folder in "DinnerWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				DataManager.swift,
 				Structs.swift,
 			);
 			target = 938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */;
@@ -96,6 +97,7 @@
 		93B189C92D18C3F70025FAE0 /* Exceptions for "What's for dinner" folder in "DinnerWatchApp Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				DataManager.swift,
 				Structs.swift,
 			);
 			target = 93B189B42D18C3650025FAE0 /* DinnerWatchApp Watch App */;
