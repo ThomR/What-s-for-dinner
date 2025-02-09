@@ -143,54 +143,6 @@
         }
       }
     },
-    "edit_alert_placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dish name"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naam van gerecht"
-          }
-        }
-      }
-    },
-    "edit_alert_title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit dish name"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pas naam aan"
-          }
-        }
-      }
-    },
-    "empty_state_message" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start by adding a new meal"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Begin door een gerecht toe te voegen"
-          }
-        }
-      }
-    },
     "floating_button" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -377,22 +329,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Za"
-          }
-        }
-      }
-    },
-    "save" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sla op"
           }
         }
       }

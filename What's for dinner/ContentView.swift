@@ -25,7 +25,11 @@ struct ContentView: View {
                 } else {
                     dishesListView
                 }
-                floatingButtonsView
+                VStack {
+                    Spacer()
+                    FloatingButtons(onAdd: { showAddAlert = true }, showSettings: $showSettings)
+                        .padding()
+                }
             }
             .navigationTitle(LocalizedStringKey("title"))
             .toolbar { toolbarContent }
@@ -88,19 +92,6 @@ struct ContentView: View {
                 }
                 viewModel.notifyWidgetIfFirstDishChanged()
             })
-        }
-    }
-    
-    private var floatingButtonsView: some View {
-        VStack {
-            Spacer()
-            HStack(spacing: 16) {
-                FloatingButtons(
-                    onAdd: { showAddAlert = true },
-                    showSettings: $showSettings
-                )
-            }
-            .padding()
         }
     }
     
