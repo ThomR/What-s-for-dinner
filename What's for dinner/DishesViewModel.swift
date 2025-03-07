@@ -7,29 +7,27 @@ class DishesViewModel: ObservableObject {
     @Published var completedDishes: [Dish] = []
     private var saveDebouncer: DispatchWorkItem?
     private var lastFirstDish: Dish?
-    
+
     private let dataManager = DataManager.shared
     
     init() {
         loadDishes()
         loadCompletedDishes()
     }
-    
-    /// ✅ Laad gerechten uit DataManager en update UI
+
+    /// ✅ **Laad gerechten bij het opstarten**
     func loadDishes() {
         DispatchQueue.main.async {
-            self.dishes = self.dataManager.loadDishes()
+            let loadedDishes = self.dataManager.loadDishes()
+            
+            self.dishes = loadedDishes
         }
     }
-    
-    /// ✅ Sla gerechten op met debounce om performance te verbeteren
+
+    /// ✅ **Sla gerechten correct op wanneer ze veranderen**
     func saveDishes() {
-        saveDebouncer?.cancel()
-        let workItem = DispatchWorkItem {
-            self.dataManager.saveDishes(self.dishes)
-        }
-        saveDebouncer = workItem
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5, execute: workItem)
+        
+        dataManager.saveDishes(dishes)
     }
     
     /// ✅ Laad voltooide gerechten uit DataManager
@@ -62,7 +60,7 @@ class DishesViewModel: ObservableObject {
         if let importedDishes = try? JSONDecoder().decode([Dish].self, from: jsonData) {
             updateDishes(importedDishes)
         } else {
-            print("❌ Fout bij het decoderen van de JSON")
+            
         }
     }
     
@@ -99,7 +97,7 @@ class DishesViewModel: ObservableObject {
             try data.write(to: tempURL)
             return tempURL
         } catch {
-            print("❌ Fout bij het schrijven van JSON-bestand: \(error)")
+            
             return nil
         }
     }

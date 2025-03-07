@@ -3,26 +3,54 @@ import WidgetKit
 
 class DataManager {
     static let shared = DataManager()
-    private let appGroup = "group.nl.hoyapp.client.dinner"
-    private let userDefaults = UserDefaults(suiteName: "group.nl.hoyapp.client.dinner")
+    private let appGroup = "group.whatsfordinner.shared"
+    private let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.shared")
     
     private init() {}
     
-    /// ✅ Laad gerechten uit UserDefaults
+    func saveDishes(_ dishes: [Dish]) {
+        guard let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.shared") else {
+            return
+        }
+
+        do {
+            let encoded = try JSONEncoder().encode(dishes)
+            userDefaults.set(encoded, forKey: "dishes")
+            userDefaults.synchronize()
+
+            if let data = userDefaults.data(forKey: "dishes") {
+                _ = try? JSONDecoder().decode([Dish].self, from: data)
+            }
+
+
+        } catch {
+        }
+    }
+
     func loadDishes() -> [Dish] {
-        guard let data = userDefaults?.data(forKey: "dishes") else { return [] }
-        return (try? JSONDecoder().decode([Dish].self, from: data)) ?? []
+        guard let userDefaults = userDefaults else {
+            return []
+        }
+
+        guard let data = userDefaults.data(forKey: "dishes") else {
+            return []
+        }
+
+        do {
+            let dishes = try JSONDecoder().decode([Dish].self, from: data)
+            return dishes
+        } catch {
+            return []
+        }
     }
     
-    /// ✅ Sla gerechten op en update widget
-    func saveDishes(_ dishes: [Dish]) {
-        guard let encoded = try? JSONEncoder().encode(dishes) else { return }
-        userDefaults?.set(encoded, forKey: "dishes")
-        userDefaults?.synchronize()
-        WidgetCenter.shared.reloadAllTimelines()
-        
-        // 🔥 Stuur een notificatie naar de Widget en Watch App
-        NotificationCenter.default.post(name: Notification.Name("DishesUpdated"), object: nil)
+    func resetUserDefaults() {
+        guard let userDefaults = userDefaults else {
+            return
+        }
+
+        userDefaults.removeObject(forKey: "dishes")
+        userDefaults.synchronize()
     }
     
     /// ✅ Laad afgeronde gerechten
@@ -47,8 +75,6 @@ class DataManager {
     func importDishes(from jsonData: Data) {
         if let importedDishes = try? JSONDecoder().decode([Dish].self, from: jsonData) {
             saveDishes(importedDishes)
-        } else {
-            print("❌ Fout bij het decoderen van de JSON")
         }
     }
 }

@@ -35,12 +35,11 @@ struct ContentView: View {
             .toolbar { toolbarContent }
             .onAppear {
                 viewModel.loadDishes()
-                viewModel.loadCompletedDishes()
             }
             .onChange(of: viewModel.dishes) { _, _ in
-               viewModel.saveDishes()
-               viewModel.notifyWidgetIfFirstDishChanged()
-           }
+                viewModel.saveDishes()
+                viewModel.notifyWidgetIfFirstDishChanged()
+            }
             .alert(LocalizedStringKey("add_alert_title"), isPresented: $showAddAlert) {
                 addAlertContent
             }

@@ -143,6 +143,54 @@
         }
       }
     },
+    "edit_alert_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meal name"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naam van je gerecht"
+          }
+        }
+      }
+    },
+    "edit_alert_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit meal"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas gerecht aan"
+          }
+        }
+      }
+    },
+    "empty_state_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No meals"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen gerechten"
+          }
+        }
+      }
+    },
     "floating_button" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -172,38 +220,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vr"
-          }
-        }
-      }
-    },
-    "Geen gerechten beschikbaar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No meals available"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geen gerechten beschikbaar"
-          }
-        }
-      }
-    },
-    "Gerechten" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meals"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gerechten"
           }
         }
       }
@@ -329,6 +345,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Za"
+          }
+        }
+      }
+    },
+    "save" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas aan"
           }
         }
       }

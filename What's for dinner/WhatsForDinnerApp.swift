@@ -17,8 +17,6 @@ struct DinnerApp: App {
     }
 
     private func handleIncomingJSON(url: URL) {
-        print("📂 Ontvangen bestand via AirDrop: \(url)")
-
         guard url.startAccessingSecurityScopedResource() else {
             print("❌ Geen toegang tot het gedeelde bestand.")
             return
