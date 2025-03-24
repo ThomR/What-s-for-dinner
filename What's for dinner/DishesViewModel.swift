@@ -24,8 +24,8 @@ class DishesViewModel: ObservableObject {
 
     /// ✅ Sla gerechten correct op wanneer ze veranderen
     func saveDishes() {
-        guard !dishes.isEmpty else { return }
         dataManager.saveDishes(dishes)
+        WatchSessionManager.shared.syncDishesToWatch(dishes)
     }
     
     /// ✅ Laad voltooide gerechten uit DataManager

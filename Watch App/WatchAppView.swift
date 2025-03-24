@@ -24,10 +24,13 @@ struct WatchAppView: View {
                             let dish = viewModel.dishes[index]
                             HStack {
                                 Text(circleContent(for: index))
-                                    .font(.headline)
+                                    .font(.caption)
                                     .fontWeight(.bold)
-                                    .fontDesign(.rounded)
-                                    .padding(.trailing, 5)
+                                    .foregroundColor(.white)
+                                    .padding(6)
+                                    .background(Circle().fill(Color.accentColor))
+                                    .frame(minWidth: 24)
+                                    .padding(.trailing, 2)
                                 Text(dish.name)
                                     .font(.headline)
                                     .fontDesign(.rounded)

@@ -26,6 +26,22 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
         })
     }
 
+    /// ✅ Sync gerechten naar de Watch via updateApplicationContext
+    func syncDishesToWatch(_ dishes: [Dish]) {
+        guard session.activationState == .activated else { return }
+        guard session.isPaired, session.isWatchAppInstalled else { return }
+
+        let dishData: [[String: String]] = dishes.map {
+            ["id": $0.id.uuidString, "name": $0.name, "emoji": $0.emoji]
+        }
+
+        do {
+            try session.updateApplicationContext(["dishes": dishData])
+        } catch {
+            os_log("❌ Fout bij updateApplicationContext: %@", log: .default, type: .error, error.localizedDescription)
+        }
+    }
+
     /// ✅ Watch vraagt gerechten op
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         if message["requestDishes"] as? Bool == true {
@@ -49,5 +65,10 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
         session.activate()
+    }
+
+    /// ✅ Ontvangen application context op Watch
+    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
+        os_log("📦 Ontvangen applicationContext op Watch", log: .default, type: .info)
     }
 }
