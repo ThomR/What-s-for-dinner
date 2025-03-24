@@ -1,3 +1,4 @@
+/// ✅ Widget die het eerste gerecht uit de lijst toont, inclusief fallback en automatische updates bij wijzigingen.
 import WidgetKit
 import SwiftUI
 
@@ -6,7 +7,7 @@ struct DinnerWidgetEntry: TimelineEntry {
     let dish: Dish?
 }
 
-// Connection from the app
+/// Zorgt voor het leveren van entries aan de widget, inclusief placeholder, snapshot en tijdlijn.
 struct DinnerWidgetProvider: TimelineProvider {
     private let dataManager = DataManager.shared
     
@@ -38,7 +39,7 @@ struct DinnerWidgetProvider: TimelineProvider {
     }
 }
 
-// View for the UI of the widget
+/// UI voor het tonen van het gerecht binnen de widget.
 struct DinnerWidgetView: View {
     let entry: DinnerWidgetEntry
 
@@ -57,19 +58,19 @@ struct DinnerWidgetView: View {
                     .fontDesign(.rounded)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
-                    .padding(.leading, 0)
                 Spacer()
                 HStack {
                     Spacer()
                     Text(dish.emoji)
                         .font(.largeTitle)
+                        .lineLimit(1)
                 }
             } else {
                 Text(LocalizedStringKey("no_dish"))
                     .font(.headline)
                     .fontDesign(.rounded)
                     .foregroundColor(.gray)
-                    .padding(.leading, 10)
+                    .padding(.top, 4)
             }
         }
         .containerBackground(Color.clear, for: .widget)

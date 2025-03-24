@@ -1,6 +1,7 @@
 import WidgetKit
 import SwiftUI
 
+/// ✅ Bundelt en configureert de DinnerWidget voor gebruik in het widget center.
 @main
 struct DinnerWidget: Widget {
     let kind: String = "DinnerWidget"

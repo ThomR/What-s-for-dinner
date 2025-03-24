@@ -1,8 +1,8 @@
 import SwiftUI
+/// ✅ Toont een lijst van voltooide gerechten in omgekeerde chronologische volgorde.
 
-// Logbook view that ties into Setting for viewing a history of all added dishes
 struct LogboekView: View {
-    @EnvironmentObject var viewModel: DishesViewModel
+    let viewModel: DishesViewModel
 
     var body: some View {
         VStack {
@@ -11,20 +11,29 @@ struct LogboekView: View {
                     .foregroundColor(.gray)
                     .padding()
             } else {
-                List(viewModel.completedDishes.sorted { ($0.completedDate ?? Date.distantPast) > ($1.completedDate ?? Date.distantPast) }) { dish in
-                    HStack {
-                        Text(dish.name)
-                            .font(.headline)
-                        Spacer()
-                        Text(dish.emoji)
-                            .font(.largeTitle)
-                    }
-                }
+                completedListView
             }
         }
         .navigationTitle(LocalizedStringKey("completed_dishes_title"))
         .onAppear {
             viewModel.loadCompletedDishes()
+        }
+    }
+    
+    private var completedListView: some View {
+        let sortedDishes = viewModel.completedDishes.sorted { ($0.completedDate ?? Date.distantPast) > ($1.completedDate ?? Date.distantPast) }
+        return List(sortedDishes) { dish in
+            HStack {
+                Text(dish.name)
+                    .font(.headline)
+                    .fontDesign(.rounded)
+                    .lineLimit(1)
+                Spacer()
+                Text(dish.emoji)
+                    .font(.largeTitle)
+                    .fontDesign(.rounded)
+            }
+            .accessibilityLabel(dish.name)
         }
     }
 }

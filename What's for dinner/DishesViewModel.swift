@@ -2,10 +2,10 @@ import SwiftUI
 import WidgetKit
 import Combine
 
+/// ✅ ViewModel voor het beheren van de lijst met gerechten, inclusief laden, opslaan, resetten, voltooien, importeren/exporteren en widget-updates.
 class DishesViewModel: ObservableObject {
     @Published var dishes: [Dish] = []
     @Published var completedDishes: [Dish] = []
-    private var saveDebouncer: DispatchWorkItem?
     private var lastFirstDish: Dish?
 
     private let dataManager = DataManager.shared
@@ -15,18 +15,16 @@ class DishesViewModel: ObservableObject {
         loadCompletedDishes()
     }
 
-    /// ✅ **Laad gerechten bij het opstarten**
+    /// ✅ Laad gerechten bij het opstarten
     func loadDishes() {
         DispatchQueue.main.async {
-            let loadedDishes = self.dataManager.loadDishes()
-            
-            self.dishes = loadedDishes
+            self.dishes = self.dataManager.loadDishes()
         }
     }
 
-    /// ✅ **Sla gerechten correct op wanneer ze veranderen**
+    /// ✅ Sla gerechten correct op wanneer ze veranderen
     func saveDishes() {
-        
+        guard !dishes.isEmpty else { return }
         dataManager.saveDishes(dishes)
     }
     
@@ -39,7 +37,7 @@ class DishesViewModel: ObservableObject {
     
     /// ✅ Sla voltooide gerechten op via DataManager
     func saveCompletedDishes() {
-        self.dataManager.saveCompletedDishes(self.completedDishes)
+        dataManager.saveCompletedDishes(completedDishes)
     }
     
     /// ✅ Voeg gerecht toe aan afgeronde gerechten en sla op
@@ -59,8 +57,6 @@ class DishesViewModel: ObservableObject {
     func importDishes(from jsonData: Data) {
         if let importedDishes = try? JSONDecoder().decode([Dish].self, from: jsonData) {
             updateDishes(importedDishes)
-        } else {
-            
         }
     }
     
@@ -68,9 +64,9 @@ class DishesViewModel: ObservableObject {
     private func updateDishes(_ newDishes: [Dish]) {
         DispatchQueue.main.async {
             self.objectWillChange.send() // 🔹 Forceer UI-update
-            self.dishes = []             // 🔹 Leeg de array (triggert UI-update)
+            self.dishes = []                  // 🔹 Leeg de array (triggert UI-update)
             self.dishes.append(contentsOf: newDishes) // 🔹 Voeg nieuwe gerechten toe
-            self.saveDishes()            // 🔹 Opslaan voor persistentie
+            self.saveDishes()                // 🔹 Opslaan voor persistentie
             self.notifyWidgetIfFirstDishChanged() // 🔹 Update widget indien nodig
         }
     }
@@ -97,7 +93,7 @@ class DishesViewModel: ObservableObject {
             try data.write(to: tempURL)
             return tempURL
         } catch {
-            
+            print("❌ Fout bij schrijven naar tijdelijk bestand: \(error)")
             return nil
         }
     }

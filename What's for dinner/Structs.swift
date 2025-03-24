@@ -2,8 +2,9 @@ import SwiftUI
 import Foundation
 import UniformTypeIdentifiers
 
-// Variables for each Dish
+/// ✅ Bevat de data-structuur voor gerechten (`Dish`) en een emoji-mapping helper (`EmojiMapping`).
 
+/// Struct die een gerecht beschrijft met naam, emoji, optionele voltooiingsdatum, en ondersteuning voor drag-and-drop via Transferable.
 struct Dish: Identifiable, Codable, Equatable, Transferable {
     let id: UUID
     var name: String
@@ -16,6 +17,7 @@ struct Dish: Identifiable, Codable, Equatable, Transferable {
     }
 }
 
+/// Biedt een mapping tussen emojis en gerelateerde sleutelwoorden, gebruikt voor automatische herkenning van gerechten.
 struct EmojiMapping {
     static let mappings: [String: [String]] = [
         "🍔": ["hamburger", "burger"],
@@ -36,9 +38,9 @@ struct EmojiMapping {
         "🍚": ["rice", "rijst"],
         "🍲": ["soup", "soep", "reshteh", "bibimbap"],
         "🥓": ["bacon", "spek", "carbonara"],
-        "🫓": ["flat bread", "platbrood"],
-        "🌮": ["taco", "taco", "quesadilla"],
-        "🍛": ["curry", "curry", "tonkatsu"],
+        "🫓": ["flat bread", "platbrood", "okonomiyaki"],
+        "🌮": ["taco", "quesadilla"],
+        "🍛": ["curry", "tonkatsu"],
         "🍤": ["shrimp", "garnaal", "ebi"],
         "🫘": ["bean", "boon"],
         "🫛": ["french beans", "sperziebonen", "edameme"],
@@ -56,7 +58,7 @@ struct EmojiMapping {
         "🌽": ["corn", "mais", "polenta"],
         "🥟": ["gyoza", "dumpling", "pierogi", "gnocchi"],
         "🥞": ["pancakes", "pannenkoeken", "poffertjes"],
-        "🧇": ["waffles", "wavels"],
+        "🧇": ["waffles", "wafels"],
         "🥧": ["pie", "quiche"],
         "🔥": ["bbq", "barbeque", "teppanyaki", "gourmet", "wok"],
         "🍄‍🟫": ["mushroom", "paddestoel", "champignons", "zwammen"],
@@ -73,6 +75,7 @@ struct EmojiMapping {
         "🍠": ["beet", "biet"],
         "🥚": ["omelet", "omelette", "frittata"],
         "🥡": ["take-out", "takeout", "chinese"],
-        "🧆": ["meatball", "gehaktbal"]
+        "🧆": ["meatball", "gehaktbal"],
+        "🥒": ["cucumber", "komkommer"]
     ]
 }

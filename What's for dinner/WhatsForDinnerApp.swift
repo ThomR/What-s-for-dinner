@@ -1,9 +1,13 @@
 import SwiftUI
+import WatchConnectivity
+import os
 
+/// ✅ Hoofdingang van de app: initialiseert ViewModels, beheert Watch-connectie, en verwerkt gedeelde JSON-bestanden.
 @main
 struct DinnerApp: App {
     @StateObject private var viewModel = DishesViewModel()
     @StateObject private var dateTracker = DateTracker()
+    private let watchSessionManager = WatchSessionManager.shared  // ✅ Zorgt ervoor dat WatchSessionManager actief blijft
 
     var body: some Scene {
         WindowGroup {
@@ -13,24 +17,31 @@ struct DinnerApp: App {
                 .onOpenURL { url in
                     handleIncomingJSON(url: url)
                 }
+                .task {
+                    watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Stuur gerechten naar de Watch bij opstarten
+                }
+                .onChange(of: viewModel.dishes) { _, _ in
+                    watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Stuur updates naar de Watch
+                }
         }
     }
 
     private func handleIncomingJSON(url: URL) {
         guard url.startAccessingSecurityScopedResource() else {
-            print("❌ Geen toegang tot het gedeelde bestand.")
+            os_log("❌ Geen toegang tot het gedeelde bestand.", log: .default, type: .error)
             return
         }
 
-        defer { url.stopAccessingSecurityScopedResource() } // Zorg ervoor dat we de toegang weer afsluiten
+        defer { url.stopAccessingSecurityScopedResource() }
 
         do {
             let data = try Data(contentsOf: url)
             DispatchQueue.main.async {
-                viewModel.importDishes(from: data) // ✅ Gebruik verbeterde importfunctie
+                viewModel.importDishes(from: data)
+                watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Zorg dat de Watch ook de nieuwe gerechten krijgt
             }
         } catch {
-            print("❌ Fout bij het verwerken van het gedeelde JSON-bestand: \(error.localizedDescription)")
+            os_log("❌ Fout bij JSON-verwerking: %@", log: .default, type: .error, error.localizedDescription)
         }
     }
 }

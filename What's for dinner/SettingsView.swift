@@ -2,34 +2,37 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
-    private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    @EnvironmentObject var viewModel: DishesViewModel
+    private var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    }
 
     var body: some View {
         NavigationView {
             VStack {
                 Form {
-                    Section(header: Text(LocalizedStringKey("settings_header"))) {
+                    Section(header: Text(LocalizedStringKey("settings_header")).font(.headline)) {
                         Toggle(isOn: $daysInsteadOfNumbers) {
-                            Text(LocalizedStringKey("days_instead_of_numbers"))
+                            Text(LocalizedStringKey("days_instead_of_numbers")).fontDesign(.rounded)
                         }
                     }
 
                     Section {
-                        NavigationLink(destination: LogboekView()) {
-                            Text(LocalizedStringKey("history"))
+                        NavigationLink(destination: LogboekView(viewModel: viewModel)) {
+                            Text(LocalizedStringKey("history")).fontDesign(.rounded)
                         }
                     }
                 }
-
-                Spacer()
+                .navigationTitle(LocalizedStringKey("settings_title"))
+                .navigationBarTitleDisplayMode(.inline)
 
                 Text("v \(appVersion)")
                     .font(.footnote)
                     .foregroundColor(.gray)
-                    .padding(.bottom, 8)
+                    .padding(.bottom, 12)
+                    .frame(maxWidth: .infinity)
+                    .fontDesign(.rounded)
             }
-            .navigationTitle(LocalizedStringKey("settings_title"))
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -37,5 +40,6 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(DishesViewModel())
     }
 }

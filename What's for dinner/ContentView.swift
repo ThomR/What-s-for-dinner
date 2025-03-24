@@ -2,16 +2,16 @@ import SwiftUI
 import WidgetKit
 import UniformTypeIdentifiers
 
+/// ✅ Hoofdscherm van de app waar de gebruiker gerechten kan toevoegen, bewerken, verwijderen, delen en sorteren.
 struct ContentView: View {
     // MARK: - Properties
-    @EnvironmentObject var viewModel: DishesViewModel  // ✅ Correcte binding
+    @EnvironmentObject var viewModel: DishesViewModel
     @State private var newDishName: String = ""
     @State private var editingDish: Dish? = nil
     @State private var showResetAlert: Bool = false
     @State private var showAddAlert: Bool = false
     @State private var showEditAlert: Bool = false
     @State private var isSharing: Bool = false
-    @State private var sharedDishes: [Dish]? = nil
     @State private var showSettings: Bool = false
 
     @FocusState private var isTextFieldFocused: Bool
@@ -33,7 +33,7 @@ struct ContentView: View {
             }
             .navigationTitle(LocalizedStringKey("title"))
             .toolbar { toolbarContent }
-            .onAppear {
+            .task {
                 viewModel.loadDishes()
             }
             .onChange(of: viewModel.dishes) { _, _ in
@@ -112,8 +112,7 @@ struct ContentView: View {
     
     private var addAlertContent: some View {
         Group {
-            TextField(LocalizedStringKey("add_alert_placeholder"), text: $newDishName)
-                .focused($isTextFieldFocused)
+            alertTextField()
             Button(LocalizedStringKey("add"), action: {
                 addDish()
                 dismissKeyboard()
@@ -126,8 +125,7 @@ struct ContentView: View {
     
     private var editAlertContent: some View {
         Group {
-            TextField(LocalizedStringKey("edit_alert_placeholder"), text: $newDishName)
-                .focused($isTextFieldFocused)
+            alertTextField()
             Button(LocalizedStringKey("save"), action: {
                 saveEditedDish()
                 dismissKeyboard()
@@ -147,23 +145,24 @@ struct ContentView: View {
     
     // MARK: - Functions
     
-    /// Sluit het toetsenbord af
+    private func alertTextField() -> some View {
+        TextField(LocalizedStringKey("add_alert_placeholder"), text: $newDishName)
+            .focused($isTextFieldFocused)
+    }
+    
     private func dismissKeyboard() {
         isTextFieldFocused = false
     }
     
-    /// Voeg een nieuw gerecht toe
     private func addDish() {
         guard !newDishName.isEmpty else { return }
         withAnimation {
             let emojis = detectEmojis(for: newDishName)
             viewModel.dishes.append(Dish(id: UUID(), name: newDishName, emoji: emojis))
-            // Reset het inputveld na toevoegen
             newDishName = ""
         }
     }
     
-    /// Reset alle gerechten
     private func resetDishes() {
         withAnimation {
             viewModel.dishes.removeAll()
@@ -171,14 +170,12 @@ struct ContentView: View {
         }
     }
     
-    /// Start met het bewerken van een gerecht
     private func startEditing(_ dish: Dish) {
         editingDish = dish
         newDishName = dish.name
         showEditAlert = true
     }
     
-    /// Sla een bewerkt gerecht op
     private func saveEditedDish() {
         guard let dish = editingDish else { return }
         if let index = viewModel.dishes.firstIndex(where: { $0.id == dish.id }) {
@@ -193,7 +190,6 @@ struct ContentView: View {
         viewModel.notifyWidgetIfFirstDishChanged()
     }
     
-    /// Verwijder een gerecht en voeg het toe aan de 'voltooide' lijst
     private func deleteDish(at offsets: IndexSet) {
         withAnimation {
             for index in offsets {
@@ -206,13 +202,12 @@ struct ContentView: View {
         }
     }
     
-    /// Detecteer emoji’s op basis van de naam van het gerecht
     private func detectEmojis(for dishName: String) -> String {
         let matchedEmojis = EmojiMapping.mappings.compactMap { mapping -> String? in
             mapping.value.contains(where: dishName.lowercased().contains) ? mapping.key : nil
         }
-        let defaultEmoji = "🍽️"
-        return matchedEmojis.isEmpty ? defaultEmoji : matchedEmojis.prefix(3).joined(separator: " ")
+        let result = matchedEmojis.prefix(3).joined(separator: " ")
+        return result.isEmpty ? "🍽️" : result
     }
 }
 
@@ -220,5 +215,11 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+extension String {
+    static func ifEmpty(_ string: String, default: String) -> String {
+        string.isEmpty ? `default` : string
     }
 }

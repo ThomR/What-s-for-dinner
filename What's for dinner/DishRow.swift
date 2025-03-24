@@ -1,5 +1,5 @@
+/// ✅ Bevat `DateTracker` om de huidige dag bij te houden en `DishRow` view om een gerecht in de lijst weer te geven.
 import SwiftUI
-import Foundation
 import Combine
 
 class DateTracker: ObservableObject {
@@ -12,13 +12,14 @@ class DateTracker: ObservableObject {
     
     private func startDailyUpdate() {
         let now = Date()
-        let midnight = Calendar.current.startOfDay(for: now).addingTimeInterval(86400)
-        let timeInterval = midnight.timeIntervalSince(now)
+        let nextMidnight = Calendar.current.startOfDay(for: now).addingTimeInterval(86400)
+        let timeInterval = nextMidnight.timeIntervalSince(now)
         
         timer = Timer.publish(every: timeInterval, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.currentDayIndex = DateTracker.calculateTodayIndex()
+                print("Current day index updated to: \(self?.currentDayIndex ?? 0)")
             }
     }
     
@@ -36,7 +37,7 @@ struct DishRow: View {
     @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
     @EnvironmentObject var dateTracker: DateTracker
 
-    private let daysOfWeek: [LocalizedStringKey] = [
+    static let daysOfWeek: [LocalizedStringKey] = [
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
     ]
     
@@ -44,12 +45,10 @@ struct DishRow: View {
         HStack {
             Circle()
                 .fill(Color("InfoColor-500"))
-                .fontDesign(.rounded)
                 .frame(width: 30, height: 30)
                 .overlay(
-                    Text(circleContent)
+                    Text(circleLabel)
                         .font(.subheadline)
-                        .fontDesign(.rounded)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
                 )
@@ -57,7 +56,7 @@ struct DishRow: View {
                 .font(.headline)
                 .fontWeight(.bold)
                 .padding()
-                .fontDesign(.rounded)
+                .lineLimit(1)
             Spacer()
             Text(dish.emoji)
                 .font(.largeTitle)
@@ -78,10 +77,10 @@ struct DishRow: View {
         }
     }
 
-    private var circleContent: LocalizedStringKey {
+    private var circleLabel: LocalizedStringKey {
         if daysInsteadOfNumbers {
             let dayIndex = (dateTracker.currentDayIndex + index) % 7
-            return daysOfWeek[dayIndex]
+            return Self.daysOfWeek[dayIndex]
         } else {
             return LocalizedStringKey("\(index + 1)")
         }

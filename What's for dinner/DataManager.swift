@@ -1,3 +1,4 @@
+/// ✅ Singleton klasse verantwoordelijk voor het opslaan, laden, resetten, importeren en exporteren van gerechten via UserDefaults en App Group.
 import Foundation
 import WidgetKit
 
@@ -9,7 +10,7 @@ class DataManager {
     private init() {}
     
     func saveDishes(_ dishes: [Dish]) {
-        guard let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.shared") else {
+        guard let userDefaults = userDefaults else {
             return
         }
 
@@ -17,13 +18,11 @@ class DataManager {
             let encoded = try JSONEncoder().encode(dishes)
             userDefaults.set(encoded, forKey: "dishes")
             userDefaults.synchronize()
-
-            if let data = userDefaults.data(forKey: "dishes") {
-                _ = try? JSONDecoder().decode([Dish].self, from: data)
-            }
-
+            
+            WidgetCenter.shared.reloadAllTimelines()
 
         } catch {
+            print("❌ Fout bij opslaan van gerechten: \(error)")
         }
     }
 
@@ -76,5 +75,6 @@ class DataManager {
         if let importedDishes = try? JSONDecoder().decode([Dish].self, from: jsonData) {
             saveDishes(importedDishes)
         }
+        userDefaults?.synchronize()
     }
 }

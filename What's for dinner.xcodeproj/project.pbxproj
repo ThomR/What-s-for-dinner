@@ -12,6 +12,10 @@
 		938BED352D1779DD00786B1E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED342D1779DD00786B1E /* SwiftUI.framework */; };
 		938BED422D1779DF00786B1E /* DinnerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		938BED532D181C6200786B1E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
+		93DA5D022D7CDC8700B7899D /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DA5CFB2D7CDC6A00B7899D /* WatchConnectivity.framework */; };
+		93DA5D1F2D7CE3BE00B7899D /* What's for Dinner.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		93DA5D2A2D7CE69600B7899D /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */; };
+		93DA5D322D7CF07C00B7899D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,6 +25,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 938BED2F2D1779DD00786B1E;
 			remoteInfo = DinnerWidgetExtension;
+		};
+		93DA5D1D2D7CE3BE00B7899D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 931DED1A2D0E200200D22CB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93DA5D112D7CE3BD00B7899D;
+			remoteInfo = "What's for Dinner Watch Watch App";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -42,6 +53,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
+				93DA5D1F2D7CE3BE00B7899D /* What's for Dinner.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,6 +68,9 @@
 		938BED342D1779DD00786B1E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		938BED522D1818BE00786B1E /* DinnerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DinnerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		93B4ADD42D18C8AE00F20E86 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.2.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
+		93DA5CFB2D7CDC6A00B7899D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
+		93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.2.sdk/System/Library/Frameworks/WatchConnectivity.framework; sourceTree = DEVELOPER_DIR; };
+		93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What's for Dinner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -81,6 +96,14 @@
 			);
 			target = 938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */;
 		};
+		93DA5D2C2D7CE8BE00B7899D /* Exceptions for "What's for dinner" folder in "Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DataManager.swift,
+				Structs.swift,
+			);
+			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -89,6 +112,7 @@
 			exceptions = (
 				93A9FA1C2D5011850094CF28 /* Exceptions for "What's for dinner" folder in "What's for dinner" target */,
 				938BED4B2D177BBC00786B1E /* Exceptions for "What's for dinner" folder in "DinnerWidgetExtension" target */,
+				93DA5D2C2D7CE8BE00B7899D /* Exceptions for "What's for dinner" folder in "Watch App" target */,
 			);
 			path = "What's for dinner";
 			sourceTree = "<group>";
@@ -101,6 +125,11 @@
 			path = DinnerWidget;
 			sourceTree = "<group>";
 		};
+		93DA5D132D7CE3BD00B7899D /* Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Watch App";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93DA5D022D7CDC8700B7899D /* WatchConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +150,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93DA5D0F2D7CE3BD00B7899D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93DA5D2A2D7CE69600B7899D /* WatchConnectivity.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -129,6 +167,7 @@
 				931DED352D0E429700D22CB3 /* Localizable.xcstrings */,
 				931DED242D0E200200D22CB3 /* What's for dinner */,
 				938BED362D1779DD00786B1E /* DinnerWidget */,
+				93DA5D132D7CE3BD00B7899D /* Watch App */,
 				938BED312D1779DD00786B1E /* Frameworks */,
 				931DED232D0E200200D22CB3 /* Products */,
 				938BED522D1818BE00786B1E /* DinnerWidgetExtension.entitlements */,
@@ -140,6 +179,7 @@
 			children = (
 				931DED222D0E200200D22CB3 /* What's for dinner.app */,
 				938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */,
+				93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,6 +187,8 @@
 		938BED312D1779DD00786B1E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93DA5CFB2D7CDC6A00B7899D /* WatchConnectivity.framework */,
+				93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */,
 				93B4ADD42D18C8AE00F20E86 /* WatchKit.framework */,
 				938BED322D1779DD00786B1E /* WidgetKit.framework */,
 				938BED342D1779DD00786B1E /* SwiftUI.framework */,
@@ -171,6 +213,7 @@
 			);
 			dependencies = (
 				938BED412D1779DF00786B1E /* PBXTargetDependency */,
+				93DA5D1E2D7CE3BE00B7899D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				931DED242D0E200200D22CB3 /* What's for dinner */,
@@ -204,6 +247,28 @@
 			productReference = 938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		93DA5D112D7CE3BD00B7899D /* Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93DA5D202D7CE3BE00B7899D /* Build configuration list for PBXNativeTarget "Watch App" */;
+			buildPhases = (
+				93DA5D0E2D7CE3BD00B7899D /* Sources */,
+				93DA5D0F2D7CE3BD00B7899D /* Frameworks */,
+				93DA5D102D7CE3BD00B7899D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				93DA5D132D7CE3BD00B7899D /* Watch App */,
+			);
+			name = "Watch App";
+			packageProductDependencies = (
+			);
+			productName = "What's for Dinner Watch Watch App";
+			productReference = 93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -218,6 +283,9 @@
 						CreatedOnToolsVersion = 16.2;
 					};
 					938BED2F2D1779DD00786B1E = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					93DA5D112D7CE3BD00B7899D = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -239,6 +307,7 @@
 			targets = (
 				931DED212D0E200200D22CB3 /* What's for dinner */,
 				938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */,
+				93DA5D112D7CE3BD00B7899D /* Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -260,6 +329,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93DA5D102D7CE3BD00B7899D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93DA5D322D7CF07C00B7899D /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -277,6 +354,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93DA5D0E2D7CE3BD00B7899D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -284,6 +368,11 @@
 			isa = PBXTargetDependency;
 			target = 938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */;
 			targetProxy = 938BED402D1779DF00786B1E /* PBXContainerItemProxy */;
+		};
+		93DA5D1E2D7CE3BE00B7899D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
+			targetProxy = 93DA5D1D2D7CE3BE00B7899D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -537,6 +626,66 @@
 			};
 			name = Release;
 		};
+		93DA5D212D7CE3BE00B7899D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = G6QPW9QY9Q;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp;
+				PRODUCT_NAME = "What's for Dinner";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		93DA5D222D7CE3BE00B7899D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = G6QPW9QY9Q;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp;
+				PRODUCT_NAME = "What's for Dinner";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -563,6 +712,15 @@
 			buildConfigurations = (
 				938BED452D1779DF00786B1E /* Debug */,
 				938BED462D1779DF00786B1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93DA5D202D7CE3BE00B7899D /* Build configuration list for PBXNativeTarget "Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93DA5D212D7CE3BE00B7899D /* Debug */,
+				93DA5D222D7CE3BE00B7899D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
