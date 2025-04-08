@@ -74,6 +74,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		936566932DA5BAFB00582F29 /* Exceptions for "Watch App" folder in "Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Watch-App-Info.plist",
+			);
+			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
+		};
 		938BED4B2D177BBC00786B1E /* Exceptions for "What's for dinner" folder in "DinnerWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -127,6 +134,9 @@
 		};
 		93DA5D132D7CE3BD00B7899D /* Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				936566932DA5BAFB00582F29 /* Exceptions for "Watch App" folder in "Watch App" target */,
+			);
 			path = "Watch App";
 			sourceTree = "<group>";
 		};
@@ -638,7 +648,7 @@
 				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Watch-App-Info.plist";
+				INFOPLIST_FILE = "Watch App/Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
@@ -670,7 +680,7 @@
 				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Watch-App-Info.plist";
+				INFOPLIST_FILE = "Watch App/Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;

@@ -34,7 +34,7 @@ struct WatchAppView: View {
                                 Text(dish.name)
                                     .font(.headline)
                                     .fontDesign(.rounded)
-                                    .lineLimit(1)
+                                    .lineLimit(2)
                                 Spacer()
                                 Text(dish.emoji)
                                     .font(.title3)
