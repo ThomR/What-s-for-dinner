@@ -13,7 +13,7 @@
 		938BED422D1779DF00786B1E /* DinnerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		938BED532D181C6200786B1E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
 		93DA5D022D7CDC8700B7899D /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DA5CFB2D7CDC6A00B7899D /* WatchConnectivity.framework */; };
-		93DA5D1F2D7CE3BE00B7899D /* What's for Dinner.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		93DA5D1F2D7CE3BE00B7899D /* WhatsForDinnerWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		93DA5D2A2D7CE69600B7899D /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */; };
 		93DA5D322D7CF07C00B7899D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -53,7 +53,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				93DA5D1F2D7CE3BE00B7899D /* What's for Dinner.app in Embed Watch Content */,
+				93DA5D1F2D7CE3BE00B7899D /* WhatsForDinnerWatch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,7 +70,7 @@
 		93B4ADD42D18C8AE00F20E86 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.2.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
 		93DA5CFB2D7CDC6A00B7899D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.2.sdk/System/Library/Frameworks/WatchConnectivity.framework; sourceTree = DEVELOPER_DIR; };
-		93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What's for Dinner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatsForDinnerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -179,7 +179,7 @@
 			children = (
 				931DED222D0E200200D22CB3 /* What's for dinner.app */,
 				938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */,
-				93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */,
+				93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -266,7 +266,7 @@
 			packageProductDependencies = (
 			);
 			productName = "What's for Dinner Watch Watch App";
-			productReference = 93DA5D122D7CE3BD00B7899D /* What's for Dinner.app */;
+			productReference = 93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -502,7 +502,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "InfoColor-500";
 				CODE_SIGN_ENTITLEMENTS = "What's for dinner/What's for dinner.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -524,7 +524,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -537,7 +537,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "InfoColor-500";
 				CODE_SIGN_ENTITLEMENTS = "What's for dinner/What's for dinner.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -559,7 +559,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -587,7 +587,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -616,7 +616,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -631,12 +631,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Watch App/Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
@@ -644,9 +646,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp;
-				PRODUCT_NAME = "What's for Dinner";
+				PRODUCT_NAME = WhatsForDinnerWatch;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -661,12 +663,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Watch App/Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
@@ -674,9 +678,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp;
-				PRODUCT_NAME = "What's for Dinner";
+				PRODUCT_NAME = WhatsForDinnerWatch;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

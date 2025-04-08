@@ -143,23 +143,6 @@
         }
       }
     },
-    "edit_alert_placeholder" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meal name"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naam van je gerecht"
-          }
-        }
-      }
-    },
     "edit_alert_title" : {
       "localizations" : {
         "en" : {

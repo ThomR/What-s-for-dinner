@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 
 /// ✅ Hoofdscherm van de app waar de gebruiker gerechten kan toevoegen, bewerken, verwijderen, delen en sorteren.
 struct ContentView: View {
-    // MARK: - Properties
     @EnvironmentObject var viewModel: DishesViewModel
     @State private var newDishName: String = ""
     @State private var editingDish: Dish? = nil
@@ -16,7 +15,6 @@ struct ContentView: View {
 
     @FocusState private var isTextFieldFocused: Bool
 
-    // MARK: - Body
     var body: some View {
         NavigationStack {
             ZStack {
@@ -59,9 +57,7 @@ struct ContentView: View {
             }
         }
     }
-    
-    // MARK: - Subviews
-    
+        
     private var emptyStateView: some View {
         VStack {
             Image(systemName: "fork.knife")
@@ -142,9 +138,7 @@ struct ContentView: View {
             Button(LocalizedStringKey("cancel"), role: .cancel) {}
         }
     }
-    
-    // MARK: - Functions
-    
+        
     private func alertTextField() -> some View {
         TextField(LocalizedStringKey("add_alert_placeholder"), text: $newDishName)
             .focused($isTextFieldFocused)
@@ -211,7 +205,6 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
