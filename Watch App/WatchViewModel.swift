@@ -43,6 +43,9 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
                     return Dish(id: uuid, name: name, emoji: emoji)
                 }
                 os_log("✅ Gerechten ontvangen op Watch: %@", log: .default, type: .info, self.dishes)
+                if let daysSetting = message["daysInsteadOfNumbers"] as? Bool {
+                    self.daysInsteadOfNumbers = daysSetting
+                }
                 self.saveDishesLocally()
             } else {
                 os_log("⚠️ Geen gerechten ontvangen in bericht", log: .default, type: .info)
@@ -60,6 +63,9 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
                     return Dish(id: uuid, name: name, emoji: emoji)
                 }
                 os_log("✅ ApplicationContext gerechten ontvangen", log: .default, type: .info)
+                if let daysSetting = applicationContext["daysInsteadOfNumbers"] as? Bool {
+                    self.daysInsteadOfNumbers = daysSetting
+                }
                 self.saveDishesLocally()
             }
         }

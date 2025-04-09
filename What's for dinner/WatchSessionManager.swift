@@ -21,7 +21,9 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
         }
 
         let dishData: [[String: String]] = dishes.map { ["id": $0.id.uuidString, "name": $0.name, "emoji": $0.emoji] }
-        session.sendMessage(["dishes": dishData], replyHandler: nil, errorHandler: { error in
+        let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
+        
+        session.sendMessage(["dishes": dishData, "daysInsteadOfNumbers": daysSetting], replyHandler: nil, errorHandler: { error in
             os_log("❌ Fout bij versturen naar Watch: %@", log: .default, type: .error, error.localizedDescription)
         })
     }
@@ -34,9 +36,13 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
         let dishData: [[String: String]] = dishes.map {
             ["id": $0.id.uuidString, "name": $0.name, "emoji": $0.emoji]
         }
+        let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
 
         do {
-            try session.updateApplicationContext(["dishes": dishData])
+            try session.updateApplicationContext([
+                "dishes": dishData,
+                "daysInsteadOfNumbers": daysSetting
+            ])
         } catch {
             os_log("❌ Fout bij updateApplicationContext: %@", log: .default, type: .error, error.localizedDescription)
         }

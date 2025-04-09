@@ -5,6 +5,7 @@ import os
 /// ✅ Hoofdingang van de app: initialiseert ViewModels, beheert Watch-connectie, en verwerkt gedeelde JSON-bestanden.
 @main
 struct DinnerApp: App {
+    @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
     @StateObject private var viewModel = DishesViewModel()
     @StateObject private var dateTracker = DateTracker()
     private let watchSessionManager = WatchSessionManager.shared  // ✅ Zorgt ervoor dat WatchSessionManager actief blijft
@@ -20,8 +21,11 @@ struct DinnerApp: App {
                 .task {
                     watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Stuur gerechten naar de Watch bij opstarten
                 }
-                .onChange(of: viewModel.dishes) { _, _ in
+                .onChange(of: viewModel.dishes) {
                     watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Stuur updates naar de Watch
+                }
+                .onChange(of: daysInsteadOfNumbers) {
+                    watchSessionManager.syncDishesToWatch(viewModel.dishes)
                 }
         }
     }

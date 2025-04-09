@@ -24,7 +24,7 @@ struct WatchAppView: View {
                             let dish = viewModel.dishes[index]
                             HStack {
                                 Text(circleContent(for: index))
-                                    .font(.caption)
+                                    .font(.caption2)
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
                                     .padding(6)

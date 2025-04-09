@@ -30,7 +30,7 @@ struct EmojiMapping {
         "🥔": ["potato", "aardappel", "stamppot", "rösti", "latke"],
         "🍟": ["fries", "friet", "patat", "frites"],
         "🥩": ["beef", "pork", "vlees", "steak", "biefstuk", "roast"],
-        "🐟": ["fish", "vis", "zalm", "salmon", "kibbeling"],
+        "🐟": ["fish", "vis", "zalm", "salmon", "kibbeling", "forel", "kabeljauw", "cod"],
         "🌶️": ["chilli", "chili", "spicy", "pittig"],
         "🌭": ["hotdog", "sausage", "worst"],
         "🍗": ["chicken", "kip"],
@@ -41,7 +41,7 @@ struct EmojiMapping {
         "🫓": ["flat bread", "platbrood", "okonomiyaki"],
         "🌮": ["taco", "quesadilla"],
         "🍛": ["curry", "tonkatsu"],
-        "🍤": ["shrimp", "garnaal", "ebi"],
+        "🦐": ["shrimp", "garnaal", "ebi"],
         "🫘": ["bean", "boon"],
         "🫛": ["french beans", "sperziebonen", "edameme"],
         "🧑‍🍳": ["restaurant", "uiteten"],
@@ -76,6 +76,7 @@ struct EmojiMapping {
         "🥚": ["omelet", "omelette", "frittata"],
         "🥡": ["take-out", "takeout", "chinese"],
         "🧆": ["meatball", "gehaktbal"],
-        "🥒": ["cucumber", "komkommer"]
+        "🥒": ["cucumber", "komkommer"],
+        "🍢": ["souvlaki", "kebab", "skewer"]
     ]
 }
