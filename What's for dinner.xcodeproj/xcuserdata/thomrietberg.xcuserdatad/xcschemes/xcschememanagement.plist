@@ -4,15 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>AppleWatchWidgetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>DinnerWidgetExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>Watch App.xcscheme_^#shared#^_</key>
+		<key>DinnerWidgetWatchExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>What's for Dinner Watch Watch App.xcscheme_^#shared#^_</key>
 		<dict>
@@ -23,6 +28,16 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>What's for Dinner.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>What's for dinner 1.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 		<key>What's for dinner.xcscheme_^#shared#^_</key>
 		<dict>
@@ -48,6 +63,21 @@
 			<true/>
 		</dict>
 		<key>93B189B42D18C3650025FAE0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>93C560F32DA862B800D396A1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>93DA5D112D7CE3BD00B7899D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>93DCDD7D2DC01635002627E0</key>
 		<dict>
 			<key>primary</key>
 			<true/>

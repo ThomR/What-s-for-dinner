@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "2600"
-   wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,23 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "938BED2F2D1779DD00786B1E"
-               BuildableName = "DinnerWidgetExtension.appex"
-               BlueprintName = "DinnerWidgetExtension"
-               ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "93B189B42D18C3650025FAE0"
-               BuildableName = "DinnerWatchApp Watch App.app"
-               BlueprintName = "DinnerWatchApp Watch App"
+               BlueprintIdentifier = "93DCDD7D2DC01635002627E0"
+               BuildableName = "AppleWatchWidgetExtension.appex"
+               BlueprintName = "AppleWatchWidgetExtension"
                ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,6 +32,20 @@
                BlueprintIdentifier = "931DED212D0E200200D22CB3"
                BuildableName = "What&apos;s for dinner.app"
                BlueprintName = "What&apos;s for dinner"
+               ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "93DA5D112D7CE3BD00B7899D"
+               BuildableName = "WhatsForDinnerWatch.app"
+               BlueprintName = "Watch App"
                ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -75,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93B189B42D18C3650025FAE0"
-            BuildableName = "DinnerWatchApp Watch App.app"
-            BlueprintName = "DinnerWatchApp Watch App"
+            BlueprintIdentifier = "93DA5D112D7CE3BD00B7899D"
+            BuildableName = "WhatsForDinnerWatch.app"
+            BlueprintName = "Watch App"
             ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -104,16 +103,14 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES"
-      askForAppToLaunch = "Yes"
-      launchAutomaticallySubstyle = "2">
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93B189B42D18C3650025FAE0"
-            BuildableName = "DinnerWatchApp Watch App.app"
-            BlueprintName = "DinnerWatchApp Watch App"
+            BlueprintIdentifier = "93DCDD7D2DC01635002627E0"
+            BuildableName = "AppleWatchWidgetExtension.appex"
+            BlueprintName = "AppleWatchWidgetExtension"
             ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

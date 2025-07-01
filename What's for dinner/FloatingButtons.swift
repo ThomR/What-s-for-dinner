@@ -15,8 +15,8 @@ struct FloatingButtons: View {
                     Image(systemName: "plus.circle.fill")
                         .font(.system(size: 24))
                 }
-                .buttonStyle()
             }
+            .buttonStyle()
 
             Button(action: { showSettings = true }) {
                 Image(systemName: "gearshape.fill")

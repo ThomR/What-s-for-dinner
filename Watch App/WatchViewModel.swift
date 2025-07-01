@@ -2,6 +2,7 @@
 import WatchConnectivity
 import os
 import SwiftUI
+import WidgetKit
 
 class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
     @Published var dishes: [Dish] = []
@@ -79,13 +80,18 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
     private func saveDishesLocally() {
         let encoder = JSONEncoder()
         if let data = try? encoder.encode(dishes) {
-            UserDefaults.standard.set(data, forKey: "watchDishes")
+            let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.watchshared")
+            userDefaults?.set(data, forKey: "watchDishes")
+            
+            // 🔥 Forceer widget refresh
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 
     private func loadSavedDishes() {
         let decoder = JSONDecoder()
-        if let data = UserDefaults.standard.data(forKey: "watchDishes"),
+        let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.watchshared")
+        if let data = userDefaults?.data(forKey: "watchDishes"),
            let savedDishes = try? decoder.decode([Dish].self, from: data) {
             self.dishes = savedDishes
         }

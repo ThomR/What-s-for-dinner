@@ -16,6 +16,9 @@
 		93DA5D1F2D7CE3BE00B7899D /* WhatsForDinnerWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		93DA5D2A2D7CE69600B7899D /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */; };
 		93DA5D322D7CF07C00B7899D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
+		93DCDD7F2DC01635002627E0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED322D1779DD00786B1E /* WidgetKit.framework */; };
+		93DCDD802DC01635002627E0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED342D1779DD00786B1E /* SwiftUI.framework */; };
+		93DCDD8B2DC01636002627E0 /* AppleWatchWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +35,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 93DA5D112D7CE3BD00B7899D;
 			remoteInfo = "What's for Dinner Watch Watch App";
+		};
+		93DCDD892DC01636002627E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 931DED1A2D0E200200D22CB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93DCDD7D2DC01635002627E0;
+			remoteInfo = AppleWatchWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -58,6 +68,17 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93C561042DA862BA00D396A1 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				93DCDD8B2DC01636002627E0 /* AppleWatchWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +92,8 @@
 		93DA5CFB2D7CDC6A00B7899D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		93DA5CFD2D7CDC7C00B7899D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.2.sdk/System/Library/Frameworks/WatchConnectivity.framework; sourceTree = DEVELOPER_DIR; };
 		93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatsForDinnerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppleWatchWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		93DCDD952DC01A6B002627E0 /* AppleWatchWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppleWatchWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -111,6 +134,21 @@
 			);
 			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
 		};
+		93DCDD8F2DC01636002627E0 /* Exceptions for "AppleWatchWidget" folder in "AppleWatchWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */;
+		};
+		93DCDD912DC016B2002627E0 /* Exceptions for "What's for dinner" folder in "AppleWatchWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DataManager.swift,
+				Structs.swift,
+			);
+			target = 93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -120,6 +158,7 @@
 				93A9FA1C2D5011850094CF28 /* Exceptions for "What's for dinner" folder in "What's for dinner" target */,
 				938BED4B2D177BBC00786B1E /* Exceptions for "What's for dinner" folder in "DinnerWidgetExtension" target */,
 				93DA5D2C2D7CE8BE00B7899D /* Exceptions for "What's for dinner" folder in "Watch App" target */,
+				93DCDD912DC016B2002627E0 /* Exceptions for "What's for dinner" folder in "AppleWatchWidgetExtension" target */,
 			);
 			path = "What's for dinner";
 			sourceTree = "<group>";
@@ -138,6 +177,14 @@
 				936566932DA5BAFB00582F29 /* Exceptions for "Watch App" folder in "Watch App" target */,
 			);
 			path = "Watch App";
+			sourceTree = "<group>";
+		};
+		93DCDD812DC01635002627E0 /* AppleWatchWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				93DCDD8F2DC01636002627E0 /* Exceptions for "AppleWatchWidget" folder in "AppleWatchWidgetExtension" target */,
+			);
+			path = AppleWatchWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -168,16 +215,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93DCDD7B2DC01635002627E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93DCDD802DC01635002627E0 /* SwiftUI.framework in Frameworks */,
+				93DCDD7F2DC01635002627E0 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		931DED192D0E200200D22CB3 = {
 			isa = PBXGroup;
 			children = (
+				93DCDD952DC01A6B002627E0 /* AppleWatchWidgetExtension.entitlements */,
 				931DED352D0E429700D22CB3 /* Localizable.xcstrings */,
 				931DED242D0E200200D22CB3 /* What's for dinner */,
 				938BED362D1779DD00786B1E /* DinnerWidget */,
 				93DA5D132D7CE3BD00B7899D /* Watch App */,
+				93DCDD812DC01635002627E0 /* AppleWatchWidget */,
 				938BED312D1779DD00786B1E /* Frameworks */,
 				931DED232D0E200200D22CB3 /* Products */,
 				938BED522D1818BE00786B1E /* DinnerWidgetExtension.entitlements */,
@@ -190,6 +248,7 @@
 				931DED222D0E200200D22CB3 /* What's for dinner.app */,
 				938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */,
 				93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */,
+				93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -264,10 +323,12 @@
 				93DA5D0E2D7CE3BD00B7899D /* Sources */,
 				93DA5D0F2D7CE3BD00B7899D /* Frameworks */,
 				93DA5D102D7CE3BD00B7899D /* Resources */,
+				93C561042DA862BA00D396A1 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				93DCDD8A2DC01636002627E0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				93DA5D132D7CE3BD00B7899D /* Watch App */,
@@ -279,6 +340,28 @@
 			productReference = 93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
+		93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93DCDD8C2DC01636002627E0 /* Build configuration list for PBXNativeTarget "AppleWatchWidgetExtension" */;
+			buildPhases = (
+				93DCDD7A2DC01635002627E0 /* Sources */,
+				93DCDD7B2DC01635002627E0 /* Frameworks */,
+				93DCDD7C2DC01635002627E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				93DCDD812DC01635002627E0 /* AppleWatchWidget */,
+			);
+			name = AppleWatchWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = AppleWatchWidgetExtension;
+			productReference = 93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -287,7 +370,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					931DED212D0E200200D22CB3 = {
 						CreatedOnToolsVersion = 16.2;
@@ -296,6 +379,9 @@
 						CreatedOnToolsVersion = 16.2;
 					};
 					93DA5D112D7CE3BD00B7899D = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					93DCDD7D2DC01635002627E0 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -318,6 +404,7 @@
 				931DED212D0E200200D22CB3 /* What's for dinner */,
 				938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */,
 				93DA5D112D7CE3BD00B7899D /* Watch App */,
+				93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -347,6 +434,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93DCDD7C2DC01635002627E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -371,6 +465,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93DCDD7A2DC01635002627E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -384,6 +485,11 @@
 			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
 			targetProxy = 93DA5D1D2D7CE3BE00B7899D /* PBXContainerItemProxy */;
 		};
+		93DCDD8A2DC01636002627E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */;
+			targetProxy = 93DCDD892DC01636002627E0 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -392,6 +498,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -422,6 +529,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -445,6 +553,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -456,6 +565,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -486,6 +596,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -502,6 +613,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
@@ -517,7 +629,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"What's for dinner/Preview Content\"";
-				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "What's for dinner/InfoApp.plist";
@@ -552,7 +663,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"What's for dinner/Preview Content\"";
-				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "What's for dinner/InfoApp.plist";
@@ -586,7 +696,6 @@
 				CODE_SIGN_ENTITLEMENTS = DinnerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
 				INFOPLIST_FILE = DinnerWidget/InfoWidget.plist;
@@ -601,6 +710,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -615,7 +726,6 @@
 				CODE_SIGN_ENTITLEMENTS = DinnerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
 				INFOPLIST_FILE = DinnerWidget/InfoWidget.plist;
@@ -630,6 +740,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -645,11 +757,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Watch App/Watch-App-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
+				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -677,11 +788,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Watch App/Watch-App-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner Watch";
+				INFOPLIST_KEY_CFBundleDisplayName = "What's for Dinner";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = nl.whatsfordinner.app;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -691,6 +801,66 @@
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp;
 				PRODUCT_NAME = WhatsForDinnerWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		93DCDD8D2DC01636002627E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AppleWatchWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppleWatchWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AppleWatchWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp.AppleWatchWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		93DCDD8E2DC01636002627E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AppleWatchWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppleWatchWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AppleWatchWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.watchkitapp.AppleWatchWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -735,6 +905,15 @@
 			buildConfigurations = (
 				93DA5D212D7CE3BE00B7899D /* Debug */,
 				93DA5D222D7CE3BE00B7899D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93DCDD8C2DC01636002627E0 /* Build configuration list for PBXNativeTarget "AppleWatchWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93DCDD8D2DC01636002627E0 /* Debug */,
+				93DCDD8E2DC01636002627E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

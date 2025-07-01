@@ -100,8 +100,8 @@ struct ContentView: View {
                     Label(LocalizedStringKey("reset"), systemImage: "trash")
                 }
             } label: {
-                Image(systemName: "ellipsis.circle")
-                    .font(.title2)
+                Image(systemName: "ellipsis")
+                    .font(.title3)
             }
         }
     }
