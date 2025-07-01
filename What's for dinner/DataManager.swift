@@ -77,4 +77,21 @@ class DataManager {
         }
         userDefaults?.synchronize()
     }
+    
+    /// ✅ Exporteer gerechten naar een tijdelijk JSON-bestand met een duidelijke naam.
+    func exportDishesFileURL() -> URL? {
+        let dishes = loadDishes() // Laad de meest actuele gerechten
+        guard let data = try? JSONEncoder().encode(dishes) else { return nil }
+        
+        let fileName = "MijnGerechtenlijst.json"
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        
+        do {
+            try data.write(to: tempURL)
+            return tempURL
+        } catch {
+            print("❌ Fout bij schrijven naar tijdelijk bestand: \(error)")
+            return nil
+        }
+    }
 }

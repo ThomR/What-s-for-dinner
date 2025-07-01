@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 /// ✅ Hoofdscherm van de app waar de gebruiker gerechten kan toevoegen, bewerken, verwijderen, delen en sorteren.
 struct ContentView: View {
     @EnvironmentObject var viewModel: DishesViewModel
+    private let dataManager = DataManager.shared
     @State private var newDishName: String = ""
     @State private var editingDish: Dish? = nil
     @State private var showResetAlert: Bool = false
@@ -48,8 +49,12 @@ struct ContentView: View {
                 resetAlertContent
             }
             .sheet(isPresented: $isSharing) {
-                if let fileURL = viewModel.exportDishesFileURL() {
-                    ShareSheet(activityItems: [fileURL])
+                if let fileURL = dataManager.exportDishesFileURL() {
+                    let activitySource = DishListActivityItemSource(
+                        fileURL: fileURL,
+                        title: "Mijn 'What's for Dinner' lijst"
+                    )
+                    ShareSheet(activityItems: [activitySource])
                 }
             }
             .sheet(isPresented: $showSettings) {

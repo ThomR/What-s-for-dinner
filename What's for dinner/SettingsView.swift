@@ -11,7 +11,7 @@ struct SettingsView: View {
         NavigationView {
             VStack {
                 Form {
-                    Section(header: Text(LocalizedStringKey("settings_header")).font(.headline)) {
+                    Section(header: Text(LocalizedStringKey("settings_header")).font(.subheadline)) {
                         Toggle(isOn: $daysInsteadOfNumbers) {
                             Text(LocalizedStringKey("days_instead_of_numbers")).fontDesign(.rounded)
                         }

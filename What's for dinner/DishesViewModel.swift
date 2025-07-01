@@ -83,18 +83,4 @@ class DishesViewModel: ObservableObject {
             }
         }
     }
-    
-    /// ✅ Exporteer gerechten naar een tijdelijk JSON-bestand met een duidelijke naam
-    func exportDishesFileURL() -> URL? {
-        guard let data = try? JSONEncoder().encode(dishes) else { return nil }
-        let fileName = "MijnGerechtenlijst.json"  // 🔹 Aangepaste bestandsnaam
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        do {
-            try data.write(to: tempURL)
-            return tempURL
-        } catch {
-            print("❌ Fout bij schrijven naar tijdelijk bestand: \(error)")
-            return nil
-        }
-    }
 }

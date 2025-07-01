@@ -32,20 +32,32 @@ struct WatchDinnerWidgetProvider: TimelineProvider {
 
 struct WatchDinnerWidgetView: View {
     var entry: WatchDinnerWidgetEntry
-
     @Environment(\.widgetFamily) var family
 
     var body: some View {
+        // Haal het eerste emoji van het gerecht op, of een placeholder
+        let firstEmoji = entry.dish?.emoji.split(separator: " ").first ?? "🍽️"
+
         switch family {
         case .accessoryInline:
-            Text("\(entry.dish?.emoji.split(separator: " ").first ?? "🍽️") \(entry.dish?.name ?? "Geen gerecht")")
+            // Dit werkte al goed
+            Text("\(firstEmoji) \(entry.dish?.name ?? "Geen gerecht")")
                 .unredacted()
 
         case .accessoryCircular:
-            Text("👍") // Of Image(systemName: "star.fill")
+            // Toon alleen de emoji, perfect voor een kleine, ronde weergave
+            Text(String(firstEmoji))
+                .font(.title) // Maak de emoji wat groter
                 .unredacted()
+
         case .accessoryCorner:
-            Image(systemName: "heart.fill")
+            // Toon de emoji in de hoek, eventueel met een subtiele achtergrond
+            Text(String(firstEmoji))
+                .font(.title3)
+                .widgetLabel {
+                    // Voeg de naam van het gerecht als label toe (zichtbaar bij lang drukken)
+                    Text(entry.dish?.name ?? "Geen gerecht")
+                }
                 .unredacted()
             
         default:

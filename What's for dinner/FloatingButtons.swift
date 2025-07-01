@@ -2,6 +2,21 @@
 
 import SwiftUI
 
+// Pas de buttonStyle extension aan
+private extension View {
+    func buttonStyle() -> some View {
+        self
+            .padding(12)
+            .padding(.leading, 8)
+            .background(
+                // Gebruik .ultraThinMaterial voor een subtiel glaseffect
+                .regularMaterial,
+                in: RoundedRectangle(cornerRadius: 30)
+            )
+    }
+}
+
+// Pas de body van FloatingButtons aan
 struct FloatingButtons: View {
     let onAdd: () -> Void
     @Binding var showSettings: Bool
@@ -17,33 +32,22 @@ struct FloatingButtons: View {
                 }
             }
             .buttonStyle()
+            // Gebruik een voorgrondstijl om de tekstkleur aan te passen aan de lichte/donkere modus
+            .foregroundStyle(.primary)
 
             Button(action: { showSettings = true }) {
                 Image(systemName: "gearshape.fill")
                     .padding(12)
                     .font(.system(size: 24))
                     .background(
-                        Circle()
-                            .fill(Color("GrayColor-500"))
-                            .shadow(color: Color("GrayColor-700"), radius: 0, x: 0, y: 4)
+                        // Gebruik hier ook .ultraThinMaterial
+                        .regularMaterial,
+                        in: Circle()
                     )
             }
+            .foregroundStyle(.primary)
         }
         .padding()
-        .foregroundColor(.white)
         .fontDesign(.rounded)
-    }
-}
-
-private extension View {
-    func buttonStyle() -> some View {
-        self
-            .padding(12)
-            .padding(.leading, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 30)
-                    .fill(Color("SuccessColor-500"))
-                    .shadow(color: Color("SuccessColor-700"), radius: 0, x: 0, y: 4)
-            )
     }
 }
