@@ -17,9 +17,13 @@ class DataManager {
         do {
             let encoded = try JSONEncoder().encode(dishes)
             userDefaults.set(encoded, forKey: "dishes")
-            userDefaults.synchronize()
+            // 🔥 FIX: userDefaults.synchronize() is verwijderd.
+            // Dit is een blokkerende operatie en vaak onnodig, wat de UI kan vertragen.
             
-            WidgetCenter.shared.reloadAllTimelines()
+            // 🔥 FIX: Zorg ervoor dat UI-updates altijd op de main thread worden uitgevoerd.
+            DispatchQueue.main.async {
+                WidgetCenter.shared.reloadAllTimelines()
+            }
 
         } catch {
             print("❌ Fout bij opslaan van gerechten: \(error)")

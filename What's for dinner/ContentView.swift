@@ -35,9 +35,12 @@ struct ContentView: View {
             .task {
                 viewModel.loadDishes()
             }
-            .onChange(of: viewModel.dishes) { _, _ in
-                viewModel.saveDishes()
-                viewModel.notifyWidgetIfFirstDishChanged()
+            .onChange(of: viewModel.dishes) {
+                // Voer de dure operaties (opslaan, widget/watch update) asynchroon uit
+                // op een achtergrondtaak om te voorkomen dat de UI blokkeert.
+                Task.detached(priority: .background) {
+                    viewModel.saveDishes()
+                }
             }
             .alert(LocalizedStringKey("add_alert_title"), isPresented: $showAddAlert) {
                 addAlertContent
@@ -78,8 +81,11 @@ struct ContentView: View {
     
     private var dishesListView: some View {
         List {
-            ForEach(viewModel.dishes.indices, id: \.self) { index in
-                let dish = viewModel.dishes[index]
+            // 🔥 FIX: Gebruik de stabiele `dish.id` voor de ForEach-identificatie in plaats van de index.
+            // Dit helpt SwiftUI om verplaatsingen efficiënt te volgen en verbetert de animatieprestaties.
+            // `.enumerated()` wordt gebruikt om toch toegang te houden tot de index voor de DishRow.
+            // `Array()` is nodig omdat .onMove een RandomAccessCollection vereist.
+            ForEach(Array(viewModel.dishes.enumerated()), id: \.element.id) { index, dish in
                 DishRow(dish: dish, index: index, onEdit: {
                     startEditing(dish)
                 }, onDelete: {
@@ -87,10 +93,7 @@ struct ContentView: View {
                 })
             }
             .onMove(perform: { source, destination in
-                withAnimation {
-                    viewModel.dishes.move(fromOffsets: source, toOffset: destination)
-                }
-                viewModel.notifyWidgetIfFirstDishChanged()
+                viewModel.dishes.move(fromOffsets: source, toOffset: destination)
             })
         }
     }
@@ -165,7 +168,6 @@ struct ContentView: View {
     private func resetDishes() {
         withAnimation {
             viewModel.dishes.removeAll()
-            viewModel.notifyWidgetIfFirstDishChanged()
         }
     }
     
@@ -186,7 +188,6 @@ struct ContentView: View {
         newDishName = ""
         editingDish = nil
         showEditAlert = false
-        viewModel.notifyWidgetIfFirstDishChanged()
     }
     
     private func deleteDish(at offsets: IndexSet) {
@@ -197,7 +198,6 @@ struct ContentView: View {
             }
             viewModel.dishes.remove(atOffsets: offsets)
             viewModel.saveCompletedDishes()
-            viewModel.notifyWidgetIfFirstDishChanged()
         }
     }
     
