@@ -27,13 +27,24 @@ struct LogboekView: View {
                 Text(dish.name)
                     .font(.headline)
                     .fontDesign(.rounded)
-                    .lineLimit(1)
+                    .lineLimit(2)
                 Spacer()
                 Text(dish.emoji)
                     .font(.largeTitle)
                     .fontDesign(.rounded)
             }
             .accessibilityLabel(dish.name)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button(action: {
+                    withAnimation {
+                        viewModel.restoreDish(dish)
+                    }
+                }) {
+                    // Gebruik 'arrow.uturn.backward' voor het "redo" icoon
+                    Label(LocalizedStringKey("restore_dish"), systemImage: "arrow.uturn.backward")
+                }
+                .tint(.blue)
+            }
         }
     }
 }

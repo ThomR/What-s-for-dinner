@@ -317,6 +317,22 @@
         }
       }
     },
+    "restore_dish" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore dish"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herstel gerecht"
+          }
+        }
+      }
+    },
     "saturday" : {
       "localizations" : {
         "en" : {

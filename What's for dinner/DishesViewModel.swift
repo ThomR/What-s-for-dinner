@@ -48,6 +48,24 @@ class DishesViewModel: ObservableObject {
         saveCompletedDishes()
     }
     
+    /// ✅ Zet een gerecht vanuit het logboek terug in de hoofdlijst
+    func restoreDish(_ dishToRestore: Dish) {
+        // Verwijder het gerecht uit de voltooide lijst
+        if let index = completedDishes.firstIndex(where: { $0.id == dishToRestore.id }) {
+            var dish = completedDishes.remove(at: index)
+            
+            // Reset de voltooiingsdatum
+            dish.completedDate = nil
+            
+            // Voeg het gerecht toe aan de actieve lijst
+            dishes.append(dish)
+            
+            // Sla beide lijsten op
+            saveCompletedDishes()
+            saveDishes()
+        }
+    }
+    
     /// ✅ Exporteer gerechten als JSON-bestand
     func exportDishesAsJSON() -> Data? {
         return try? JSONEncoder().encode(dishes)

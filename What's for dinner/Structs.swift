@@ -56,7 +56,7 @@ struct EmojiMapping {
         "🥕": ["carrot", "wortel"],
         "🧀": ["cheese", "kaas", "paneer", "mozzarella", "halloumi", "burrata"],
         "🌽": ["corn", "mais", "polenta"],
-        "🥟": ["gyoza", "dumpling", "pierogi", "gnocchi", "ravioli"],
+        "🥟": ["gyoza", "dumpling", "pierogi", "gnocchi", "ravioli", "empanada"],
         "🥞": ["pancakes", "pannenkoeken", "poffertjes"],
         "🧇": ["waffles", "wafels"],
         "🥧": ["pie", "quiche"],
@@ -68,7 +68,7 @@ struct EmojiMapping {
         "🥠": ["samosa"],
         "🥯": ["buns", "bagel"],
         "🍖": ["ribs"],
-        "🍜": ["ramen"],
+        "🍜": ["ramen", "noodles", "noedels"],
         "🍥": ["chashu"],
         "🍱": ["bento"],
         "🇮🇹": ["cannelloni"],
@@ -79,6 +79,7 @@ struct EmojiMapping {
         "🥒": ["cucumber", "komkommer", "courgette", "zucchini"],
         "🍢": ["souvlaki", "kebab", "skewer"],
         "🌿": ["asperges", "asparagus"],
-        "🍰": ["tart", "taart", "pie"]
+        "🍰": ["tart", "taart", "pie"],
+        "🥜": ["peanut", "pinda"]
     ]
 }
