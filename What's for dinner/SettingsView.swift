@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
+    @AppStorage("autoCompleteDish") private var autoCompleteDish: Bool = false // Nieuwe instelling
     @EnvironmentObject var viewModel: DishesViewModel
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
@@ -14,6 +15,13 @@ struct SettingsView: View {
                     Section(header: Text(LocalizedStringKey("settings_header")).font(.subheadline)) {
                         Toggle(isOn: $daysInsteadOfNumbers) {
                             Text(LocalizedStringKey("days_instead_of_numbers")).fontDesign(.rounded)
+                        }
+
+                        // 🔥 Nieuwe toggle die conditioneel wordt getoond
+                        if daysInsteadOfNumbers {
+                            Toggle(isOn: $autoCompleteDish) {
+                                Text(LocalizedStringKey("auto_complete_daily")).fontDesign(.rounded)
+                            }
                         }
                     }
 

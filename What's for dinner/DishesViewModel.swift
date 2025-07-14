@@ -9,7 +9,9 @@ class DishesViewModel: ObservableObject {
     private var lastFirstDish: Dish?
 
     private let dataManager = DataManager.shared
-    
+    private let userDefaults = UserDefaults.standard
+    private let lastCompletionDateKey = "lastAutoCompletionDate"
+
     init() {
         loadDishes()
         loadCompletedDishes()
@@ -47,7 +49,7 @@ class DishesViewModel: ObservableObject {
         completedDishes.append(completedDish)
         saveCompletedDishes()
     }
-    
+
     /// ✅ Zet een gerecht vanuit het logboek terug in de hoofdlijst
     func restoreDish(_ dishToRestore: Dish) {
         // Verwijder het gerecht uit de voltooide lijst
@@ -62,6 +64,42 @@ class DishesViewModel: ObservableObject {
             
             // Sla beide lijsten op
             saveCompletedDishes()
+            saveDishes()
+        }
+    }
+
+    /// ✅ Voltooi het bovenste gerecht automatisch indien de instelling actief is
+    func autoCompleteTopDishIfNeeded() {
+        // 1. Controleer of de instellingen aan staan
+        guard userDefaults.bool(forKey: "autoCompleteDish") && userDefaults.bool(forKey: "daysInsteadOfNumbers") else { return }
+        
+        let now = Date()
+        
+        // 2. Haal de datum van de laatste voltooiing op
+        guard let lastCompletionDate = userDefaults.object(forKey: lastCompletionDateKey) as? Date else {
+            // Als er nog nooit een gerecht is voltooid, doe het nu NIET, maar stel de datum in voor de toekomst.
+            userDefaults.set(now, forKey: lastCompletionDateKey)
+            return
+        }
+        
+        // 🔥 FIX: Vergelijk de start van de dag (middernacht) in plaats van de hele datum.
+        // Dit voorkomt problemen met tijdzones en het tijdstip van de dag.
+        let startOfToday = Calendar.current.startOfDay(for: now)
+        let startOfLastCompletionDay = Calendar.current.startOfDay(for: lastCompletionDate)
+
+        // 3. Als de start van de laatste voltooiingsdag VOOR de start van vandaag ligt, voltooi het gerecht.
+        if startOfLastCompletionDay < startOfToday {
+            completeTopDish()
+            userDefaults.set(now, forKey: lastCompletionDateKey)
+        }
+    }
+
+    private func completeTopDish() {
+        guard let topDish = dishes.first else { return }
+        
+        withAnimation {
+            addToCompleted(topDish)
+            dishes.removeFirst()
             saveDishes()
         }
     }
