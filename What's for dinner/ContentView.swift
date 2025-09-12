@@ -26,7 +26,7 @@ struct ContentView: View {
                 }
                 VStack {
                     Spacer()
-                    FloatingButtons(onAdd: { showAddAlert = true }, showSettings: $showSettings)
+                    FloatingButtons(onAdd: { showAddAlert = true })
                         .padding()
                 }
             }
@@ -35,11 +35,12 @@ struct ContentView: View {
             .task {
                 viewModel.loadDishes()
             }
-            .onChange(of: viewModel.dishes) {
+            .onChange(of: viewModel.dishes) { oldValue, newValue in
                 // Voer de dure operaties (opslaan, widget/watch update) asynchroon uit
                 // op een achtergrondtaak om te voorkomen dat de UI blokkeert.
                 Task.detached(priority: .background) {
-                    viewModel.saveDishes()
+                    DataManager.shared.saveDishes(newValue)
+                    WatchSessionManager.shared.syncDishesToWatch(newValue)
                 }
             }
             .alert(LocalizedStringKey("add_alert_title"), isPresented: $showAddAlert) {
@@ -98,8 +99,13 @@ struct ContentView: View {
         }
     }
     
+    @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarTrailing) {
+        ToolbarItemGroup(placement: .navigationBarTrailing) {
+            Button(action: { showSettings = true }) {
+                Image(systemName: "gearshape.fill")
+            }
+            
             Menu {
                 Button(action: { isSharing = true }) {
                     Label(LocalizedStringKey("share"), systemImage: "square.and.arrow.up")
@@ -109,7 +115,6 @@ struct ContentView: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.title3)
             }
         }
     }

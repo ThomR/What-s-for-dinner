@@ -11,6 +11,28 @@ struct DinnerApp: App {
     @StateObject private var dateTracker = DateTracker()
     private let watchSessionManager = WatchSessionManager.shared  // ✅ Zorgt ervoor dat WatchSessionManager actief blijft
 
+    init() {
+        // ✅ Configureer het uiterlijk van de navigatiebalk voor de hele app
+        let appearance = UINavigationBarAppearance()
+        
+        // --- Grote Titel (wanneer niet gescrolld) ---
+        let largeTitleFont = UIFont.preferredFont(forTextStyle: .largeTitle)
+        if let largeTitleDescriptor = largeTitleFont.fontDescriptor.withDesign(.rounded)?.withSymbolicTraits(.traitBold) {
+            appearance.largeTitleTextAttributes[.font] = UIFont(descriptor: largeTitleDescriptor, size: largeTitleFont.pointSize)
+        }
+        
+        // --- Kleine Titel (wanneer wel gescrolld) ---
+        let inlineTitleFont = UIFont.preferredFont(forTextStyle: .headline)
+        if let inlineTitleDescriptor = inlineTitleFont.fontDescriptor.withDesign(.rounded)?.withSymbolicTraits(.traitBold) {
+            appearance.titleTextAttributes[.font] = UIFont(descriptor: inlineTitleDescriptor, size: inlineTitleFont.pointSize)
+        }
+        
+        // Pas de appearance toe op alle varianten van de navigatiebalk
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
