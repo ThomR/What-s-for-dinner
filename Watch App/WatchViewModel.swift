@@ -16,13 +16,7 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
         session.delegate = self
         
         if WCSession.default.activationState == .notActivated {
-            session.activate() // ✅ Zorg dat de sessie geactiveerd wordt
-        }
-        
-        if session.isReachable {
-            session.sendMessage(["requestDishes": true], replyHandler: nil, errorHandler: { error in
-                os_log("❌ Fout bij requestDishes: %@", log: .default, type: .error, error.localizedDescription)
-            })
+            session.activate()
         }
     }
 
@@ -36,45 +30,27 @@ class WatchViewModel: NSObject, ObservableObject, WCSessionDelegate {
     }
 
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        DispatchQueue.main.async {
-            if let dishData = message["dishes"] as? [[String: String]] {
-                self.dishes = dishData.compactMap { dict in
-                    guard let id = dict["id"], let uuid = UUID(uuidString: id),
-                          let name = dict["name"], let emoji = dict["emoji"] else { return nil }
-                    return Dish(id: uuid, name: name, emoji: emoji)
-                }
-                os_log("✅ Gerechten ontvangen op Watch: %@", log: .default, type: .info, self.dishes)
-                if let daysSetting = message["daysInsteadOfNumbers"] as? Bool {
-                    self.daysInsteadOfNumbers = daysSetting
-                }
-                self.saveDishesLocally()
-            } else {
-                os_log("⚠️ Geen gerechten ontvangen in bericht", log: .default, type: .info)
-            }
-        }
+        handleReceivedData(from: message)
     }
 
-    // ✅ Vervang deze verplichte methode zodat die ook gerechten verwerkt
     func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
-        if let dishData = applicationContext["dishes"] as? [[String: String]] {
+        handleReceivedData(from: applicationContext)
+    }
+    
+    // ✅ Generieke functie om zowel Message als ApplicationContext af te handelen
+    private func handleReceivedData(from dictionary: [String: Any]) {
+        if let dishData = dictionary["dishesData"] as? Data {
             DispatchQueue.main.async {
-                self.dishes = dishData.compactMap { dict in
-                    guard let id = dict["id"], let uuid = UUID(uuidString: id),
-                          let name = dict["name"], let emoji = dict["emoji"] else { return nil }
-                    return Dish(id: uuid, name: name, emoji: emoji)
+                if let decodedDishes = try? JSONDecoder().decode([Dish].self, from: dishData) {
+                    self.dishes = decodedDishes
+                    os_log("✅ Gerechten succesvol ontvangen en gedecodeerd op Watch.", log: .default, type: .info)
+                    self.saveDishesLocally() // Sla direct op na ontvangen
                 }
-                os_log("✅ ApplicationContext gerechten ontvangen", log: .default, type: .info)
-                if let daysSetting = applicationContext["daysInsteadOfNumbers"] as? Bool {
+                if let daysSetting = dictionary["daysInsteadOfNumbers"] as? Bool {
                     self.daysInsteadOfNumbers = daysSetting
                 }
-                self.saveDishesLocally()
             }
         }
-    }
-
-    // ✅ Nodig om fouten zoals "WCErrorCodeDeliveryFailed" te voorkomen
-    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any]) {
-        os_log("ℹ️ didReceiveUserInfo aangeroepen, maar niet gebruikt", log: .default, type: .info)
     }
 
     private func saveDishesLocally() {

@@ -12,35 +12,19 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
         session.delegate = self
         session.activate()
     }
-
-    /// ✅ Stuur de gerechtenlijst naar de Watch
-    func sendDishesToWatch(_ dishes: [Dish]) {
-        guard session.isReachable else {
-            os_log("⚠️ Watch is niet bereikbaar", log: .default, type: .info)
-            return
-        }
-
-        let dishData: [[String: String]] = dishes.map { ["id": $0.id.uuidString, "name": $0.name, "emoji": $0.emoji] }
-        let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
-        
-        session.sendMessage(["dishes": dishData, "daysInsteadOfNumbers": daysSetting], replyHandler: nil, errorHandler: { error in
-            os_log("❌ Fout bij versturen naar Watch: %@", log: .default, type: .error, error.localizedDescription)
-        })
-    }
-
+    
     /// ✅ Sync gerechten naar de Watch via updateApplicationContext
     func syncDishesToWatch(_ dishes: [Dish]) {
         guard session.activationState == .activated else { return }
         guard session.isPaired, session.isWatchAppInstalled else { return }
 
-        let dishData: [[String: String]] = dishes.map {
-            ["id": $0.id.uuidString, "name": $0.name, "emoji": $0.emoji]
-        }
-        let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
-
         do {
+            // ✅ Zet de [Dish] array direct om naar Data
+            let dishData = try JSONEncoder().encode(dishes)
+            let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
+
             try session.updateApplicationContext([
-                "dishes": dishData,
+                "dishesData": dishData, // Verstuur als Data
                 "daysInsteadOfNumbers": daysSetting
             ])
         } catch {
@@ -48,14 +32,23 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
         }
     }
 
-    /// ✅ Watch vraagt gerechten op
-    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        if message["requestDishes"] as? Bool == true {
-            DispatchQueue.main.async {
-                // Dit is alleen voor testdoeleinden; overweeg dependency injection te gebruiken.
-                let dishes = DishesViewModel().dishes
-                self.sendDishesToWatch(dishes)
-            }
+    /// ✅ Stuur de gerechtenlijst naar de Watch (als directe message)
+    func sendDishesToWatch(_ dishes: [Dish]) {
+        guard session.isReachable else {
+            os_log("⚠️ Watch is niet bereikbaar, probeer via context update.", log: .default, type: .info)
+            syncDishesToWatch(dishes) // Fallback naar context update
+            return
+        }
+
+        do {
+            let dishData = try JSONEncoder().encode(dishes)
+            let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
+            
+            session.sendMessage(["dishesData": dishData, "daysInsteadOfNumbers": daysSetting], replyHandler: nil, errorHandler: { error in
+                os_log("❌ Fout bij versturen naar Watch: %@", log: .default, type: .error, error.localizedDescription)
+            })
+        } catch {
+            os_log("❌ Fout bij encoden van gerechten voor Watch: %@", log: .default, type: .error, error.localizedDescription)
         }
     }
 
@@ -71,10 +64,5 @@ class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
         session.activate()
-    }
-
-    /// ✅ Ontvangen application context op Watch
-    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
-        os_log("📦 Ontvangen applicationContext op Watch", log: .default, type: .info)
     }
 }

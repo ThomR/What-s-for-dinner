@@ -4,74 +4,55 @@ import WidgetKit
 
 class DataManager {
     static let shared = DataManager()
-    private let appGroup = "group.whatsfordinner.shared"
     private let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.shared")
+
+    // ✅ Gebruik een struct voor keys om typefouten te voorkomen
+    private enum Keys {
+        static let dishes = "dishes"
+        static let completedDishes = "completedDishes"
+    }
     
     private init() {}
+
+    // 1. ✅ Generieke helper-functie voor het laden van data
+    private func load<T: Decodable>(forKey key: String) -> T? {
+        guard let data = userDefaults?.data(forKey: key) else { return nil }
+        return try? JSONDecoder().decode(T.self, from: data)
+    }
     
-    func saveDishes(_ dishes: [Dish]) {
-        guard let userDefaults = userDefaults else {
-            return
-        }
-
+    // 2. ✅ Generieke helper-functie voor het opslaan van data
+    private func save<T: Encodable>(_ value: T, forKey key: String) {
         do {
-            let encoded = try JSONEncoder().encode(dishes)
-            userDefaults.set(encoded, forKey: "dishes")
-            // 🔥 FIX: userDefaults.synchronize() is verwijderd.
-            // Dit is een blokkerende operatie en vaak onnodig, wat de UI kan vertragen.
-            
-            // 🔥 FIX: Zorg ervoor dat UI-updates altijd op de main thread worden uitgevoerd.
-            DispatchQueue.main.async {
-                WidgetCenter.shared.reloadAllTimelines()
-            }
-
+            let data = try JSONEncoder().encode(value)
+            userDefaults?.set(data, forKey: key)
         } catch {
-            print("❌ Fout bij opslaan van gerechten: \(error)")
+            print("❌ Fout bij opslaan voor key '\(key)': \(error)")
+        }
+    }
+
+    // De publieke functies worden nu veel simpeler en efficiënter
+    func saveDishes(_ dishes: [Dish]) {
+        save(dishes, forKey: Keys.dishes)
+        DispatchQueue.main.async {
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 
     func loadDishes() -> [Dish] {
-        guard let userDefaults = userDefaults else {
-            return []
-        }
+        return load(forKey: Keys.dishes) ?? []
+    }
+    
+    func saveCompletedDishes(_ dishes: [Dish]) {
+        save(dishes, forKey: Keys.completedDishes)
+    }
 
-        guard let data = userDefaults.data(forKey: "dishes") else {
-            return []
-        }
-
-        do {
-            let dishes = try JSONDecoder().decode([Dish].self, from: data)
-            return dishes
-        } catch {
-            return []
-        }
+    func loadCompletedDishes() -> [Dish] {
+        return load(forKey: Keys.completedDishes) ?? []
     }
     
     func resetUserDefaults() {
-        guard let userDefaults = userDefaults else {
-            return
-        }
-
-        userDefaults.removeObject(forKey: "dishes")
-        userDefaults.synchronize()
-    }
-    
-    /// ✅ Laad afgeronde gerechten
-    func loadCompletedDishes() -> [Dish] {
-        guard let data = userDefaults?.data(forKey: "completedDishes") else { return [] }
-        return (try? JSONDecoder().decode([Dish].self, from: data)) ?? []
-    }
-    
-    /// ✅ Sla voltooide gerechten op
-    func saveCompletedDishes(_ dishes: [Dish]) {
-        guard let encoded = try? JSONEncoder().encode(dishes) else { return }
-        userDefaults?.set(encoded, forKey: "completedDishes")
-        userDefaults?.synchronize()
-    }
-    
-    /// ✅ Exporteer gerechten als JSON-bestand
-    func exportDishesAsJSON() -> Data? {
-        return try? JSONEncoder().encode(loadDishes())
+        userDefaults?.removeObject(forKey: Keys.dishes)
+        userDefaults?.removeObject(forKey: Keys.completedDishes)
     }
     
     /// ✅ Importeer gerechten en update DataManager
@@ -79,12 +60,11 @@ class DataManager {
         if let importedDishes = try? JSONDecoder().decode([Dish].self, from: jsonData) {
             saveDishes(importedDishes)
         }
-        userDefaults?.synchronize()
     }
     
     /// ✅ Exporteer gerechten naar een tijdelijk JSON-bestand met een duidelijke naam.
     func exportDishesFileURL() -> URL? {
-        let dishes = loadDishes() // Laad de meest actuele gerechten
+        let dishes = loadDishes()
         guard let data = try? JSONEncoder().encode(dishes) else { return nil }
         
         let fileName = "MijnGerechtenlijst.json"
