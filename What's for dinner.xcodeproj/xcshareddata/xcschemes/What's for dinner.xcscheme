@@ -15,20 +15,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "93DA5D112D7CE3BD00B7899D"
-               BuildableName = "WhatsForDinnerWatch.app"
-               BlueprintName = "Watch App"
-               ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "931DED212D0E200200D22CB3"
                BuildableName = "What&apos;s for dinner.app"
                BlueprintName = "What&apos;s for dinner"
@@ -58,9 +44,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93DA5D112D7CE3BD00B7899D"
-            BuildableName = "WhatsForDinnerWatch.app"
-            BlueprintName = "Watch App"
+            BlueprintIdentifier = "931DED212D0E200200D22CB3"
+            BuildableName = "What&apos;s for dinner.app"
+            BlueprintName = "What&apos;s for dinner"
             ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -75,9 +61,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93DA5D112D7CE3BD00B7899D"
-            BuildableName = "WhatsForDinnerWatch.app"
-            BlueprintName = "Watch App"
+            BlueprintIdentifier = "931DED212D0E200200D22CB3"
+            BuildableName = "What&apos;s for dinner.app"
+            BlueprintName = "What&apos;s for dinner"
             ReferencedContainer = "container:What&apos;s for dinner.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
