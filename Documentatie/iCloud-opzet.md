@@ -8,6 +8,56 @@ Alles hieronder is **niet gecontroleerd op een echt apparaat** — de simulator
 heeft geen iCloud-account en er is geen tweede account om mee te testen. Reken op
 een ronde bijschaven bij de eerste echte test.
 
+## 0. Eerst: mag je account dit wel?
+
+Loopt Xcode vast op
+
+> Cannot create a iOS App Development provisioning profile for
+> "nl.whatsfordinner.app". Personal development teams, including "Thom Rietberg",
+> do not support the Push Notifications and iCloud capabilities.
+
+dan is dit vastgesteld (2026-08-21):
+
+- Het team `G6QPW9QY9Q` signeert de app **wel** gewoon voor een echt toestel,
+  zolang iCloud en push niet in de entitlements staan. Team en certificaat zijn
+  dus in orde.
+- De profielen die dat team uitgeeft hebben `TimeToLive = 365`, wat hoort bij een
+  betaald account; een gratis personal team krijgt 7 dagen.
+- Toch weigert Apple een profiel zodra iCloud of push erin zit, en noemt het team
+  daarbij "personal".
+
+Dat wijst op iets aan de accountkant, niet aan de projectkant. Kijk op
+[developer.apple.com/account](https://developer.apple.com/account):
+
+1. Staat het **membership** nog actief, of is het verlopen? Een verlopen
+   Developer Program-lidmaatschap valt terug op het gratis niveau, en dat
+   ondersteunt precies deze twee capabilities niet. Dat zou meteen verklaren
+   waarom de app uit de App Store verdwenen is.
+2. Staat er een **openstaande overeenkomst** klaar ("Review Agreement")? Zolang
+   die niet geaccepteerd is, weigert het portaal wijzigingen aan capabilities.
+3. Let op dat er twee teams op deze Mac staan die allebei "Thom Rietberg" heten:
+   `G6QPW9QY9Q` (dit project) en `XA392BM9XT` (het personal team, gebruikt door
+   Vermogen). In de teamkiezer van Xcode staat achter de gratis variant
+   "(Personal Team)".
+
+### Intussen doorwerken zonder iCloud
+
+Er staat een tweede entitlements-bestand klaar zonder iCloud en push. Omzetten
+kan zonder het project te verbouwen, via de instelling `DINNER_ENTITLEMENTS`:
+
+```
+xcodebuild -scheme "What's for dinner" -destination 'generic/platform=iOS' \
+  DINNER_ENTITLEMENTS="WhatsForDinner-Lokaal.entitlements" build
+```
+
+In Xcode: *Build Settings* → zoek op `DINNER_ENTITLEMENTS` → zet de waarde op
+`WhatsForDinner-Lokaal.entitlements`.
+
+De app werkt daarmee volledig; alleen het delen blijft uit. `CloudSync` ziet dat
+er geen iCloud-account beschikbaar is en zet zichzelf uit, dus er gaat niets
+kapot. Zet de waarde terug op `What's for dinner.entitlements` zodra het account
+weer in orde is.
+
 ## 1. Capabilities in Xcode
 
 Open het project, selecteer het target **What's for dinner** → *Signing &
