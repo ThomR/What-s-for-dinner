@@ -1,68 +1,72 @@
 import WatchConnectivity
-import os
+import Foundation
 
-/// ✅ Singleton die verantwoordelijk is voor communicatie tussen iPhone en Apple Watch via WatchConnectivity.
-class WatchSessionManager: NSObject, WCSessionDelegate, ObservableObject {
+/// Stuurt de planning naar de Apple Watch.
+///
+/// Eén verzendpad in plaats van twee. `updateApplicationContext` is de basis: dat
+/// blijft in de wachtrij staan tot de Watch bereikbaar is, ook als die nu uit
+/// staat. Is de Watch wél bereikbaar, dan gaat er daarnaast een bericht heen
+/// zodat het scherm meteen klopt.
+final class WatchSessionManager: NSObject, WCSessionDelegate {
     static let shared = WatchSessionManager()
-    private var session: WCSession
 
-    override init() {
-        self.session = WCSession.default
-        super.init()
-        session.delegate = self
-        session.activate()
+    private var session: WCSession? {
+        WCSession.isSupported() ? .default : nil
     }
-    
-    /// ✅ Sync gerechten naar de Watch via updateApplicationContext
-    func syncDishesToWatch(_ dishes: [Dish]) {
-        guard session.activationState == .activated else { return }
+
+    private override init() {
+        super.init()
+    }
+
+    func activate() {
+        guard let session else { return }
+        session.delegate = self
+        if session.activationState != .activated {
+            session.activate()
+        }
+    }
+
+    func send(_ plan: MealPlan) {
+        guard let session, session.activationState == .activated else { return }
         guard session.isPaired, session.isWatchAppInstalled else { return }
 
         do {
-            // ✅ Zet de [Dish] array direct om naar Data
-            let dishData = try JSONEncoder().encode(dishes)
-            let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
-
-            try session.updateApplicationContext([
-                "dishesData": dishData, // Verstuur als Data
-                "daysInsteadOfNumbers": daysSetting
-            ])
+            let payload: [String: Any] = [
+                PlanTransfer.key: try JSONEncoder.plan.encode(plan),
+                Preferences.Key.showsDayLabels: Preferences.showsDayLabels,
+                Preferences.Key.autoAdvance: Preferences.autoAdvanceSetting
+            ]
+            try session.updateApplicationContext(payload)
+            if session.isReachable {
+                session.sendMessage(payload, replyHandler: nil) { error in
+                    // Geen ramp: de context staat al klaar en komt alsnog aan.
+                    Log.watch.info("Bericht niet bezorgd: \(error.localizedDescription, privacy: .public)")
+                }
+            }
         } catch {
-            os_log("❌ Fout bij updateApplicationContext: %@", log: .default, type: .error, error.localizedDescription)
+            Log.watch.error("Versturen mislukt: \(error.localizedDescription, privacy: .public)")
         }
     }
 
-    /// ✅ Stuur de gerechtenlijst naar de Watch (als directe message)
-    func sendDishesToWatch(_ dishes: [Dish]) {
-        guard session.isReachable else {
-            os_log("⚠️ Watch is niet bereikbaar, probeer via context update.", log: .default, type: .info)
-            syncDishesToWatch(dishes) // Fallback naar context update
-            return
-        }
+    // MARK: - WCSessionDelegate
 
-        do {
-            let dishData = try JSONEncoder().encode(dishes)
-            let daysSetting = UserDefaults.standard.bool(forKey: "daysInsteadOfNumbers")
-            
-            session.sendMessage(["dishesData": dishData, "daysInsteadOfNumbers": daysSetting], replyHandler: nil, errorHandler: { error in
-                os_log("❌ Fout bij versturen naar Watch: %@", log: .default, type: .error, error.localizedDescription)
-            })
-        } catch {
-            os_log("❌ Fout bij encoden van gerechten voor Watch: %@", log: .default, type: .error, error.localizedDescription)
-        }
-    }
-
-    /// ✅ Verplichte methodes om activatie-fouten te voorkomen
     func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {
-        if let error = error {
-            os_log("❌ WatchConnectivity fout: %@", log: .default, type: .error, error.localizedDescription)
-        } else {
-            os_log("✅ WatchConnectivity geactiveerd op iPhone", log: .default, type: .info)
+        if let error {
+            Log.watch.error("Activeren mislukt: \(error.localizedDescription, privacy: .public)")
         }
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {}
+
     func sessionDidDeactivate(_ session: WCSession) {
+        // Er is van Watch gewisseld; opnieuw activeren voor het nieuwe apparaat.
         session.activate()
+    }
+
+    func sessionWatchStateDidChange(_ session: WCSession) {
+        // Watch-app net geïnstalleerd of gekoppeld: stuur meteen wat we hebben.
+        guard session.isPaired, session.isWatchAppInstalled else { return }
+        let plan = DishStore.phoneStore.load()
+        send(plan)
     }
 }

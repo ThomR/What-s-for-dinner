@@ -6,60 +6,97 @@ struct WatchDinnerWidgetEntry: TimelineEntry {
     let dish: Dish?
 }
 
+/// Complicatie-tijdlijn voor de Watch.
+///
+/// Net als op de iPhone een reeks losse dagen, zodat de complicatie 's nachts
+/// vanzelf verspringt zonder dat de iPhone of de Watch-app open hoeft te zijn.
 struct WatchDinnerWidgetProvider: TimelineProvider {
+
+    private static let daysAhead = 7
+
     func placeholder(in context: Context) -> WatchDinnerWidgetEntry {
-        WatchDinnerWidgetEntry(date: Date(), dish: Dish(id: UUID(), name: "Placeholder", emoji: "🍔"))
+        WatchDinnerWidgetEntry(date: Date(), dish: Dish(name: "Pizza", emoji: "🍕"))
     }
-    
-    func getSnapshot(in context: Context, completion: @escaping (WatchDinnerWidgetEntry) -> ()) {
-        completion(WatchDinnerWidgetEntry(date: Date(), dish: loadFirstDish()))
+
+    func getSnapshot(in context: Context, completion: @escaping (WatchDinnerWidgetEntry) -> Void) {
+        completion(entries(from: Date()).first ?? placeholder(in: context))
     }
-    
-    func getTimeline(in context: Context, completion: @escaping (Timeline<WatchDinnerWidgetEntry>) -> ()) {
-        let entry = WatchDinnerWidgetEntry(date: Date(), dish: loadFirstDish())
-        completion(Timeline(entries: [entry], policy: .never))
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<WatchDinnerWidgetEntry>) -> Void) {
+        let now = Date()
+        completion(Timeline(
+            entries: entries(from: now),
+            policy: .after(PlanSchedule.plannedDate(offset: Self.daysAhead, anchorDate: now))
+        ))
     }
-    
-    private func loadFirstDish() -> Dish? {
-        let userDefaults = UserDefaults(suiteName: "group.whatsfordinner.watchshared")
-        if let data = userDefaults?.data(forKey: "watchDishes"),
-           let dishes = try? JSONDecoder().decode([Dish].self, from: data) {
-            return dishes.first
+
+    private func entries(from now: Date) -> [WatchDinnerWidgetEntry] {
+        DishStore.watchStore.invalidateCache()
+        let plan = DishStore.watchStore.load()
+        let calendar = Calendar.current
+
+        guard Preferences.autoAdvance else {
+            return [WatchDinnerWidgetEntry(date: now, dish: plan.dishes.first)]
         }
-        return nil
+
+        return (0...Self.daysAhead).map { offset in
+            let date = offset == 0 ? now : PlanSchedule.plannedDate(offset: offset, anchorDate: now, calendar: calendar)
+            return WatchDinnerWidgetEntry(
+                date: date,
+                dish: PlanSchedule.currentDish(in: plan, at: date, calendar: calendar, autoAdvance: true)
+            )
+        }
     }
 }
 
 struct WatchDinnerWidgetView: View {
-    var entry: WatchDinnerWidgetEntry
-    @Environment(\.widgetFamily) var family
+    let entry: WatchDinnerWidgetEntry
+    @Environment(\.widgetFamily) private var family
+
+    private var emoji: String {
+        entry.dish?.primaryEmoji ?? Emoji.fallback
+    }
+
+    private var name: Text {
+        if let dish = entry.dish {
+            return Text(dish.name)
+        }
+        return Text(LocalizedStringKey("no_dish"))
+    }
 
     var body: some View {
-        // Haal het eerste emoji van het gerecht op, of een placeholder
-        let firstEmoji = entry.dish?.emoji.split(separator: " ").first ?? "🍽️"
-
         switch family {
         case .accessoryInline:
-            // Dit werkte al goed
-            Text("\(firstEmoji) \(entry.dish?.name ?? "Geen gerecht")")
+            (Text(emoji) + Text(verbatim: " ") + name)
                 .unredacted()
 
         case .accessoryCircular:
-            // Toon alleen de emoji, perfect voor een kleine, ronde weergave
-            Text(String(firstEmoji))
-                .font(.title) // Maak de emoji wat groter
+            Text(emoji)
+                .font(.title)
                 .unredacted()
 
         case .accessoryCorner:
-            // Toon de emoji in de hoek, eventueel met een subtiele achtergrond
-            Text(String(firstEmoji))
+            Text(emoji)
                 .font(.title3)
-                .widgetLabel {
-                    // Voeg de naam van het gerecht als label toe (zichtbaar bij lang drukken)
-                    Text(entry.dish?.name ?? "Geen gerecht")
-                }
+                .widgetLabel { name }
                 .unredacted()
-            
+
+        case .accessoryRectangular:
+            VStack(alignment: .leading, spacing: 2) {
+                Text(LocalizedStringKey("today"))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Text(emoji)
+                    name
+                        .font(.headline)
+                        .fontDesign(.rounded)
+                        .lineLimit(2)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .unredacted()
+
         default:
             EmptyView()
         }
@@ -68,14 +105,15 @@ struct WatchDinnerWidgetView: View {
 
 @main
 struct WatchDinnerWidget: Widget {
-    let kind: String = "WatchDinnerWidget"
+    let kind = "WatchDinnerWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: WatchDinnerWidgetProvider()) { entry in
             WatchDinnerWidgetView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("What's for Dinner")
-        .description("Show your dish")
-        .supportedFamilies([.accessoryInline, .accessoryCorner, .accessoryCircular])
+        .description(String(localized: "widget_description"))
+        .supportedFamilies([.accessoryInline, .accessoryCorner, .accessoryCircular, .accessoryRectangular])
     }
 }

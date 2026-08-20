@@ -1,34 +1,30 @@
 import LinkPresentation
 import UIKit
 
-class DishListActivityItemSource: NSObject, UIActivityItemSource {
+/// Geeft het deelvenster een nette titel en icoon bij de gedeelde lijst.
+final class DishListActivityItemSource: NSObject, UIActivityItemSource {
+    private let fileURL: URL
 
-    var fileURL: URL
-    var title: String
-
-    init(fileURL: URL, title: String) {
+    init(fileURL: URL) {
         self.fileURL = fileURL
-        self.title = title
         super.init()
     }
 
-    // De placeholder die wordt gebruikt terwijl de echte data laadt
-    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
-        return fileURL
+    func activityViewControllerPlaceholderItem(_ controller: UIActivityViewController) -> Any {
+        fileURL
     }
 
-    // Het daadwerkelijke item dat gedeeld wordt (het JSON-bestand)
-    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
-        return fileURL
+    func activityViewController(_ controller: UIActivityViewController, itemForActivityType type: UIActivity.ActivityType?) -> Any? {
+        fileURL
     }
 
-    // De metadata voor de rijke voorvertoning (titel en icoon)
-    func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
+    func activityViewControllerLinkMetadata(_ controller: UIActivityViewController) -> LPLinkMetadata? {
         let metadata = LPLinkMetadata()
-        metadata.title = self.title
-        metadata.iconProvider = NSItemProvider(object: UIImage(named: "ShareIcon")!)
-        // Je kunt hier zelfs een URL naar je app instellen als je die hebt
-        // metadata.originalURL = URL(fileURLWithPath: "")
+        metadata.title = String(localized: "share_list_title")
+        // Geen force-unwrap: een ontbrekend icoon hoort geen crash te zijn.
+        if let icon = UIImage(named: "ShareIcon") {
+            metadata.iconProvider = NSItemProvider(object: icon)
+        }
         return metadata
     }
 }

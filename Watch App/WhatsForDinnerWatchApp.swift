@@ -1,21 +1,19 @@
-/// ✅ Entry point voor de watchOS-app: initialiseert ViewModel en activeert WatchConnectivity indien nodig.
 import SwiftUI
-import WatchConnectivity
 
 @main
 struct WhatsForDinnerWatchApp: App {
-    @StateObject private var watchViewModel = WatchViewModel() // ✅ WatchOS ViewModel
-
-    init() {
-        if WCSession.default.activationState == .notActivated {
-            WCSession.default.activate() // ✅ Activeer de WatchConnectivity sessie
-        }
-    }
+    @StateObject private var store = PlanStore()
 
     var body: some Scene {
         WindowGroup {
             WatchAppView()
-                .environmentObject(watchViewModel)
+                .environmentObject(store)
+                .task {
+                    WatchPlanReceiver.shared.onUpdate = {
+                        Task { @MainActor in store.refresh() }
+                    }
+                    WatchPlanReceiver.shared.activate()
+                }
         }
     }
 }

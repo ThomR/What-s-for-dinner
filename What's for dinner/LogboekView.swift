@@ -1,50 +1,81 @@
 import SwiftUI
-/// ✅ Toont een lijst van voltooide gerechten in omgekeerde chronologische volgorde.
 
+/// Wat er al gegeten is, nieuwste bovenaan, gegroepeerd per maand.
 struct LogboekView: View {
-    let viewModel: DishesViewModel
+    @EnvironmentObject private var store: PlanStore
+    @State private var showClearAlert = false
+
+    private var groups: [(title: String, meals: [ServedMeal])] {
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: store.log) { meal in
+            calendar.dateInterval(of: .month, for: meal.servedOn)?.start ?? meal.servedOn
+        }
+        return grouped
+            .sorted { $0.key > $1.key }
+            .map { (title: $0.key.formatted(.dateTime.month(.wide).year()), meals: $0.value) }
+    }
 
     var body: some View {
-        VStack {
-            if viewModel.completedDishes.isEmpty {
-                Text(LocalizedStringKey("no_completed_dishes_message"))
-                    .foregroundColor(.gray)
-                    .padding()
+        Group {
+            if store.log.isEmpty {
+                ContentUnavailableView {
+                    Label(LocalizedStringKey("no_completed_dishes_message"), systemImage: "book.closed")
+                        .fontDesign(.rounded)
+                }
             } else {
-                completedListView
+                List {
+                    ForEach(groups, id: \.title) { group in
+                        Section(group.title) {
+                            ForEach(group.meals) { meal in
+                                row(for: meal)
+                            }
+                        }
+                    }
+                }
             }
         }
         .navigationTitle(LocalizedStringKey("completed_dishes_title"))
-        .onAppear {
-            viewModel.loadCompletedDishes()
+        .toolbar {
+            if !store.log.isEmpty {
+                Button(role: .destructive) {
+                    showClearAlert = true
+                } label: {
+                    Image(systemName: "trash")
+                }
+                .accessibilityLabel(LocalizedStringKey("clear_history"))
+            }
+        }
+        .alert(LocalizedStringKey("clear_history_confirm"), isPresented: $showClearAlert) {
+            Button(LocalizedStringKey("yes"), role: .destructive) {
+                withAnimation { store.clearLog() }
+            }
+            Button(LocalizedStringKey("cancel"), role: .cancel) {}
         }
     }
-    
-    private var completedListView: some View {
-        let sortedDishes = viewModel.completedDishes.sorted { ($0.completedDate ?? Date.distantPast) > ($1.completedDate ?? Date.distantPast) }
-        return List(sortedDishes) { dish in
-            HStack {
-                Text(dish.name)
+
+    private func row(for meal: ServedMeal) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(meal.name)
                     .font(.headline)
                     .fontDesign(.rounded)
                     .lineLimit(2)
-                Spacer()
-                Text(dish.emoji)
-                    .font(.largeTitle)
-                    .fontDesign(.rounded)
+                Text(meal.servedOn.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated)))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .accessibilityLabel(dish.name)
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                Button(action: {
-                    withAnimation {
-                        viewModel.restoreDish(dish)
-                    }
-                }) {
-                    // Gebruik 'arrow.uturn.backward' voor het "redo" icoon
-                    Label(LocalizedStringKey("restore_dish"), systemImage: "arrow.uturn.backward")
-                }
-                .tint(.blue)
+            Spacer()
+            Text(meal.emoji)
+                .font(.largeTitle)
+        }
+        .accessibilityElement(children: .combine)
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button {
+                withAnimation { store.restore(meal) }
+            } label: {
+                Label(LocalizedStringKey("restore_dish"), systemImage: "arrow.uturn.backward")
             }
+            .tint(.blue)
         }
     }
 }

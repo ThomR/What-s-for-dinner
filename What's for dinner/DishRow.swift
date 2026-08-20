@@ -1,88 +1,74 @@
-/// ✅ Bevat `DateTracker` om de huidige dag bij te houden en `DishRow` view om een gerecht in de lijst weer te geven.
 import SwiftUI
-import Combine
 
-class DateTracker: ObservableObject {
-    @Published var currentDayIndex: Int = DateTracker.calculateTodayIndex()
-    private var timer: AnyCancellable?
-    
-    init() {
-        startDailyUpdate()
-    }
-    
-    private func startDailyUpdate() {
-        let now = Date()
-        let nextMidnight = Calendar.current.startOfDay(for: now).addingTimeInterval(86400)
-        let timeInterval = nextMidnight.timeIntervalSince(now)
-        
-        timer = Timer.publish(every: timeInterval, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak self] _ in
-                self?.currentDayIndex = DateTracker.calculateTodayIndex()
-                print("Current day index updated to: \(self?.currentDayIndex ?? 0)")
-            }
-    }
-    
-    static func calculateTodayIndex() -> Int {
-        return (Calendar.current.component(.weekday, from: Date()) + 5) % 7
-    }
-}
-
+/// Eén gerecht in de lijst, met links de dag of het nummer.
 struct DishRow: View {
-    let dish: Dish
-    let index: Int
-    let onEdit: () -> Void
-    let onDelete: () -> Void
-    
-    @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
-    @EnvironmentObject var dateTracker: DateTracker
+    let item: ScheduledDish
 
-    static let daysOfWeek: [LocalizedStringKey] = [
-        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-    ]
-    
+    @AppStorage(Preferences.Key.showsDayLabels, store: Preferences.defaults)
+    private var showsDayLabels: Bool = false
+
+    @Environment(\.calendar) private var calendar
+
+    /// Het moment waartegen de daglabels gerekend worden. Komt van buiten, zodat
+    /// de hele lijst tegelijk verspringt zodra `PlanStore` de dag bijwerkt.
+    let now: Date
+
+    init(item: ScheduledDish, now: Date) {
+        self.item = item
+        self.now = now
+    }
+
     var body: some View {
         HStack {
-            Circle()
-                .fill(Color("InfoColor-500"))
-                .frame(width: 30, height: 30)
-                .overlay(
-                    Text(circleLabel)
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
-                )
-            Text(dish.name)
+            marker(now: now)
+            Text(item.dish.name)
                 .font(.headline)
                 .fontWeight(.bold)
+                .fontDesign(.rounded)
                 .padding(8)
                 .lineLimit(3)
             Spacer()
-            Text(dish.emoji)
+            Text(item.dish.emoji)
                 .font(.largeTitle)
         }
-        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-            Button(action: onEdit) {
-                Label(LocalizedStringKey("edit"), systemImage: "pencil")
-                    .font(Font.title.weight(.bold))
-            }
-            .tint(.blue)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel(now: now))
+    }
+
+    private func marker(now: Date) -> some View {
+        let isToday = calendar.isDate(item.date, inSameDayAs: now)
+        return Text(label(now: now))
+            .font(.caption)
+            .fontWeight(.bold)
+            .fontDesign(.rounded)
+            .foregroundStyle(isToday ? Color.white : Color.white.opacity(0.9))
+            .padding(.horizontal, 6)
+            .frame(minWidth: 30, minHeight: 30)
+            .background(
+                Capsule().fill(isToday ? Color("InfoColor-500") : Color("GrayColor-500"))
+            )
+    }
+
+    /// Wat er in het label staat: een nummer, of de dag waarop het gerecht
+    /// aan de beurt is.
+    private func label(now: Date) -> LocalizedStringKey {
+        guard showsDayLabels else {
+            return LocalizedStringKey("\(item.position + 1)")
         }
-        .swipeActions(edge: .trailing) {
-            Button(role: .destructive, action: onDelete) {
-                Label(LocalizedStringKey("clear"), systemImage: "checkmark")
-                    .font(Font.title.weight(.bold))
-            }
-            .tint(.green)
+        switch PlanSchedule.dayLabel(for: item.date, at: now, calendar: calendar) {
+        case .today, .tomorrow, .weekday:
+            return Self.weekdayKeys[PlanSchedule.weekdayIndex(of: item.date, calendar: calendar)]
+        case .date(let date):
+            return LocalizedStringKey(date.formatted(.dateTime.day().month(.abbreviated)))
         }
     }
 
-    private var circleLabel: LocalizedStringKey {
-        if daysInsteadOfNumbers {
-            let dayIndex = (dateTracker.currentDayIndex + index) % 7
-            return Self.daysOfWeek[dayIndex]
-        } else {
-            return LocalizedStringKey("\(index + 1)")
-        }
+    private func accessibilityLabel(now: Date) -> Text {
+        Text(label(now: now)) + Text(verbatim: ", ") + Text(item.dish.name)
     }
+
+    /// 0 = maandag, gelijk aan `PlanSchedule.weekdayIndex`.
+    private static let weekdayKeys: [LocalizedStringKey] = [
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
+    ]
 }

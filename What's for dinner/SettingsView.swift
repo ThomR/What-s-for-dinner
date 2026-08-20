@@ -1,53 +1,66 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
-    @AppStorage("autoCompleteDish") private var autoCompleteDish: Bool = false // Nieuwe instelling
-    @EnvironmentObject var viewModel: DishesViewModel
+    @EnvironmentObject private var store: PlanStore
+    @Environment(\.dismiss) private var dismiss
+
+    @AppStorage(Preferences.Key.showsDayLabels, store: Preferences.defaults)
+    private var showsDayLabels: Bool = false
+    @AppStorage(Preferences.Key.autoAdvance, store: Preferences.defaults)
+    private var autoAdvance: Bool = false
+
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
     }
 
     var body: some View {
-        NavigationView {
-            VStack {
-                Form {
-                    Section(header: Text(LocalizedStringKey("settings_header")).font(.subheadline)) {
-                        Toggle(isOn: $daysInsteadOfNumbers) {
-                            Text(LocalizedStringKey("days_instead_of_numbers")).fontDesign(.rounded)
-                        }
+        NavigationStack {
+            Form {
+                Section(header: Text(LocalizedStringKey("settings_header")).font(.subheadline)) {
+                    Toggle(isOn: $showsDayLabels) {
+                        Text(LocalizedStringKey("days_instead_of_numbers")).fontDesign(.rounded)
+                    }
 
-                        // 🔥 Nieuwe toggle die conditioneel wordt getoond
-                        if daysInsteadOfNumbers {
-                            Toggle(isOn: $autoCompleteDish) {
+                    if showsDayLabels {
+                        Toggle(isOn: $autoAdvance) {
+                            VStack(alignment: .leading, spacing: 2) {
                                 Text(LocalizedStringKey("auto_complete_daily")).fontDesign(.rounded)
+                                Text(LocalizedStringKey("auto_complete_daily_hint"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
+                }
 
-                    Section {
-                        NavigationLink(destination: LogboekView(viewModel: viewModel)) {
-                            Text(LocalizedStringKey("history")).fontDesign(.rounded)
-                        }
+                Section {
+                    NavigationLink {
+                        LogboekView().environmentObject(store)
+                    } label: {
+                        Text(LocalizedStringKey("history")).fontDesign(.rounded)
                     }
                 }
-                .navigationTitle(LocalizedStringKey("settings_title"))
-                .navigationBarTitleDisplayMode(.inline)
 
-                Text("v \(appVersion)")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .padding(.bottom, 12)
-                    .frame(maxWidth: .infinity)
-                    .fontDesign(.rounded)
+                Section {
+                    Text("v \(appVersion)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .fontDesign(.rounded)
+                        .listRowBackground(Color.clear)
+                }
             }
+            .navigationTitle(LocalizedStringKey("settings_title"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(LocalizedStringKey("done")) { dismiss() }
+                }
+            }
+            // De instellingen bepalen mee hoe de planning eruitziet, dus meteen
+            // doorrekenen in plaats van wachten tot de app opnieuw opent.
+            .onChange(of: showsDayLabels) { store.refresh() }
+            .onChange(of: autoAdvance) { store.refresh() }
         }
-    }
-}
-
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView()
-            .environmentObject(DishesViewModel())
     }
 }

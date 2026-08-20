@@ -1,65 +1,69 @@
 import SwiftUI
 
-/// ✅ Hoofdweergave voor de Watch-app: toont een lijst van gerechten met optionele daglabels of nummers.
+/// De lijst op de Watch. Alleen lezen: bewerken gebeurt op de iPhone.
 struct WatchAppView: View {
-    @StateObject private var viewModel = WatchViewModel()
-    @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
+    @EnvironmentObject private var store: PlanStore
+    @Environment(\.scenePhase) private var scenePhase
 
-    private static let daysOfWeek: [LocalizedStringKey] = [
-        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-    ]
+    @AppStorage(Preferences.Key.showsDayLabels, store: Preferences.defaults)
+    private var showsDayLabels: Bool = false
 
     var body: some View {
-        NavigationView {
-            VStack {
-                if viewModel.dishes.isEmpty {
-                    Text(LocalizedStringKey("empty_state_message"))
-                        .font(.headline)
-                        .fontDesign(.rounded)
-                        .foregroundColor(.gray)
-                        .padding()
+        NavigationStack {
+            Group {
+                if store.isEmpty {
+                    ContentUnavailableView {
+                        Label(LocalizedStringKey("empty_state_message"), systemImage: "fork.knife")
+                            .fontDesign(.rounded)
+                    }
                 } else {
-                    List {
-                        ForEach(viewModel.dishes.indices, id: \.self) { index in
-                            let dish = viewModel.dishes[index]
-                            HStack {
-                                Text(circleContent(for: index))
-                                    .font(.caption2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                    .padding(6)
-                                    .background(Circle().fill(Color.accentColor))
-                                    .frame(minWidth: 24)
-                                    .padding(.trailing, 2)
-                                Text(dish.name)
-                                    .font(.headline)
-                                    .fontDesign(.rounded)
-                                    .lineLimit(2)
-                                Spacer()
-                                Text(dish.emoji)
-                                    .font(.title3)
-                                    .fontDesign(.rounded)
-                                    .lineLimit(1)
-                            }
-                        }
+                    List(store.scheduled) { item in
+                        row(for: item)
                     }
                 }
             }
             .navigationTitle(LocalizedStringKey("title"))
         }
-    }
-
-    private func circleContent(for index: Int) -> LocalizedStringKey {
-        if daysInsteadOfNumbers {
-            let todayIndex = (Calendar.current.component(.weekday, from: Date()) + 5) % 7
-            let dayIndex = (todayIndex + index) % 7
-            return Self.daysOfWeek[dayIndex]
-        } else {
-            return LocalizedStringKey("\(index + 1)")
+        .onChange(of: scenePhase) { _, phase in
+            // De Watch rekent de dagwissel zelf uit; daar is de iPhone niet
+            // meer voor nodig.
+            if phase == .active { store.refresh() }
         }
     }
-}
 
-#Preview {
-    WatchAppView()
+    private func row(for item: ScheduledDish) -> some View {
+        HStack {
+            Text(label(for: item))
+                .font(.caption2)
+                .fontWeight(.bold)
+                .foregroundStyle(.white)
+                .padding(6)
+                .background(Circle().fill(Color.accentColor))
+                .frame(minWidth: 24)
+                .padding(.trailing, 2)
+            Text(item.dish.name)
+                .font(.headline)
+                .fontDesign(.rounded)
+                .lineLimit(2)
+            Spacer()
+            Text(item.dish.primaryEmoji)
+                .font(.title3)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func label(for item: ScheduledDish) -> LocalizedStringKey {
+        guard showsDayLabels else {
+            return LocalizedStringKey("\(item.position + 1)")
+        }
+        switch PlanSchedule.dayLabel(for: item.date, at: store.today) {
+        case .today, .tomorrow, .weekday:
+            return Self.weekdayKeys[PlanSchedule.weekdayIndex(of: item.date)]
+        case .date(let date): return LocalizedStringKey(date.formatted(.dateTime.day().month(.narrow)))
+        }
+    }
+
+    private static let weekdayKeys: [LocalizedStringKey] = [
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
+    ]
 }

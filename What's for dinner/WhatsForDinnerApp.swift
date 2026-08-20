@@ -1,79 +1,75 @@
 import SwiftUI
-import WatchConnectivity
-import os
 
-/// ✅ Hoofdingang van de app: initialiseert ViewModels, beheert Watch-connectie, en verwerkt gedeelde JSON-bestanden.
+/// Ingang van de app: bouwt de planning op, koppelt de Watch en verwerkt
+/// gedeelde JSON-bestanden.
 @main
 struct DinnerApp: App {
-    @Environment(\.scenePhase) private var scenePhase // Monitor de app status
-    @AppStorage("daysInsteadOfNumbers") private var daysInsteadOfNumbers: Bool = false
-    @StateObject private var viewModel = DishesViewModel()
-    @StateObject private var dateTracker = DateTracker()
-    private let watchSessionManager = WatchSessionManager.shared  // ✅ Zorgt ervoor dat WatchSessionManager actief blijft
+    @StateObject private var store = PlanStore()
+    @State private var pendingImport: [Dish]?
 
     init() {
-        // ✅ Configureer het uiterlijk van de navigatiebalk voor de hele app
-        let appearance = UINavigationBarAppearance()
-        
-        // --- Grote Titel (wanneer niet gescrolld) ---
-        let largeTitleFont = UIFont.preferredFont(forTextStyle: .largeTitle)
-        if let largeTitleDescriptor = largeTitleFont.fontDescriptor.withDesign(.rounded)?.withSymbolicTraits(.traitBold) {
-            appearance.largeTitleTextAttributes[.font] = UIFont(descriptor: largeTitleDescriptor, size: largeTitleFont.pointSize)
-        }
-        
-        // --- Kleine Titel (wanneer wel gescrolld) ---
-        let inlineTitleFont = UIFont.preferredFont(forTextStyle: .headline)
-        if let inlineTitleDescriptor = inlineTitleFont.fontDescriptor.withDesign(.rounded)?.withSymbolicTraits(.traitBold) {
-            appearance.titleTextAttributes[.font] = UIFont(descriptor: inlineTitleDescriptor, size: inlineTitleFont.pointSize)
-        }
-        
-        // Pas de appearance toe op alle varianten van de navigatiebalk
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
+        Self.configureNavigationBarAppearance()
+        WatchSessionManager.shared.activate()
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(viewModel)
-                .environmentObject(dateTracker)
-                .onOpenURL { url in
-                    handleIncomingJSON(url: url)
-                }
+                .environmentObject(store)
                 .task {
-                    watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Stuur gerechten naar de Watch bij opstarten
-                }
-                .onChange(of: viewModel.dishes) {
-                    watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Stuur updates naar de Watch
-                }
-                .onChange(of: daysInsteadOfNumbers) {
-                    watchSessionManager.syncDishesToWatch(viewModel.dishes)
-                }
-                .onChange(of: scenePhase) { oldPhase, newPhase in
-                    if newPhase == .active {
-                        viewModel.autoCompleteTopDishIfNeeded()
+                    // Elke wijziging van de planning gaat één keer naar de Watch.
+                    PlanSyncBridge.shared.observe { plan in
+                        WatchSessionManager.shared.send(plan)
                     }
+                    WatchSessionManager.shared.send(store.plan)
+                }
+                .onOpenURL(perform: handleIncomingFile)
+                .alert(
+                    LocalizedStringKey("import_alert_title"),
+                    isPresented: .init(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
+                    presenting: pendingImport
+                ) { dishes in
+                    Button(LocalizedStringKey("import_replace"), role: .destructive) {
+                        store.replaceAll(with: dishes)
+                        pendingImport = nil
+                    }
+                    Button(LocalizedStringKey("cancel"), role: .cancel) {
+                        pendingImport = nil
+                    }
+                } message: { dishes in
+                    Text(LocalizedStringKey("import_alert_message \(dishes.count)"))
                 }
         }
     }
 
-    private func handleIncomingJSON(url: URL) {
-        guard url.startAccessingSecurityScopedResource() else {
-            os_log("❌ Geen toegang tot het gedeelde bestand.", log: .default, type: .error)
+    /// Leest een gedeelde lijst in. Vervangt de planning niet meteen: dat gooit
+    /// weg wat er stond, dus daar hoort een bevestiging bij.
+    private func handleIncomingFile(url: URL) {
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+
+        guard let data = try? Data(contentsOf: url), let dishes = DishListExport.read(data) else {
+            Log.store.error("Gedeeld bestand kon niet gelezen worden")
             return
         }
+        pendingImport = dishes
+    }
 
-        defer { url.stopAccessingSecurityScopedResource() }
+    private static func configureNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
 
-        do {
-            let data = try Data(contentsOf: url)
-            DispatchQueue.main.async {
-                viewModel.importDishes(from: data)
-                watchSessionManager.sendDishesToWatch(viewModel.dishes) // ✅ Zorg dat de Watch ook de nieuwe gerechten krijgt
-            }
-        } catch {
-            os_log("❌ Fout bij JSON-verwerking: %@", log: .default, type: .error, error.localizedDescription)
+        let largeTitleFont = UIFont.preferredFont(forTextStyle: .largeTitle)
+        if let descriptor = largeTitleFont.fontDescriptor.withDesign(.rounded)?.withSymbolicTraits(.traitBold) {
+            appearance.largeTitleTextAttributes[.font] = UIFont(descriptor: descriptor, size: largeTitleFont.pointSize)
         }
+
+        let inlineTitleFont = UIFont.preferredFont(forTextStyle: .headline)
+        if let descriptor = inlineTitleFont.fontDescriptor.withDesign(.rounded)?.withSymbolicTraits(.traitBold) {
+            appearance.titleTextAttributes[.font] = UIFont(descriptor: descriptor, size: inlineTitleFont.pointSize)
+        }
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
     }
 }

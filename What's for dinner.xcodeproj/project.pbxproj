@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		931DED362D0E429700D22CB3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
+		DC000000000000000000000B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
 		938BED332D1779DD00786B1E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED322D1779DD00786B1E /* WidgetKit.framework */; };
 		938BED352D1779DD00786B1E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED342D1779DD00786B1E /* SwiftUI.framework */; };
 		938BED422D1779DF00786B1E /* DinnerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -82,6 +83,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DC0000000000000000000004 /* DinnerCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DinnerCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		931DED222D0E200200D22CB3 /* What's for dinner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What's for dinner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		931DED352D0E429700D22CB3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DinnerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,14 +106,6 @@
 			);
 			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
 		};
-		938BED4B2D177BBC00786B1E /* Exceptions for "What's for dinner" folder in "DinnerWidgetExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				DataManager.swift,
-				Structs.swift,
-			);
-			target = 938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */;
-		};
 		93A9FA1C2D5011850094CF28 /* Exceptions for "What's for dinner" folder in "What's for dinner" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -126,14 +120,6 @@
 			);
 			target = 938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */;
 		};
-		93DA5D2C2D7CE8BE00B7899D /* Exceptions for "What's for dinner" folder in "Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				DataManager.swift,
-				Structs.swift,
-			);
-			target = 93DA5D112D7CE3BD00B7899D /* Watch App */;
-		};
 		93DCDD8F2DC01636002627E0 /* Exceptions for "AppleWatchWidget" folder in "AppleWatchWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -141,24 +127,23 @@
 			);
 			target = 93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */;
 		};
-		93DCDD912DC016B2002627E0 /* Exceptions for "What's for dinner" folder in "AppleWatchWidgetExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				DataManager.swift,
-				Structs.swift,
-			);
-			target = 93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		DC0000000000000000000001 /* DinnerCore */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DinnerCore;
+			sourceTree = "<group>";
+		};
+		DC0000000000000000000002 /* DinnerCoreTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DinnerCoreTests;
+			sourceTree = "<group>";
+		};
 		931DED242D0E200200D22CB3 /* What's for dinner */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				93A9FA1C2D5011850094CF28 /* Exceptions for "What's for dinner" folder in "What's for dinner" target */,
-				938BED4B2D177BBC00786B1E /* Exceptions for "What's for dinner" folder in "DinnerWidgetExtension" target */,
-				93DA5D2C2D7CE8BE00B7899D /* Exceptions for "What's for dinner" folder in "Watch App" target */,
-				93DCDD912DC016B2002627E0 /* Exceptions for "What's for dinner" folder in "AppleWatchWidgetExtension" target */,
 			);
 			path = "What's for dinner";
 			sourceTree = "<group>";
@@ -190,6 +175,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		DC0000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		931DED1F2D0E200200D22CB3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -230,6 +222,8 @@
 		931DED192D0E200200D22CB3 = {
 			isa = PBXGroup;
 			children = (
+				DC0000000000000000000001 /* DinnerCore */,
+				DC0000000000000000000002 /* DinnerCoreTests */,
 				93DCDD952DC01A6B002627E0 /* AppleWatchWidgetExtension.entitlements */,
 				931DED352D0E429700D22CB3 /* Localizable.xcstrings */,
 				931DED242D0E200200D22CB3 /* What's for dinner */,
@@ -249,6 +243,7 @@
 				938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */,
 				93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */,
 				93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */,
+				DC0000000000000000000004 /* DinnerCoreTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,6 +263,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		DC0000000000000000000003 /* DinnerCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DC0000000000000000000008 /* Build configuration list for PBXNativeTarget "DinnerCoreTests" */;
+			buildPhases = (
+				DC0000000000000000000005 /* Sources */,
+				DC0000000000000000000006 /* Frameworks */,
+				DC0000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DC0000000000000000000001 /* DinnerCore */,
+				DC0000000000000000000002 /* DinnerCoreTests */,
+			);
+			name = DinnerCoreTests;
+			packageProductDependencies = (
+			);
+			productName = DinnerCoreTests;
+			productReference = DC0000000000000000000004 /* DinnerCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		931DED212D0E200200D22CB3 /* What's for dinner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 931DED302D0E200300D22CB3 /* Build configuration list for PBXNativeTarget "What's for dinner" */;
@@ -285,6 +303,7 @@
 				93DA5D1E2D7CE3BE00B7899D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				DC0000000000000000000001 /* DinnerCore */,
 				931DED242D0E200200D22CB3 /* What's for dinner */,
 			);
 			name = "What's for dinner";
@@ -307,6 +326,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				DC0000000000000000000001 /* DinnerCore */,
 				938BED362D1779DD00786B1E /* DinnerWidget */,
 			);
 			name = DinnerWidgetExtension;
@@ -331,6 +351,7 @@
 				93DCDD8A2DC01636002627E0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				DC0000000000000000000001 /* DinnerCore */,
 				93DA5D132D7CE3BD00B7899D /* Watch App */,
 			);
 			name = "Watch App";
@@ -353,6 +374,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				DC0000000000000000000001 /* DinnerCore */,
 				93DCDD812DC01635002627E0 /* AppleWatchWidget */,
 			);
 			name = AppleWatchWidgetExtension;
@@ -405,11 +427,19 @@
 				938BED2F2D1779DD00786B1E /* DinnerWidgetExtension */,
 				93DA5D112D7CE3BD00B7899D /* Watch App */,
 				93DCDD7D2DC01635002627E0 /* AppleWatchWidgetExtension */,
+				DC0000000000000000000003 /* DinnerCoreTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DC0000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		931DED202D0E200200D22CB3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -438,12 +468,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC000000000000000000000B /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		DC0000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		931DED1E2D0E200200D22CB3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -493,6 +531,43 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		DC0000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.core-tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DC000000000000000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.core-tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		931DED2E2D0E200300D22CB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -547,7 +622,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -608,7 +683,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -640,7 +715,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -674,7 +749,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -700,7 +775,7 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
 				INFOPLIST_FILE = DinnerWidget/InfoWidget.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What's For Dinner Widget";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -730,7 +805,7 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
 				INFOPLIST_FILE = DinnerWidget/InfoWidget.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What's For Dinner Widget";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -873,6 +948,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DC0000000000000000000008 /* Build configuration list for PBXNativeTarget "DinnerCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC0000000000000000000009 /* Debug */,
+				DC000000000000000000000A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		931DED1D2D0E200200D22CB3 /* Build configuration list for PBXProject "What's for dinner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
