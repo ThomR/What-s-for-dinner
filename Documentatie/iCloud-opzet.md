@@ -16,47 +16,39 @@ Loopt Xcode vast op
 > "nl.whatsfordinner.app". Personal development teams, including "Thom Rietberg",
 > do not support the Push Notifications and iCloud capabilities.
 
-dan is dit vastgesteld (2026-08-21):
+dan komt dat doordat het **Apple Developer Program-lidmaatschap niet betaald
+is** (stand 2026-08-21). Het account valt daarmee terug op het gratis niveau, en
+dat ondersteunt iCloud en pushmeldingen niet. Diezelfde vervallen betaling is de
+reden dat de app uit de App Store verdwenen is.
 
-- Het team `G6QPW9QY9Q` signeert de app **wel** gewoon voor een echt toestel,
-  zolang iCloud en push niet in de entitlements staan. Team en certificaat zijn
-  dus in orde.
-- De profielen die dat team uitgeeft hebben `TimeToLive = 365`, wat hoort bij een
-  betaald account; een gratis personal team krijgt 7 dagen.
-- Toch weigert Apple een profiel zodra iCloud of push erin zit, en noemt het team
-  daarbij "personal".
+Wat wél nog werkt: het team `G6QPW9QY9Q` signeert de app gewoon voor een echt
+toestel, zolang iCloud en push niet in de entitlements staan. Ontwikkelen en
+testen op je eigen iPhone kan dus onbeperkt door.
 
-Dat wijst op iets aan de accountkant, niet aan de projectkant. Kijk op
-[developer.apple.com/account](https://developer.apple.com/account):
+Wat niet kan tot er betaald is:
 
-1. Staat het **membership** nog actief, of is het verlopen? Een verlopen
-   Developer Program-lidmaatschap valt terug op het gratis niveau, en dat
-   ondersteunt precies deze twee capabilities niet. Dat zou meteen verklaren
-   waarom de app uit de App Store verdwenen is.
-2. Staat er een **openstaande overeenkomst** klaar ("Review Agreement")? Zolang
-   die niet geaccepteerd is, weigert het portaal wijzigingen aan capabilities.
-3. Let op dat er twee teams op deze Mac staan die allebei "Thom Rietberg" heten:
-   `G6QPW9QY9Q` (dit project) en `XA392BM9XT` (het personal team, gebruikt door
-   Vermogen). In de teamkiezer van Xcode staat achter de gratis variant
-   "(Personal Team)".
+- Het delen met iemand anders — de hele CloudKit-laag.
+- 2.0 indienen bij de App Store.
 
-### Intussen doorwerken zonder iCloud
+Let bij het kiezen van een team op dat er twee op deze Mac staan die allebei
+"Thom Rietberg" heten: `G6QPW9QY9Q` (dit project) en `XA392BM9XT` (het personal
+team, dat Vermogen gebruikt). Achter de gratis staat "(Personal Team)".
 
-Er staat een tweede entitlements-bestand klaar zonder iCloud en push. Omzetten
-kan zonder het project te verbouwen, via de instelling `DINNER_ENTITLEMENTS`:
+### Hoe het project daarmee omgaat
 
-```
-xcodebuild -scheme "What's for dinner" -destination 'generic/platform=iOS' \
-  DINNER_ENTITLEMENTS="WhatsForDinner-Lokaal.entitlements" build
-```
+De **Debug**-configuratie gebruikt `WhatsForDinner-Lokaal.entitlements`, zonder
+iCloud en push. Bouwen en draaien op je toestel werkt daardoor zonder dat je
+iets omzet. `CloudSync` ziet dat er geen iCloud beschikbaar is en zet zichzelf
+uit; de rest van de app werkt volledig.
 
-In Xcode: *Build Settings* → zoek op `DINNER_ENTITLEMENTS` → zet de waarde op
-`WhatsForDinner-Lokaal.entitlements`.
+De **Release**-configuratie houdt de echte entitlements. Een archive loopt dus
+hard stuk zolang het account de capabilities niet mag — precies op het moment dat
+je dat wilt weten, in plaats van stilletjes een versie zonder delen te
+publiceren.
 
-De app werkt daarmee volledig; alleen het delen blijft uit. `CloudSync` ziet dat
-er geen iCloud-account beschikbaar is en zet zichzelf uit, dus er gaat niets
-kapot. Zet de waarde terug op `What's for dinner.entitlements` zodra het account
-weer in orde is.
+Zodra er betaald is: zet in *Build Settings* de instelling `DINNER_ENTITLEMENTS`
+voor Debug terug op `What's for dinner.entitlements`, en werk daarna de rest van
+dit document af.
 
 ## 1. Capabilities in Xcode
 
