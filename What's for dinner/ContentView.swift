@@ -47,6 +47,17 @@ struct ContentView: View {
                 }
                 Button(LocalizedStringKey("cancel"), role: .cancel) {}
             }
+            #if DEBUG
+            // Voor het maken van schermafbeeldingen vanaf de opdrachtregel:
+            // SIMCTL_CHILD_DEBUG_SCREEN=instellingen xcrun simctl launch …
+            .task {
+                switch ProcessInfo.processInfo.environment["DEBUG_SCREEN"] {
+                case "instellingen": showSettings = true
+                case "toevoegen": editorMode = .add
+                default: break
+                }
+            }
+            #endif
             .onChange(of: scenePhase) { _, phase in
                 // De dag kan verstreken zijn terwijl de app op de achtergrond stond.
                 if phase == .active { store.refresh() }

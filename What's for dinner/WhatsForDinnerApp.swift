@@ -4,6 +4,7 @@ import SwiftUI
 /// gedeelde JSON-bestanden.
 @main
 struct DinnerApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = PlanStore()
     @State private var pendingImport: [Dish]?
 
@@ -22,6 +23,14 @@ struct DinnerApp: App {
                         WatchSessionManager.shared.send(plan)
                     }
                     WatchSessionManager.shared.send(store.plan)
+
+                    // iCloud houdt de lijst gelijk met je partner; komt er iets
+                    // binnen, dan neemt de app dat over en gaat het door naar
+                    // de Watch en de widgets.
+                    CloudSync.shared.onRemoteChange = {
+                        store.adoptRemoteChanges()
+                    }
+                    CloudSync.shared.start()
                 }
                 .onOpenURL(perform: handleIncomingFile)
                 .alert(

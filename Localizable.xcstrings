@@ -604,6 +604,40 @@
         }
       }
     },
+    "share_error_already_shared": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You already share someone else's list."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je deelt al de lijst van iemand anders."
+          }
+        }
+      }
+    },
+    "share_error_no_icloud": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to iCloud to share your list."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log in bij iCloud om je lijst te delen."
+          }
+        }
+      }
+    },
     "share_list_title": {
       "extractionState": "manual",
       "localizations": {
@@ -617,6 +651,159 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mijn What's for Dinner-lijst"
+          }
+        }
+      }
+    },
+    "sharing_footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your list stays in your own iCloud. Whoever you invite sees every change straight away."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je lijst blijft in je eigen iCloud staan. Wie je uitnodigt ziet elke wijziging meteen."
+          }
+        }
+      }
+    },
+    "sharing_header": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan together"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samen plannen"
+          }
+        }
+      }
+    },
+    "sharing_invite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite someone"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nodig iemand uit"
+          }
+        }
+      }
+    },
+    "sharing_joined": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You share someone else's list"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je deelt de lijst van iemand anders"
+          }
+        }
+      }
+    },
+    "sharing_leave": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave this list"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlaat deze lijst"
+          }
+        }
+      }
+    },
+    "sharing_loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking iCloud…"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud controleren…"
+          }
+        }
+      }
+    },
+    "sharing_manage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage who joins"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beheer wie meedoet"
+          }
+        }
+      }
+    },
+    "sharing_stop": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop sharing"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop met delen"
+          }
+        }
+      }
+    },
+    "sharing_stop_confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop sharing this list? The other person loses access."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppen met delen? De ander raakt de lijst kwijt."
           }
         }
       }

@@ -13,6 +13,8 @@ final class PlanStore: ObservableObject {
     @Published private(set) var today: Date
 
     private let store: DishStore
+    /// De vorige stand, om te bepalen wat er naar iCloud moet.
+    private var lastPersisted: MealPlan
     private let calendar: Calendar
     /// Injecteerbaar zodat tests niet van de echte klok afhangen.
     private let now: () -> Date
@@ -22,7 +24,9 @@ final class PlanStore: ObservableObject {
         self.calendar = calendar
         self.now = now
         Preferences.migrateIfNeeded()
-        self.plan = store.load()
+        let loaded = store.load()
+        self.plan = loaded
+        self.lastPersisted = loaded
         self.today = calendar.startOfDay(for: now())
         refresh()
     }
@@ -63,6 +67,7 @@ final class PlanStore: ObservableObject {
             plan = advanced
         }
         if advanced != stored {
+            lastPersisted = stored
             persist()
         }
     }
@@ -153,9 +158,26 @@ final class PlanStore: ObservableObject {
     // MARK: - Opslaan
 
     private func persist() {
+        let previous = lastPersisted
+        lastPersisted = plan
         store.save(plan)
         WidgetCenter.shared.reloadAllTimelines()
         PlanSyncBridge.shared.planDidChange(plan)
+        #if canImport(CloudKit) && os(iOS)
+        CloudSync.shared.localPlanDidChange(from: previous, to: plan)
+        #endif
+    }
+
+    /// Neemt over wat er uit iCloud binnenkwam. Niet terugsturen: dan zou elke
+    /// ontvangen wijziging meteen weer een verzending worden.
+    func adoptRemoteChanges() {
+        store.invalidateCache()
+        let stored = store.load()
+        guard stored != plan else { return }
+        plan = stored
+        lastPersisted = stored
+        WidgetCenter.shared.reloadAllTimelines()
+        PlanSyncBridge.shared.planDidChange(stored)
     }
 
     /// Vraagt het taalmodel om een betere emoji als de woordenlijst er niet

@@ -33,6 +33,8 @@ struct SettingsView: View {
                     }
                 }
 
+                SharingSettingsView()
+
                 Section {
                     NavigationLink {
                         LogboekView().environmentObject(store)
