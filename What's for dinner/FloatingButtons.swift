@@ -13,6 +13,8 @@ struct FloatingButtons: View {
                     .font(.body.weight(.bold))
             }
             .fontDesign(.rounded)
+            // Neutrale tekst, zodat het glas het werk doet en niet de kleur.
+            .foregroundStyle(.primary)
         }
         .modifier(FloatingButtonAppearance())
     }
@@ -25,10 +27,12 @@ private struct FloatingButtonAppearance: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26, *) {
             content
-                .buttonStyle(.glassProminent)
+                // .glass en niet .glassProminent: doorschijnend, met wat
+                // eronder ligt er doorheen. De gevulde variant is bedoeld voor
+                // een knop die alles moet overstemmen.
+                .buttonStyle(.glass)
                 .buttonBorderShape(.capsule)
                 .controlSize(.large)
-                .tint(Color("InfoColor-500"))
         } else {
             content
                 .padding(.horizontal, 20)
