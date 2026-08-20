@@ -13,17 +13,18 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
+            Group {
                 if store.isEmpty {
                     emptyStateView
                 } else {
                     dishesListView
                 }
-                VStack {
-                    Spacer()
-                    FloatingButtons(onAdd: { editorMode = .add })
-                        .padding()
-                }
+            }
+            // Als inset en niet als laag eroverheen: zo kan het laatste gerecht
+            // langs de knop scrollen in plaats van eronder te verdwijnen.
+            .safeAreaInset(edge: .bottom) {
+                FloatingButtons(onAdd: { editorMode = .add })
+                    .padding(.bottom, 8)
             }
             .navigationTitle(LocalizedStringKey("title"))
             .toolbar { toolbarContent }
@@ -110,7 +111,8 @@ struct ContentView: View {
                 store.move(fromOffsets: source, toOffset: destination)
             }
         }
-        .listStyle(.plain)
+        // .insetGrouped is de standaard: grijze achtergrond, witte container.
+        .listStyle(.insetGrouped)
         .animation(.default, value: store.scheduled)
     }
 

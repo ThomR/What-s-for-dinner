@@ -36,17 +36,17 @@ struct DishRow: View {
     }
 
     private func marker(now: Date) -> some View {
-        let isToday = calendar.isDate(item.date, inSameDayAs: now)
-        return Text(label(now: now))
-            .font(.caption)
+        Text(label(now: now))
+            .font(.subheadline)
             .fontWeight(.bold)
             .fontDesign(.rounded)
-            .foregroundStyle(isToday ? Color.white : Color.white.opacity(0.9))
-            .padding(.horizontal, 6)
-            .frame(minWidth: 30, minHeight: 30)
-            .background(
-                Capsule().fill(isToday ? Color("InfoColor-500") : Color("GrayColor-500"))
-            )
+            .foregroundStyle(.white)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            // Een vaste maat, geen meegroeiende: "Ma" is breder dan "Vr", en
+            // dan begonnen de gerechtnamen per regel op een andere plek.
+            .frame(width: 34, height: 34)
+            .background(Circle().fill(Color("InfoColor-500")))
     }
 
     /// Wat er in het label staat: een nummer, of de dag waarop het gerecht
@@ -59,7 +59,9 @@ struct DishRow: View {
         case .today, .tomorrow, .weekday:
             return Self.weekdayKeys[PlanSchedule.weekdayIndex(of: item.date, calendar: calendar)]
         case .date(let date):
-            return LocalizedStringKey(date.formatted(.dateTime.day().month(.abbreviated)))
+            // Verder dan een week vooruit zou een weekdagnaam dubbelzinnig zijn.
+            // Dan de dag van de maand, want die past nog in de cirkel.
+            return LocalizedStringKey(date.formatted(.dateTime.day()))
         }
     }
 

@@ -1,38 +1,47 @@
-/// ✅ Bevat de drijvende knoppen voor het toevoegen van een gerecht en openen van instellingen.
-
 import SwiftUI
 
-// Pas de buttonStyle extension aan
-private extension View {
-    func buttonStyle() -> some View {
-        self
-            .padding(12)
-            .padding(.leading, 8)
-            .background(
-                // Gebruik .ultraThinMaterial voor een subtiel glaseffect
-                .regularMaterial,
-                in: RoundedRectangle(cornerRadius: 30)
-            )
-    }
-}
-
-// Pas de body van FloatingButtons aan
+/// De zwevende knop om een gerecht toe te voegen.
 struct FloatingButtons: View {
     let onAdd: () -> Void
 
     var body: some View {
         Button(action: onAdd) {
-            HStack {
+            HStack(spacing: 8) {
                 Text(LocalizedStringKey("floating_button"))
-                    .fontWeight(.bold)
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 24))
+                    .fontWeight(.semibold)
+                Image(systemName: "plus")
+                    .font(.body.weight(.bold))
             }
+            .fontDesign(.rounded)
         }
-        .buttonStyle()
-        // Gebruik een voorgrondstijl om de tekstkleur aan te passen aan de lichte/donkere modus
-        .foregroundStyle(.primary)
-        .padding()
-        .fontDesign(.rounded)
+        .modifier(FloatingButtonAppearance())
+    }
+}
+
+/// Op iOS 26 het echte Liquid Glass van het systeem: dat reageert op wat eronder
+/// langsschuift en licht op bij het indrukken. Daaronder valt het terug op een
+/// materiaal-capsule, want die effecten bestaan daar simpelweg niet.
+private struct FloatingButtonAppearance: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26, *) {
+            content
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.capsule)
+                .controlSize(.large)
+                .tint(Color("InfoColor-500"))
+        } else {
+            content
+                .padding(.horizontal, 20)
+                .padding(.vertical, 14)
+                .foregroundStyle(.primary)
+                .background(.regularMaterial, in: Capsule())
+        }
+    }
+}
+
+#Preview {
+    ZStack {
+        Color(.systemGroupedBackground)
+        FloatingButtons(onAdd: {})
     }
 }
