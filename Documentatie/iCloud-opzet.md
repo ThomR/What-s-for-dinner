@@ -8,59 +8,40 @@ Alles hieronder is **niet gecontroleerd op een echt apparaat** — de simulator
 heeft geen iCloud-account en er is geen tweede account om mee te testen. Reken op
 een ronde bijschaven bij de eerste echte test.
 
-## 0. Eerst: mag je account dit wel?
+## 0. Als Xcode geen profiel wil maken
 
-Loopt Xcode vast op
+Het lidmaatschap was een tijd verlopen. Op 2026-08-21 is het vernieuwd en werkt
+alles: Xcode maakt een profiel met `aps-environment` én
+`iCloud.nl.whatsfordinner.app` erin, en zowel Debug als Release bouwen voor een
+echt toestel.
+
+Komt deze melding ooit terug —
 
 > Cannot create a iOS App Development provisioning profile for
 > "nl.whatsfordinner.app". Personal development teams, including "Thom Rietberg",
-> do not support the Push Notifications and iCloud capabilities.
+> do not support the iCloud and Push Notifications capabilities.
 
-dan weigert Apple's provisioning-dienst de capabilities, en dat gaat over het
-account — niet over dit project. Het lidmaatschap was verlopen; op 2026-08-21 is
-het vernieuwd, maar op dat moment weigerde Apple nog steeds.
+— dan gaat het over het account, niet over dit project, en is dit de volgorde:
 
-Op deze Mac is uitgesloten dat het aan iets lokaals ligt:
-
-- Het team is `G6QPW9QY9Q` en de profielen die het uitgeeft hebben
-  `TimeToLive = 365`; een gratis personal team krijgt 7 dagen.
-- Zonder iCloud en push signeert datzelfde team de app gewoon voor een toestel.
-- Ook na het weggooien van het oude profiel, zodat Xcode een vers profiel moest
-  aanvragen, blijft de weigering staan.
-
-Blijft het hangen, loop dan dit af:
-
-1. **Openstaande overeenkomst.** Vlak na een vernieuwing zet Apple bijna altijd
-   een nieuwe Program License Agreement klaar. Zolang die niet geaccepteerd is,
-   weigert het portaal élke wijziging aan capabilities. Kijk op
-   [developer.apple.com/account](https://developer.apple.com/account) en in App
-   Store Connect onder *Business* → *Agreements* of er een banner staat.
-2. **Is de vernieuwing echt verwerkt?** Meestal binnen enkele minuten, maar Apple
-   houdt tot 48 uur aan. De bevestigingsmail is het bewijs.
+1. **Is het lidmaatschap actief?** Een bestelling die nog "wordt verwerkt" telt
+   niet; pas na activering geeft Apple de capabilities vrij. Dat duurde hier een
+   dag.
+2. **Openstaande overeenkomst.** Na een vernieuwing zet Apple soms een nieuwe
+   Program License Agreement klaar. Zolang die niet geaccepteerd is, weigert het
+   portaal wijzigingen aan capabilities.
 3. **Xcode's kopie van je account is oud.** Xcode → *Settings* → *Accounts* →
-   je Apple ID. Staat er achter het team nog "(Personal Team)", log dan uit en
-   weer in zodat Xcode de teamgegevens opnieuw ophaalt.
+   uitloggen en weer inloggen.
 
-Let op dat er twee teams op deze Mac staan die allebei "Thom Rietberg" heten:
-`G6QPW9QY9Q` (dit project) en `XA392BM9XT` (het personal team, dat Vermogen
-gebruikt). Xcode noemt in de foutmelding alleen de naam, wat het spoor bijster
-maakt.
+Waaraan het níét ligt, want dat is hier uitgezocht: het team `G6QPW9QY9Q` is het
+juiste, en zonder iCloud en push signeert dat team de app altijd gewoon. Er staan
+twee teams op deze Mac die allebei "Thom Rietberg" heten — `G6QPW9QY9Q` (dit
+project) en `XA392BM9XT` (het personal team, dat Vermogen gebruikt). Xcode noemt
+in de foutmelding alleen de naam, wat het spoor bijster maakt.
 
-### Intussen op je toestel bouwen
-
-Het project staat op de echte entitlements, dus zodra Apple bijtrekt werkt het
-vanzelf. Moet je in de tussentijd op een toestel bouwen, zet dan in
-*Build Settings* de instelling `DINNER_ENTITLEMENTS` op
-`WhatsForDinner-Lokaal.entitlements`. Dat bestand laat iCloud en push weg; de
-app werkt daarmee volledig, alleen het delen blijft uit — `CloudSync` ziet dat er
-geen iCloud is en zet zichzelf uit. Vanaf de opdrachtregel:
-
-```
-xcodebuild -scheme "What's for dinner" -destination 'generic/platform=iOS' \
-  -allowProvisioningUpdates DINNER_ENTITLEMENTS="WhatsForDinner-Lokaal.entitlements" build
-```
-
-Zet de waarde terug op `What's for dinner.entitlements` zodra het account rond is.
+Moet je in zo'n periode toch op een toestel bouwen, zet dan in *Build Settings*
+de instelling `DINNER_ENTITLEMENTS` op `WhatsForDinner-Lokaal.entitlements`. Dat
+bestand laat iCloud en push weg; de app werkt volledig, alleen het delen blijft
+uit. Terugzetten op `What's for dinner.entitlements` zodra het account rond is.
 
 ## 1. Capabilities in Xcode
 
@@ -68,7 +49,8 @@ Open het project, selecteer het target **What's for dinner** → *Signing &
 Capabilities*, en voeg toe:
 
 - **iCloud** → vink *CloudKit* aan → container `iCloud.nl.whatsfordinner.app`.
-  Bestaat die nog niet, klik dan op `+` en typ hem exact zo.
+  Die is op 2026-08-21 door Xcode zelf aangemaakt en zit in het profiel; bestaat
+  hij ooit niet, klik dan op `+` en typ hem exact zo.
 - **Push Notifications**.
 - **Background Modes** → *Remote notifications*.
 

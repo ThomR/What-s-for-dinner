@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		931DED362D0E429700D22CB3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
-		DC000000000000000000000B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
 		938BED332D1779DD00786B1E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED322D1779DD00786B1E /* WidgetKit.framework */; };
 		938BED352D1779DD00786B1E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED342D1779DD00786B1E /* SwiftUI.framework */; };
 		938BED422D1779DF00786B1E /* DinnerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -20,6 +19,7 @@
 		93DCDD7F2DC01635002627E0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED322D1779DD00786B1E /* WidgetKit.framework */; };
 		93DCDD802DC01635002627E0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BED342D1779DD00786B1E /* SwiftUI.framework */; };
 		93DCDD8B2DC01636002627E0 /* AppleWatchWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DC000000000000000000000B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 931DED352D0E429700D22CB3 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,7 +83,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		DC0000000000000000000004 /* DinnerCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DinnerCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		931DED222D0E200200D22CB3 /* What's for dinner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What's for dinner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		931DED352D0E429700D22CB3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		938BED302D1779DD00786B1E /* DinnerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DinnerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +95,7 @@
 		93DA5D122D7CE3BD00B7899D /* WhatsForDinnerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatsForDinnerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppleWatchWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		93DCDD952DC01A6B002627E0 /* AppleWatchWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppleWatchWidgetExtension.entitlements; sourceTree = "<group>"; };
+		DC0000000000000000000004 /* DinnerCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DinnerCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -130,16 +130,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DC0000000000000000000001 /* DinnerCore */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DinnerCore;
-			sourceTree = "<group>";
-		};
-		DC0000000000000000000002 /* DinnerCoreTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DinnerCoreTests;
-			sourceTree = "<group>";
-		};
 		931DED242D0E200200D22CB3 /* What's for dinner */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -172,16 +162,19 @@
 			path = AppleWatchWidget;
 			sourceTree = "<group>";
 		};
+		DC0000000000000000000001 /* DinnerCore */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DinnerCore;
+			sourceTree = "<group>";
+		};
+		DC0000000000000000000002 /* DinnerCoreTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DinnerCoreTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		DC0000000000000000000006 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		931DED1F2D0E200200D22CB3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -213,6 +206,13 @@
 			files = (
 				93DCDD802DC01635002627E0 /* SwiftUI.framework in Frameworks */,
 				93DCDD7F2DC01635002627E0 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC0000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,29 +263,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DC0000000000000000000003 /* DinnerCoreTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DC0000000000000000000008 /* Build configuration list for PBXNativeTarget "DinnerCoreTests" */;
-			buildPhases = (
-				DC0000000000000000000005 /* Sources */,
-				DC0000000000000000000006 /* Frameworks */,
-				DC0000000000000000000007 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				DC0000000000000000000001 /* DinnerCore */,
-				DC0000000000000000000002 /* DinnerCoreTests */,
-			);
-			name = DinnerCoreTests;
-			packageProductDependencies = (
-			);
-			productName = DinnerCoreTests;
-			productReference = DC0000000000000000000004 /* DinnerCoreTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		931DED212D0E200200D22CB3 /* What's for dinner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 931DED302D0E200300D22CB3 /* Build configuration list for PBXNativeTarget "What's for dinner" */;
@@ -303,8 +280,8 @@
 				93DA5D1E2D7CE3BE00B7899D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				DC0000000000000000000001 /* DinnerCore */,
 				931DED242D0E200200D22CB3 /* What's for dinner */,
+				DC0000000000000000000001 /* DinnerCore */,
 			);
 			name = "What's for dinner";
 			packageProductDependencies = (
@@ -326,8 +303,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DC0000000000000000000001 /* DinnerCore */,
 				938BED362D1779DD00786B1E /* DinnerWidget */,
+				DC0000000000000000000001 /* DinnerCore */,
 			);
 			name = DinnerWidgetExtension;
 			packageProductDependencies = (
@@ -351,8 +328,8 @@
 				93DCDD8A2DC01636002627E0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				DC0000000000000000000001 /* DinnerCore */,
 				93DA5D132D7CE3BD00B7899D /* Watch App */,
+				DC0000000000000000000001 /* DinnerCore */,
 			);
 			name = "Watch App";
 			packageProductDependencies = (
@@ -374,8 +351,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DC0000000000000000000001 /* DinnerCore */,
 				93DCDD812DC01635002627E0 /* AppleWatchWidget */,
+				DC0000000000000000000001 /* DinnerCore */,
 			);
 			name = AppleWatchWidgetExtension;
 			packageProductDependencies = (
@@ -383,6 +360,29 @@
 			productName = AppleWatchWidgetExtension;
 			productReference = 93DCDD7E2DC01635002627E0 /* AppleWatchWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		DC0000000000000000000003 /* DinnerCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DC0000000000000000000008 /* Build configuration list for PBXNativeTarget "DinnerCoreTests" */;
+			buildPhases = (
+				DC0000000000000000000005 /* Sources */,
+				DC0000000000000000000006 /* Frameworks */,
+				DC0000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DC0000000000000000000001 /* DinnerCore */,
+				DC0000000000000000000002 /* DinnerCoreTests */,
+			);
+			name = DinnerCoreTests;
+			packageProductDependencies = (
+			);
+			productName = DinnerCoreTests;
+			productReference = DC0000000000000000000004 /* DinnerCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -433,13 +433,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		DC0000000000000000000007 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		931DED202D0E200200D22CB3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -472,16 +465,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		DC0000000000000000000005 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+		DC0000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
 		931DED1E2D0E200200D22CB3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -510,6 +503,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DC0000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -531,43 +531,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		DC0000000000000000000009 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.core-tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		DC000000000000000000000A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = nl.whatsfordinner.app.core-tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		931DED2E2D0E200300D22CB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -706,6 +669,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"What's for dinner/Preview Content\"";
+				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "What's for dinner/InfoApp.plist";
@@ -740,6 +704,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"What's for dinner/Preview Content\"";
+				DEVELOPMENT_TEAM = G6QPW9QY9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "What's for dinner/InfoApp.plist";
@@ -947,18 +912,46 @@
 			};
 			name = Release;
 		};
+		DC0000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "nl.whatsfordinner.app.core-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DC000000000000000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "nl.whatsfordinner.app.core-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DC0000000000000000000008 /* Build configuration list for PBXNativeTarget "DinnerCoreTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DC0000000000000000000009 /* Debug */,
-				DC000000000000000000000A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		931DED1D2D0E200200D22CB3 /* Build configuration list for PBXProject "What's for dinner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1000,6 +993,15 @@
 			buildConfigurations = (
 				93DCDD8D2DC01636002627E0 /* Debug */,
 				93DCDD8E2DC01636002627E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DC0000000000000000000008 /* Build configuration list for PBXNativeTarget "DinnerCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC0000000000000000000009 /* Debug */,
+				DC000000000000000000000A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
