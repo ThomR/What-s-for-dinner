@@ -1,955 +1,958 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%lld": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
           }
         }
       }
     },
-    "What's For Dinner": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "What's For Dinner"
+    "add" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "What's For Dinner"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voeg toe"
           }
         }
       }
     },
-    "add": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add"
+    "add_alert_placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meal name"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voeg toe"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naam gerecht"
           }
         }
       }
     },
-    "add_alert_placeholder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Meal name"
+    "add_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a new meal"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Naam gerecht"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voeg gerecht toe"
           }
         }
       }
     },
-    "add_alert_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add a new meal"
+    "auto_complete_daily" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autocomplete at the end of the day"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voeg gerecht toe"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagelijks automatisch afvinken"
           }
         }
       }
     },
-    "auto_complete_daily": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autocomplete at the end of the day"
+    "auto_complete_daily_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each day the top meal moves to your history by itself."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dagelijks automatisch afvinken"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elke dag verhuist het bovenste gerecht vanzelf naar je geschiedenis."
           }
         }
       }
     },
-    "auto_complete_daily_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Each day the top meal moves to your history by itself."
+    "cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elke dag verhuist het bovenste gerecht vanzelf naar je geschiedenis."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuleer"
           }
         }
       }
     },
-    "cancel": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "clear" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Annuleer"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltooi"
           }
         }
       }
     },
-    "clear": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clear"
+    "clear_history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear history"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voltooi"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wis geschiedenis"
           }
         }
       }
     },
-    "clear_history": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clear history"
+    "clear_history_confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erase the entire history?"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wis geschiedenis"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hele geschiedenis wissen?"
           }
         }
       }
     },
-    "clear_history_confirm": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erase the entire history?"
+    "completed_dishes_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed meals"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hele geschiedenis wissen?"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afgestreepte gerechten"
           }
         }
       }
     },
-    "completed_dishes_title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completed meals"
+    "days_instead_of_numbers" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days instead of numbers"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afgestreepte gerechten"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagen in plaats van nummers"
           }
         }
       }
     },
-    "days_instead_of_numbers": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Days instead of numbers"
+    "delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dagen in plaats van nummers"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwijder"
           }
         }
       }
     },
-    "delete": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete"
+    "done" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verwijder"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klaar"
           }
         }
       }
     },
-    "done": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Done"
+    "edit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klaar"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas aan"
           }
         }
       }
     },
-    "edit": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Edit"
+    "edit_alert_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit meal"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas aan"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas gerecht aan"
           }
         }
       }
     },
-    "edit_alert_title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Edit meal"
+    "emoji_intelligence_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown dishes get an emoji from your device — nothing leaves your iPhone."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas gerecht aan"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onbekende gerechten krijgen een emoji van je toestel zelf — er gaat niets van je iPhone af."
           }
         }
       }
     },
-    "emoji_intelligence_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown dishes get an emoji from your device — nothing leaves your iPhone."
+    "empty_state_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No meals"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Onbekende gerechten krijgen een emoji van je toestel zelf — er gaat niets van je iPhone af."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen gerechten"
           }
         }
       }
     },
-    "empty_state_message": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No meals"
+    "floating_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a new meal"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen gerechten"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voeg gerecht toe"
           }
         }
       }
     },
-    "floating_button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add a new meal"
+    "friday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fr"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voeg gerecht toe"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vr"
           }
         }
       }
     },
-    "friday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fr"
+    "history" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See history of meals"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vr"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekijk je geschiedenis"
           }
         }
       }
     },
-    "history": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "See history of meals"
+    "import_alert_message %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This replaces your current list with %lld meals."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bekijk je geschiedenis"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dit vervangt je huidige lijst door %lld gerechten."
           }
         }
       }
     },
-    "import_alert_message %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This replaces your current list with %lld meals."
+    "import_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import this list?"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dit vervangt je huidige lijst door %lld gerechten."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze lijst overnemen?"
           }
         }
       }
     },
-    "import_alert_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import this list?"
+    "import_replace" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace my list"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deze lijst overnemen?"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vervang mijn lijst"
           }
         }
       }
     },
-    "import_replace": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Replace my list"
+    "monday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mo"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vervang mijn lijst"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ma"
           }
         }
       }
     },
-    "monday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mo"
+    "more_actions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ma"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer"
           }
         }
       }
     },
-    "more_actions": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "More"
+    "no_completed_dishes_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No completed meals"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Meer"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen afgestreepte gerechten"
           }
         }
       }
     },
-    "no_completed_dishes_message": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No completed meals"
+    "no_dish" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No meals"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen afgestreepte gerechten"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen gerechten"
           }
         }
       }
     },
-    "no_dish": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No meals"
+    "reset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all meals"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen gerechten"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwijder alles"
           }
         }
       }
     },
-    "reset": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clear all meals"
+    "reset_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to erase all meals?"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verwijder alles"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weet je zeker dat je alles wil wissen?"
           }
         }
       }
     },
-    "reset_alert_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Are you sure you want to erase all meals?"
+    "restore_dish" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore dish"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weet je zeker dat je alles wil wissen?"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herstel gerecht"
           }
         }
       }
     },
-    "restore_dish": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore dish"
+    "saturday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Herstel gerecht"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Za"
           }
         }
       }
     },
-    "saturday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sa"
+    "save" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Za"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas aan"
           }
         }
       }
     },
-    "save": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
+    "settings_header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change list behaviour"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas aan"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verander de lijst"
           }
         }
       }
     },
-    "settings_header": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Change list behaviour"
+    "settings_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verander de lijst"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instellingen"
           }
         }
       }
     },
-    "settings_title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings"
+    "share" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Instellingen"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delen"
           }
         }
       }
     },
-    "share": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share"
+    "share_error_already_shared" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You already share someone else's list."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delen"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je deelt al de lijst van iemand anders."
           }
         }
       }
     },
-    "share_error_already_shared": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You already share someone else's list."
+    "share_error_no_icloud" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to iCloud to share your list."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Je deelt al de lijst van iemand anders."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log in bij iCloud om je lijst te delen."
           }
         }
       }
     },
-    "share_error_no_icloud": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in to iCloud to share your list."
+    "share_list_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My What's for Dinner list"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log in bij iCloud om je lijst te delen."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mijn What's for Dinner-lijst"
           }
         }
       }
     },
-    "share_list_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "My What's for Dinner list"
+    "sharing_footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your list stays in your own iCloud. Whoever you invite sees every change straight away."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mijn What's for Dinner-lijst"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je lijst blijft in je eigen iCloud staan. Wie je uitnodigt ziet elke wijziging meteen."
           }
         }
       }
     },
-    "sharing_footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your list stays in your own iCloud. Whoever you invite sees every change straight away."
+    "sharing_header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plan together"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Je lijst blijft in je eigen iCloud staan. Wie je uitnodigt ziet elke wijziging meteen."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samen plannen"
           }
         }
       }
     },
-    "sharing_header": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plan together"
+    "sharing_invite" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invite someone"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Samen plannen"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nodig iemand uit"
           }
         }
       }
     },
-    "sharing_invite": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Invite someone"
+    "sharing_joined" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You share someone else's list"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nodig iemand uit"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je deelt de lijst van iemand anders"
           }
         }
       }
     },
-    "sharing_joined": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You share someone else's list"
+    "sharing_leave" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave this list"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Je deelt de lijst van iemand anders"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaat deze lijst"
           }
         }
       }
     },
-    "sharing_leave": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leave this list"
+    "sharing_loading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking iCloud…"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verlaat deze lijst"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud controleren…"
           }
         }
       }
     },
-    "sharing_loading": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Checking iCloud…"
+    "sharing_manage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage who joins"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud controleren…"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beheer wie meedoet"
           }
         }
       }
     },
-    "sharing_manage": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Manage who joins"
+    "sharing_stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop sharing"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beheer wie meedoet"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop met delen"
           }
         }
       }
     },
-    "sharing_stop": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop sharing"
+    "sharing_stop_confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop sharing this list? The other person loses access."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop met delen"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stoppen met delen? De ander raakt de lijst kwijt."
           }
         }
       }
     },
-    "sharing_stop_confirm": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop sharing this list? The other person loses access."
+    "sunday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stoppen met delen? De ander raakt de lijst kwijt."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zo"
           }
         }
       }
     },
-    "sunday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Su"
+    "thursday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Th"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zo"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do"
           }
         }
       }
     },
-    "thursday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Th"
+    "title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's for Dinner?"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Do"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wat eten we?"
           }
         }
       }
     },
-    "title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "What's for Dinner?"
+    "today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wat eten we?"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vandaag"
           }
         }
       }
     },
-    "today": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Today"
+    "tuesday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vandaag"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di"
           }
         }
       }
     },
-    "tuesday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu"
+    "v %@" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "v %@"
+          }
+        }
+      }
+    },
+    "wednesday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Di"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wo"
           }
         }
       }
     },
-    "v %@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "v %@"
-          }
-        }
-      }
+    "What's for Dinner" : {
+
     },
-    "wednesday": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "We"
+    "What's For Dinner" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's For Dinner"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wo"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's For Dinner"
           }
         }
       }
     },
-    "widget_description": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shows what's for dinner today."
+    "widget_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows what's for dinner today."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Laat zien wat je vandaag eet."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laat zien wat je vandaag eet."
           }
         }
       }
     },
-    "yes": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yes"
+    "yes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ja"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

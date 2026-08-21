@@ -16,39 +16,51 @@ Loopt Xcode vast op
 > "nl.whatsfordinner.app". Personal development teams, including "Thom Rietberg",
 > do not support the Push Notifications and iCloud capabilities.
 
-dan komt dat doordat het **Apple Developer Program-lidmaatschap niet betaald
-is** (stand 2026-08-21). Het account valt daarmee terug op het gratis niveau, en
-dat ondersteunt iCloud en pushmeldingen niet. Diezelfde vervallen betaling is de
-reden dat de app uit de App Store verdwenen is.
+dan weigert Apple's provisioning-dienst de capabilities, en dat gaat over het
+account — niet over dit project. Het lidmaatschap was verlopen; op 2026-08-21 is
+het vernieuwd, maar op dat moment weigerde Apple nog steeds.
 
-Wat wél nog werkt: het team `G6QPW9QY9Q` signeert de app gewoon voor een echt
-toestel, zolang iCloud en push niet in de entitlements staan. Ontwikkelen en
-testen op je eigen iPhone kan dus onbeperkt door.
+Op deze Mac is uitgesloten dat het aan iets lokaals ligt:
 
-Wat niet kan tot er betaald is:
+- Het team is `G6QPW9QY9Q` en de profielen die het uitgeeft hebben
+  `TimeToLive = 365`; een gratis personal team krijgt 7 dagen.
+- Zonder iCloud en push signeert datzelfde team de app gewoon voor een toestel.
+- Ook na het weggooien van het oude profiel, zodat Xcode een vers profiel moest
+  aanvragen, blijft de weigering staan.
 
-- Het delen met iemand anders — de hele CloudKit-laag.
-- 2.0 indienen bij de App Store.
+Blijft het hangen, loop dan dit af:
 
-Let bij het kiezen van een team op dat er twee op deze Mac staan die allebei
-"Thom Rietberg" heten: `G6QPW9QY9Q` (dit project) en `XA392BM9XT` (het personal
-team, dat Vermogen gebruikt). Achter de gratis staat "(Personal Team)".
+1. **Openstaande overeenkomst.** Vlak na een vernieuwing zet Apple bijna altijd
+   een nieuwe Program License Agreement klaar. Zolang die niet geaccepteerd is,
+   weigert het portaal élke wijziging aan capabilities. Kijk op
+   [developer.apple.com/account](https://developer.apple.com/account) en in App
+   Store Connect onder *Business* → *Agreements* of er een banner staat.
+2. **Is de vernieuwing echt verwerkt?** Meestal binnen enkele minuten, maar Apple
+   houdt tot 48 uur aan. De bevestigingsmail is het bewijs.
+3. **Xcode's kopie van je account is oud.** Xcode → *Settings* → *Accounts* →
+   je Apple ID. Staat er achter het team nog "(Personal Team)", log dan uit en
+   weer in zodat Xcode de teamgegevens opnieuw ophaalt.
 
-### Hoe het project daarmee omgaat
+Let op dat er twee teams op deze Mac staan die allebei "Thom Rietberg" heten:
+`G6QPW9QY9Q` (dit project) en `XA392BM9XT` (het personal team, dat Vermogen
+gebruikt). Xcode noemt in de foutmelding alleen de naam, wat het spoor bijster
+maakt.
 
-De **Debug**-configuratie gebruikt `WhatsForDinner-Lokaal.entitlements`, zonder
-iCloud en push. Bouwen en draaien op je toestel werkt daardoor zonder dat je
-iets omzet. `CloudSync` ziet dat er geen iCloud beschikbaar is en zet zichzelf
-uit; de rest van de app werkt volledig.
+### Intussen op je toestel bouwen
 
-De **Release**-configuratie houdt de echte entitlements. Een archive loopt dus
-hard stuk zolang het account de capabilities niet mag — precies op het moment dat
-je dat wilt weten, in plaats van stilletjes een versie zonder delen te
-publiceren.
+Het project staat op de echte entitlements, dus zodra Apple bijtrekt werkt het
+vanzelf. Moet je in de tussentijd op een toestel bouwen, zet dan in
+*Build Settings* de instelling `DINNER_ENTITLEMENTS` op
+`WhatsForDinner-Lokaal.entitlements`. Dat bestand laat iCloud en push weg; de
+app werkt daarmee volledig, alleen het delen blijft uit — `CloudSync` ziet dat er
+geen iCloud is en zet zichzelf uit. Vanaf de opdrachtregel:
 
-Zodra er betaald is: zet in *Build Settings* de instelling `DINNER_ENTITLEMENTS`
-voor Debug terug op `What's for dinner.entitlements`, en werk daarna de rest van
-dit document af.
+```
+xcodebuild -scheme "What's for dinner" -destination 'generic/platform=iOS' \
+  -allowProvisioningUpdates DINNER_ENTITLEMENTS="WhatsForDinner-Lokaal.entitlements" build
+```
+
+Zet de waarde terug op `What's for dinner.entitlements` zodra het account rond is.
 
 ## 1. Capabilities in Xcode
 
