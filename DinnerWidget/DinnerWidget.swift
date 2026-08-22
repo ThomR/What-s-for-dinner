@@ -1,11 +1,11 @@
 import WidgetKit
 import SwiftUI
 
-/// Wat er op één dag gegeten wordt.
+/// Wat er vandaag en morgen op tafel staat.
 struct DinnerWidgetEntry: TimelineEntry {
     let date: Date
-    let dish: Dish?
-    let upcoming: [ScheduledDish]
+    let today: Dish?
+    let tomorrow: Dish?
 }
 
 /// Levert de tijdlijn voor de widget.
@@ -20,8 +20,8 @@ struct DinnerWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> DinnerWidgetEntry {
         DinnerWidgetEntry(
             date: Date(),
-            dish: Dish(name: "Pizza", emoji: "🍕"),
-            upcoming: []
+            today: Dish(name: "Pizza", emoji: "🍕"),
+            tomorrow: Dish(name: "Tomatensoep", emoji: "🍲")
         )
     }
 
@@ -48,31 +48,20 @@ struct DinnerWidgetProvider: TimelineProvider {
         let autoAdvance = Preferences.autoAdvance
         let calendar = Calendar.current
 
+        func pair(at date: Date) -> DinnerWidgetEntry {
+            let next = PlanSchedule.upcomingDishes(
+                in: plan, at: date, calendar: calendar, autoAdvance: autoAdvance, count: 2
+            )
+            return DinnerWidgetEntry(date: date, today: next.first, tomorrow: next.dropFirst().first)
+        }
+
         guard autoAdvance else {
             // Zonder automatisch doorschuiven verandert er niets bij een dagwissel.
-            return [DinnerWidgetEntry(date: now, dish: plan.dishes.first, upcoming: schedule(plan, from: 0, calendar: calendar))]
+            return [pair(at: now)]
         }
 
         return (0...Self.daysAhead).map { offset in
-            let date = offset == 0 ? now : PlanSchedule.plannedDate(offset: offset, anchorDate: now, calendar: calendar)
-            let served = PlanSchedule.servedCount(in: plan, at: date, calendar: calendar)
-            return DinnerWidgetEntry(
-                date: date,
-                dish: PlanSchedule.currentDish(in: plan, at: date, calendar: calendar, autoAdvance: true),
-                upcoming: schedule(plan, from: served, calendar: calendar)
-            )
-        }
-    }
-
-    /// De gerechten vanaf een positie, met de dag waarop ze aan de beurt zijn.
-    private func schedule(_ plan: MealPlan, from index: Int, calendar: Calendar) -> [ScheduledDish] {
-        guard index < plan.dishes.count else { return [] }
-        return plan.dishes[index...].enumerated().map { offset, dish in
-            ScheduledDish(
-                dish: dish,
-                position: index + offset,
-                date: PlanSchedule.plannedDate(offset: index + offset, anchorDate: plan.anchorDate, calendar: calendar)
-            )
+            pair(at: offset == 0 ? now : PlanSchedule.plannedDate(offset: offset, anchorDate: now, calendar: calendar))
         }
     }
 }
@@ -91,91 +80,69 @@ struct DinnerWidgetView: View {
     }
 
     private var smallBody: some View {
+        block(title: "today", dish: entry.today, emojiFont: .largeTitle, nameFont: .title2)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .containerBackground(.fill.tertiary, for: .widget)
+    }
+
+    /// Twee gelijke helften: links vandaag, rechts morgen.
+    private var mediumBody: some View {
+        HStack(spacing: 0) {
+            block(title: "today", dish: entry.today, emojiFont: .largeTitle, nameFont: .title3)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+
+            Divider()
+                .padding(.vertical, 2)
+
+            block(title: "tomorrow", dish: entry.tomorrow, emojiFont: .largeTitle, nameFont: .title3)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .padding(.leading, 12)
+        }
+        .containerBackground(.fill.tertiary, for: .widget)
+    }
+
+    private func block(title: LocalizedStringKey, dish: Dish?, emojiFont: Font, nameFont: Font) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            header
-            if let dish = entry.dish {
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .fontDesign(.rounded)
+                .foregroundStyle(.tint)
+
+            if let dish {
                 Text(dish.name)
-                    .font(.title2)
+                    .font(nameFont)
                     .fontWeight(.bold)
                     .fontDesign(.rounded)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
                 Spacer(minLength: 0)
                 HStack {
-                    Spacer()
+                    Spacer(minLength: 0)
                     Text(dish.emoji)
-                        .font(.largeTitle)
+                        .font(emojiFont)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                 }
             } else {
-                emptyState
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .containerBackground(.fill.tertiary, for: .widget)
-    }
-
-    private var mediumBody: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                header
-                if let dish = entry.dish {
-                    Text(dish.name)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .fontDesign(.rounded)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.7)
-                    Text(dish.emoji)
-                        .font(.largeTitle)
-                } else {
-                    emptyState
-                }
+                Text(LocalizedStringKey("no_dish"))
+                    .font(.headline)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 4)
                 Spacer(minLength: 0)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            // De dagen erna, zodat je in één blik de week ziet.
-            VStack(alignment: .leading, spacing: 4) {
-                ForEach(entry.upcoming.dropFirst().prefix(3)) { item in
-                    HStack(spacing: 6) {
-                        Text(item.date.formatted(.dateTime.weekday(.abbreviated)))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .frame(width: 28, alignment: .leading)
-                        Text(item.dish.name)
-                            .font(.caption)
-                            .fontDesign(.rounded)
-                            .lineLimit(1)
-                    }
-                }
-                Spacer(minLength: 0)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .containerBackground(.fill.tertiary, for: .widget)
-    }
-
-    private var header: some View {
-        Text(LocalizedStringKey("today"))
-            .font(.subheadline)
-            .fontWeight(.bold)
-            .fontDesign(.rounded)
-            .foregroundStyle(.tint)
-    }
-
-    private var emptyState: some View {
-        Text(LocalizedStringKey("no_dish"))
-            .font(.headline)
-            .fontDesign(.rounded)
-            .foregroundStyle(.secondary)
-            .padding(.top, 4)
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemMedium) {
     DinnerWidget()
 } timeline: {
-    DinnerWidgetEntry(date: .now, dish: Dish(name: "Pizza Calzone", emoji: "🍕"), upcoming: [])
-    DinnerWidgetEntry(date: .now, dish: nil, upcoming: [])
+    DinnerWidgetEntry(
+        date: .now,
+        today: Dish(name: "Pizza Calzone", emoji: "🍕"),
+        tomorrow: Dish(name: "Stamppot boerenkool", emoji: "🥔 🥬")
+    )
+    DinnerWidgetEntry(date: .now, today: nil, tomorrow: nil)
 }

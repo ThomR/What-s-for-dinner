@@ -42,6 +42,24 @@
             "state": "translated",
             "value": "Voeg toe"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinzufügen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir"
+          }
         }
       }
     },
@@ -58,6 +76,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Naam gerecht"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name des Gerichts"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom du plat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre del plato"
           }
         }
       }
@@ -76,6 +112,24 @@
             "state": "translated",
             "value": "Voeg gerecht toe"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gericht hinzufügen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un plat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir un plato"
+          }
         }
       }
     },
@@ -91,6 +145,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dagelijks automatisch afvinken"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Täglich automatisch abhaken"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cocher automatiquement chaque jour"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcar automáticamente cada día"
           }
         }
       }
@@ -109,6 +181,24 @@
             "state": "translated",
             "value": "Elke dag verhuist het bovenste gerecht vanzelf naar je geschiedenis."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Tag wandert das oberste Gericht von selbst in deinen Verlauf."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chaque jour, le plat du haut passe tout seul dans votre historique."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada día, el plato de arriba pasa solo a tu historial."
+          }
         }
       }
     },
@@ -126,6 +216,24 @@
             "state": "translated",
             "value": "Annuleer"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
         }
       }
     },
@@ -141,6 +249,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Voltooi"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fait"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hecho"
           }
         }
       }
@@ -159,6 +285,24 @@
             "state": "translated",
             "value": "Wis geschiedenis"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlauf löschen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer l’historique"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borrar historial"
+          }
         }
       }
     },
@@ -176,6 +320,24 @@
             "state": "translated",
             "value": "Hele geschiedenis wissen?"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den gesamten Verlauf löschen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer tout l’historique ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Borrar todo el historial?"
+          }
         }
       }
     },
@@ -192,6 +354,24 @@
             "state": "translated",
             "value": "Afgestreepte gerechten"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gegessene Gerichte"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plats terminés"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platos hechos"
+          }
         }
       }
     },
@@ -207,6 +387,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dagen in plaats van nummers"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tage statt Zahlen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jours au lieu de numéros"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días en vez de números"
           }
         }
       }
@@ -225,6 +423,24 @@
             "state": "translated",
             "value": "Verwijder"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Löschen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
         }
       }
     },
@@ -242,6 +458,24 @@
             "state": "translated",
             "value": "Klaar"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fertig"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
+          }
         }
       }
     },
@@ -257,6 +491,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pas aan"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bearbeiten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar"
           }
         }
       }
@@ -274,6 +526,24 @@
             "state": "translated",
             "value": "Pas gerecht aan"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gericht bearbeiten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le plat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar plato"
+          }
         }
       }
     },
@@ -289,6 +559,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geen gerechten"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Gerichte"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun plat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin platos"
           }
         }
       }
@@ -307,6 +595,24 @@
             "state": "translated",
             "value": "Voeg gerecht toe"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gericht hinzufügen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un plat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir un plato"
+          }
         }
       }
     },
@@ -323,6 +629,24 @@
             "state": "translated",
             "value": "Vr"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fr"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ve"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vi"
+          }
         }
       }
     },
@@ -338,6 +662,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bekijk je geschiedenis"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlauf ansehen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voir l’historique"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver el historial"
           }
         }
       }
@@ -356,6 +698,24 @@
             "state": "translated",
             "value": "Dit vervangt je huidige lijst door %lld gerechten."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damit wird deine Liste durch %lld Gerichte ersetzt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cela remplace votre liste par %lld plats."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esto sustituye tu lista por %lld platos."
+          }
         }
       }
     },
@@ -372,6 +732,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deze lijst overnemen?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Liste übernehmen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importer cette liste ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Importar esta lista?"
           }
         }
       }
@@ -390,6 +768,24 @@
             "state": "translated",
             "value": "Vervang mijn lijst"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine Liste ersetzen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remplacer ma liste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sustituir mi lista"
+          }
         }
       }
     },
@@ -406,6 +802,24 @@
             "state": "translated",
             "value": "Ma"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lu"
+          }
         }
       }
     },
@@ -421,6 +835,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geen afgestreepte gerechten"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Gerichte"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun plat terminé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ningún plato hecho"
           }
         }
       }
@@ -439,6 +871,24 @@
             "state": "translated",
             "value": "Geen gerechten"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Gericht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun plat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin plato"
+          }
         }
       }
     },
@@ -454,6 +904,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Herstel gerecht"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurücklegen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar"
           }
         }
       }
@@ -471,6 +939,24 @@
             "state": "translated",
             "value": "Za"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sa"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sa"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sá"
+          }
         }
       }
     },
@@ -486,6 +972,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pas aan"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sichern"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
           }
         }
       }
@@ -503,6 +1007,24 @@
             "state": "translated",
             "value": "Verander de lijst"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste anpassen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier la liste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustar la lista"
+          }
         }
       }
     },
@@ -518,6 +1040,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Instellingen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réglages"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
           }
         }
       }
@@ -536,6 +1076,24 @@
             "state": "translated",
             "value": "Je deelt al de lijst van iemand anders."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du nimmst schon an der Liste von jemand anderem teil."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous participez déjà à la liste de quelqu’un d’autre."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya participas en la lista de otra persona."
+          }
         }
       }
     },
@@ -552,6 +1110,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Log in bij iCloud om je lijst te delen."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich bei iCloud an, um deine Liste zu teilen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à iCloud pour partager votre liste."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en iCloud para compartir tu lista."
           }
         }
       }
@@ -570,6 +1146,24 @@
             "state": "translated",
             "value": "Deze versie is zonder iCloud gebouwd, dus delen kan niet."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Version wurde ohne iCloud erstellt, Teilen ist nicht möglich."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette version a été compilée sans iCloud, le partage est indisponible."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta versión se creó sin iCloud, así que no se puede compartir."
+          }
         }
       }
     },
@@ -586,6 +1180,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mijn What's for Dinner-lijst"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine Liste in What’s for Dinner"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ma liste What’s for Dinner"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi lista de What’s for Dinner"
           }
         }
       }
@@ -604,6 +1216,24 @@
             "state": "translated",
             "value": "Je lijst blijft in je eigen iCloud staan. Wie je uitnodigt ziet elke wijziging meteen."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Liste bleibt in deiner eigenen iCloud. Wen du einlädst, sieht jede Änderung sofort."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre liste reste dans votre propre iCloud. Les personnes invitées voient chaque changement aussitôt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu lista sigue en tu propio iCloud. Quien invites verá cada cambio al instante."
+          }
         }
       }
     },
@@ -620,6 +1250,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Samen plannen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeinsam planen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planifier ensemble"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planificar juntos"
           }
         }
       }
@@ -638,6 +1286,24 @@
             "state": "translated",
             "value": "Nodig iemand uit"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jemanden einladen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inviter quelqu’un"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitar a alguien"
+          }
         }
       }
     },
@@ -654,6 +1320,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Je deelt de lijst van iemand anders"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du teilst die Liste von jemand anderem"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous partagez la liste de quelqu’un d’autre"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartes la lista de otra persona"
           }
         }
       }
@@ -672,6 +1356,24 @@
             "state": "translated",
             "value": "Verlaat deze lijst"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste verlassen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitter cette liste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salir de esta lista"
+          }
         }
       }
     },
@@ -688,6 +1390,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud controleren…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud wird geprüft …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérification d’iCloud…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprobando iCloud…"
           }
         }
       }
@@ -706,6 +1426,24 @@
             "state": "translated",
             "value": "Beheer wie meedoet"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilnehmer verwalten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gérer les participants"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestionar participantes"
+          }
         }
       }
     },
@@ -722,6 +1460,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stop met delen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilen beenden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrêter le partage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dejar de compartir"
           }
         }
       }
@@ -740,6 +1496,24 @@
             "state": "translated",
             "value": "Stoppen met delen? De ander raakt de lijst kwijt."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilen beenden? Die andere Person verliert den Zugriff."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrêter le partage ? L’autre personne perdra l’accès."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Dejar de compartir? La otra persona perderá el acceso."
+          }
         }
       }
     },
@@ -756,6 +1530,24 @@
             "state": "translated",
             "value": "Zo"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do"
+          }
         }
       }
     },
@@ -771,6 +1563,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Do"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ju"
           }
         }
       }
@@ -789,6 +1599,24 @@
             "state": "translated",
             "value": "Wat eten we?"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was gibt’s zu essen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On mange quoi ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Qué cenamos?"
+          }
         }
       }
     },
@@ -806,6 +1634,59 @@
             "state": "translated",
             "value": "Vandaag"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aujourd’hui"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        }
+      }
+    },
+    "tomorrow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tomorrow"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morgen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morgen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demain"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mañana"
+          }
         }
       }
     },
@@ -821,6 +1702,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Di"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ma"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ma"
           }
         }
       }
@@ -848,6 +1747,24 @@
             "state": "translated",
             "value": "Wo"
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi"
+          }
         }
       }
     },
@@ -865,6 +1782,24 @@
             "state": "translated",
             "value": "Laat zien wat je vandaag eet."
           }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigt, was es heute zu essen gibt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affiche le plat du jour."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra qué se cena hoy."
+          }
         }
       }
     },
@@ -881,6 +1816,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ja"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ja"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oui"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sí"
           }
         }
       }

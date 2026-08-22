@@ -246,8 +246,16 @@ final class CloudSync {
         // Een wijziging in de gedeelde database betekent dat er een lijst met
         // ons gedeeld is; die heeft voorrang op onze eigen.
         if scope == .sharedDatabase, let zoneID = modifications.first?.recordID.zoneID {
+            let isNieuw = activeScope != .sharedDatabase
             sharedZoneID = zoneID
             activeScope = .sharedDatabase
+            if isNieuw {
+                // Je eigen lijst blijft veilig in je eigen zone staan, maar hij
+                // mag niet mee de lijst van de ander in. Zonder dit zou je bij
+                // het accepteren van een uitnodiging je eigen gerechten bij die
+                // van je partner dumpen.
+                store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
+            }
         }
         guard scope == activeScope else { return }
 
@@ -292,6 +300,29 @@ final class CloudSync {
         store.save(merged)
         onRemoteChange?()
         Log.sync.info("Wijziging uit iCloud verwerkt: \(merged.dishes.count) gerechten")
+    }
+
+    /// De gedeelde lijst is verlaten: terug naar je eigen lijst.
+    ///
+    /// Beide engines worden opnieuw opgebouwd met een schone toestand. Dat is
+    /// nodig omdat een sync-engine per zone bijhoudt wat hij al heeft gezien; zou
+    /// hij die kennis houden, dan haalt hij je eigen gerechten niet opnieuw op en
+    /// blijf je met een lege lijst zitten.
+    func stoppedUsingSharedList() {
+        sharedZoneID = nil
+        activeScope = .privateDatabase
+
+        // De lokale planning is nog die van de ander.
+        store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
+        onRemoteChange?()
+
+        for scope in [Scope.privateDatabase, .sharedDatabase] {
+            stateStores[scope]?.reset()
+            engines[scope] = nil
+            delegates[scope] = nil
+            makeEngine(for: scope)
+        }
+        scheduleFetch()
     }
 
     fileprivate func handleAccountChange(_ changeType: CKSyncEngine.Event.AccountChange.ChangeType) {

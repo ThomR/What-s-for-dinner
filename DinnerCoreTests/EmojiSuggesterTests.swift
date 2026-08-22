@@ -113,3 +113,43 @@ struct EmojiSuggesterTests {
         #expect(!EmojiSuggester.isUncertain("🍕"))
     }
 }
+
+/// De app is ook in het Duits, Frans en Spaans te gebruiken, dus de
+/// emoji-herkenning moet dat ook aankunnen — anders is die alleen in het
+/// Nederlands en Engels wat waard.
+@Suite("Emoji in andere talen")
+struct EmojiSuggesterTaalTests {
+
+    @Test("Duitse gerechten", arguments: [
+        ("Hähnchen mit Reis", "🍗"),
+        ("Kartoffelsalat", "🥔"),
+        ("Tomatensuppe", "🍲"),
+        ("Nudeln mit Käse", "🍝"),
+        ("Fisch", "🐟"),
+    ])
+    func duits(naam: String, verwacht: String) {
+        #expect(EmojiSuggester.suggest(for: naam).contains(verwacht), "\(naam) gaf \(EmojiSuggester.suggest(for: naam))")
+    }
+
+    @Test("Franse gerechten", arguments: [
+        ("Poulet rôti", "🍗"),
+        ("Soupe à l'oignon", "🍲"),
+        ("Saumon", "🐟"),
+        ("Pommes de terre", "🥔"),
+        ("Fromage", "🧀"),
+    ])
+    func frans(naam: String, verwacht: String) {
+        #expect(EmojiSuggester.suggest(for: naam).contains(verwacht), "\(naam) gaf \(EmojiSuggester.suggest(for: naam))")
+    }
+
+    @Test("Spaanse gerechten", arguments: [
+        ("Pollo con arroz", "🍗"),
+        ("Sopa de tomate", "🍲"),
+        ("Ensalada", "🥗"),
+        ("Pescado", "🐟"),
+        ("Queso", "🧀"),
+    ])
+    func spaans(naam: String, verwacht: String) {
+        #expect(EmojiSuggester.suggest(for: naam).contains(verwacht), "\(naam) gaf \(EmojiSuggester.suggest(for: naam))")
+    }
+}

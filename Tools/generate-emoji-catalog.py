@@ -18,7 +18,7 @@ import urllib.request
 from pathlib import Path
 
 EMOJI_VERSION = "16.0"
-LANGUAGES = ["en", "nl"]
+LANGUAGES = ["en", "nl", "de", "fr", "es"]
 EMOJI_TEST_URL = f"https://unicode.org/Public/emoji/{EMOJI_VERSION}/emoji-test.txt"
 CLDR_URL = "https://raw.githubusercontent.com/unicode-org/cldr/main/common/annotations/{lang}.xml"
 
@@ -36,10 +36,18 @@ WANTED_SUBGROUPS = {
 
 # Trefwoorden die op zoveel emoji zitten dat ze niets onderscheiden.
 STOPWORDS = {
+    # Nederlands en Engels
     "eten", "voedsel", "honger", "hongerig", "maaltijd", "lekker", "smakelijk",
     "food", "hungry", "meal", "eat", "dish", "cuisine", "restaurant",
     "plant", "plantaardig", "vegetable", "groente", "fruit", "vrucht",
     "dier", "animal", "gerecht",
+    # Duits, Frans, Spaans
+    "essen", "lebensmittel", "hunger", "hungrig", "mahlzeit", "gericht",
+    "gemuse", "gemuese", "obst", "pflanze", "tier", "speise", "lecker",
+    "nourriture", "aliment", "repas", "faim", "plat", "legume", "cuisine",
+    "manger", "fruits", "animal", "plante",
+    "comida", "alimento", "hambre", "plato", "verdura", "vegetal",
+    "comer", "fruta", "planta",
 }
 
 VARIATION_SELECTOR = "️"

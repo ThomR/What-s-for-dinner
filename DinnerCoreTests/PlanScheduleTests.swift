@@ -195,3 +195,54 @@ struct PlanScheduleTests {
         #expect(volgende == testCalendar.startOfDay(for: datum(2026, 8, 21)))
     }
 }
+
+/// Wat de widget en de complicatie tonen. Die code draait in een extensie, dus
+/// de berekening eronder hoort in de kern te staan waar een test erbij kan.
+@Suite("Vooruitkijken voor de widget")
+struct UpcomingDishesTests {
+
+    @Test("Vandaag en morgen zijn de eerste twee gerechten")
+    func vandaagEnMorgen() {
+        let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep", "Pasta")
+        let next = PlanSchedule.upcomingDishes(
+            in: plan, at: datum(2026, 8, 20), calendar: testCalendar, autoAdvance: true, count: 2
+        )
+        #expect(next.map(\.name) == ["Pizza", "Soep"])
+    }
+
+    @Test("Na twee dagen schuift het paar mee")
+    func schuiftMee() {
+        let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep", "Pasta", "Zalm")
+        let next = PlanSchedule.upcomingDishes(
+            in: plan, at: datum(2026, 8, 22), calendar: testCalendar, autoAdvance: true, count: 2
+        )
+        #expect(next.map(\.name) == ["Pasta", "Zalm"])
+    }
+
+    @Test("Zonder automatisch doorschuiven blijft het bij de bovenste twee")
+    func handmatigeModus() {
+        let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep", "Pasta")
+        let next = PlanSchedule.upcomingDishes(
+            in: plan, at: datum(2026, 8, 25), calendar: testCalendar, autoAdvance: false, count: 2
+        )
+        #expect(next.map(\.name) == ["Pizza", "Soep"])
+    }
+
+    @Test("Is er nog maar één gerecht, dan blijft morgen leeg")
+    func laatsteGerecht() {
+        let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep")
+        let next = PlanSchedule.upcomingDishes(
+            in: plan, at: datum(2026, 8, 21), calendar: testCalendar, autoAdvance: true, count: 2
+        )
+        #expect(next.map(\.name) == ["Soep"])
+    }
+
+    @Test("Een opgedroogde lijst levert niets op in plaats van een crash")
+    func lijstOp() {
+        let plan = planning(vanaf: datum(2026, 8, 20), "Pizza")
+        let next = PlanSchedule.upcomingDishes(
+            in: plan, at: datum(2026, 8, 30), calendar: testCalendar, autoAdvance: true, count: 2
+        )
+        #expect(next.isEmpty)
+    }
+}

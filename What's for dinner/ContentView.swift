@@ -33,6 +33,9 @@ struct ContentView: View {
             // De grijze achtergrond kwam van de List en hield op bij de titel.
             // Nu dekt hij het hele scherm en laat de List de zijne los.
             .scrollContentBackground(.hidden)
+            // Een insetGrouped-lijst houdt vanzelf een flinke marge boven de
+            // eerste sectie; die is hier niet nodig, de titel staat er al.
+            .contentMargins(.top, 4, for: .scrollContent)
             // Als inset en niet als laag eroverheen: zo kan het laatste gerecht
             // langs de knop scrollen in plaats van eronder te verdwijnen.
             .safeAreaInset(edge: .bottom) {

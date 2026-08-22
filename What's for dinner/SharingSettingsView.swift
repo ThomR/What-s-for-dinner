@@ -153,6 +153,7 @@ struct SharingSettingsView: View {
     private func leave() async {
         do {
             try await CloudSharing.leaveSharedList()
+            CloudSync.shared.stoppedUsingSharedList()
             state = .privateList
         } catch {
             state = .failed(error.localizedDescription)

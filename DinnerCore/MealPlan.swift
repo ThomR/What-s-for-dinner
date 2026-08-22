@@ -63,6 +63,25 @@ enum PlanSchedule {
         return index < plan.dishes.count ? plan.dishes[index] : nil
     }
 
+    /// De eerstvolgende gerechten vanaf een bepaald moment: `[0]` is vandaag,
+    /// `[1]` morgen, enzovoort. Korter dan gevraagd als de lijst opraakt.
+    ///
+    /// Hier bouwen de widget en de complicatie hun weergave mee op, dus dit hoort
+    /// in de kern te staan en niet in een extensie waar geen test bij kan.
+    static func upcomingDishes(
+        in plan: MealPlan,
+        at now: Date,
+        calendar: Calendar = .current,
+        autoAdvance: Bool,
+        count: Int
+    ) -> [Dish] {
+        guard count > 0 else { return [] }
+        let start = autoAdvance ? servedCount(in: plan, at: now, calendar: calendar) : 0
+        guard start < plan.dishes.count else { return [] }
+        let end = min(start + count, plan.dishes.count)
+        return Array(plan.dishes[start..<end])
+    }
+
     /// De planning zoals die er vandaag uitziet: alles wat volgens de kalender al
     /// gegeten is verhuist naar het logboek, met de dag waarop het aan de beurt was.
     ///
