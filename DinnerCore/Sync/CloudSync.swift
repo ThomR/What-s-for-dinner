@@ -47,8 +47,8 @@ final class CloudSync {
     /// De zone van de gedeelde lijst, zodra we weten dat die er is.
     private(set) var sharedZoneID: CKRecordZone.ID?
 
-    /// Waar de app op dit moment mee werkt.
-    private(set) var activeScope: Scope = .privateDatabase
+    /// Waar de app op dit moment mee werkt. Blijft bewaard tussen twee starts.
+    private(set) var activeScope: Scope = Preferences.usesSharedList ? .sharedDatabase : .privateDatabase
 
     /// Wordt aangeroepen als iCloud een wijziging aanlevert, zodat de UI kan
     /// bijwerken.
@@ -83,10 +83,39 @@ final class CloudSync {
         }
         makeEngine(for: .privateDatabase)
         makeEngine(for: .sharedDatabase)
+        uploadUnsyncedRecords()
         // Bewust géén fetchChanges() hier. Met `automaticallySync` plant de
         // engine zijn eigen rondes, en zelf vragen op een moment dat er nog geen
         // zones bekend zijn levert alleen een lege ronde op — dat is de
         // "Attempted to acquire an empty collection of resources" in de log.
+    }
+
+    /// Zet alles klaar wat iCloud nog nooit heeft gezien.
+    ///
+    /// Zonder dit blijft de container leeg tot je toevallig een gerecht wijzigt:
+    /// records worden alleen ingepland bij een wijziging, en een lijst die al
+    /// bestond vóór deze versie is nooit gewijzigd. Dan is er ook niets om te
+    /// delen en toont het CloudKit-dashboard een lege container.
+    ///
+    /// Of een record al bekend is, blijkt uit de bewaarde systeemvelden. Dat is
+    /// betrouwbaarder dan een eigen "al geüpload"-vlag, want die kan liegen als
+    /// het versturen mislukte.
+    private func uploadUnsyncedRecords() {
+        // Alleen voor je eigen lijst. Ben je deelnemer, dan is de lijst van de
+        // ander en horen zijn records niet in jouw zone.
+        guard activeScope == .privateDatabase else { return }
+        guard let engine = engines[.privateDatabase], let stateStore = stateStores[.privateDatabase] else { return }
+
+        let plan = store.load()
+        let ids = plan.dishes.map(\.id) + plan.log.map(\.id)
+        var pending = ids
+            .filter { stateStore.systemFields(for: $0.uuidString) == nil }
+            .map { CKSyncEngine.PendingRecordZoneChange.saveRecord(CKRecord.ID(recordName: $0.uuidString, zoneID: privateZoneID)) }
+
+        guard !pending.isEmpty else { return }
+        pending.append(.saveRecord(CKRecord.ID(recordName: CloudSchema.planRecordName, zoneID: privateZoneID)))
+        engine.state.add(pendingRecordZoneChanges: pending)
+        Log.sync.info("\(pending.count) records voor het eerst naar iCloud gezet")
     }
 
     private func isSignedIn() async -> Bool {
@@ -249,6 +278,7 @@ final class CloudSync {
             let isNieuw = activeScope != .sharedDatabase
             sharedZoneID = zoneID
             activeScope = .sharedDatabase
+            Preferences.usesSharedList = true
             if isNieuw {
                 // Je eigen lijst blijft veilig in je eigen zone staan, maar hij
                 // mag niet mee de lijst van de ander in. Zonder dit zou je bij
@@ -311,6 +341,7 @@ final class CloudSync {
     func stoppedUsingSharedList() {
         sharedZoneID = nil
         activeScope = .privateDatabase
+        Preferences.usesSharedList = false
 
         // De lokale planning is nog die van de ander.
         store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
@@ -334,6 +365,7 @@ final class CloudSync {
             for store in stateStores.values { store.reset() }
             sharedZoneID = nil
             activeScope = .privateDatabase
+            Preferences.usesSharedList = false
         @unknown default:
             break
         }

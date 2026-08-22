@@ -11,6 +11,7 @@ enum Preferences {
         static let showsDayLabels = "daysInsteadOfNumbers"
         static let autoAdvance = "autoCompleteDish"
         static let didMigrate = "didMigratePreferences"
+        static let usesSharedList = "usesSharedList"
     }
 
     static let defaults: UserDefaults = {
@@ -40,6 +41,16 @@ enum Preferences {
     /// De ruwe stand van de schakelaar, los van de koppeling met daglabels.
     static var autoAdvanceSetting: Bool {
         defaults.bool(forKey: Key.autoAdvance)
+    }
+
+    /// Of de app de lijst van iemand anders toont in plaats van de eigen.
+    ///
+    /// Dit moet een start overleven. Anders denkt de app bij elke opstart dat je
+    /// je eigen lijst bewerkt, tot er toevallig iets uit de gedeelde database
+    /// binnenkomt — en gaan wijzigingen in dat gaatje naar de verkeerde zone.
+    static var usesSharedList: Bool {
+        get { defaults.bool(forKey: Key.usesSharedList) }
+        set { defaults.set(newValue, forKey: Key.usesSharedList) }
     }
 
     /// Haalt instellingen van vóór versie 2 uit de standaard-defaults op.
