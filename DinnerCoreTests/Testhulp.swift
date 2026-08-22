@@ -33,3 +33,23 @@ func planning(vanaf start: Date, _ namen: String...) -> MealPlan {
         log: []
     )
 }
+
+/// Een lege map om een `DishStore` in te laten schrijven, in plaats van de
+/// echte App Group-container.
+func tijdelijkeMap() -> URL {
+    let url = FileManager.default.temporaryDirectory
+        .appendingPathComponent("dinnertest-\(UUID().uuidString)", isDirectory: true)
+    try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+    return url
+}
+
+/// Een gerecht zoals versie 1 het in `UserDefaults` bewaarde.
+func versie1Gerecht(_ naam: String, emoji: String = "🍕", voltooidOp: Date? = nil) -> [String: Any] {
+    var dict: [String: Any] = ["id": UUID().uuidString, "name": naam, "emoji": emoji]
+    if let voltooidOp {
+        // Versie 1 gebruikte de standaard-JSONEncoder, en die schrijft datums
+        // als seconden sinds 2001.
+        dict["completedDate"] = voltooidOp.timeIntervalSinceReferenceDate
+    }
+    return dict
+}

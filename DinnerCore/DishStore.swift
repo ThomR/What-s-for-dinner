@@ -31,43 +31,30 @@ final class DishStore: @unchecked Sendable {
     private let fileName = "mealplan.json"
     private let queue = DispatchQueue(label: "nl.whatsfordinner.dishstore")
     private var cached: MealPlan?
+    /// Overschrijft de App Group-map. Alleen voor tests.
+    private let containerOverride: URL?
 
-    init(appGroup: String) {
+    init(appGroup: String, containerURL: URL? = nil) {
         self.appGroup = appGroup
+        self.containerOverride = containerURL
     }
 
     private var fileURL: URL? {
-        FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
-            .appendingPathComponent(fileName)
+        let container = containerOverride ?? FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: appGroup)
+        return container?.appendingPathComponent(fileName)
     }
 
     // MARK: - Lezen en schrijven
 
     func load() -> MealPlan {
-        queue.sync {
-            if let cached { return cached }
-            let plan = readFromDisk() ?? migrateLegacyData() ?? MealPlan(dishes: [], anchorDate: Date(), log: [])
-            cached = plan
-            return plan
-        }
+        queue.sync { loadLocked() }
     }
 
     func save(_ plan: MealPlan) {
         queue.sync {
             cached = plan
-            guard let fileURL else {
-                // Zonder werkende App Group draait de app door op de cache; beter
-                // een sessie zonder widget dan een app die niets meer opslaat.
-                Log.store.error("App Group \(self.appGroup, privacy: .public) niet beschikbaar, planning niet bewaard")
-                return
-            }
-            do {
-                let data = try JSONEncoder.plan.encode(plan)
-                try data.write(to: fileURL, options: .atomic)
-            } catch {
-                Log.store.error("Opslaan mislukt: \(error.localizedDescription, privacy: .public)")
-            }
+            writeLocked(plan)
         }
     }
 
@@ -77,7 +64,20 @@ final class DishStore: @unchecked Sendable {
         queue.sync { cached = nil }
     }
 
-    private func readFromDisk() -> MealPlan? {
+    // MARK: - Draait al op de queue
+    //
+    // Alles hieronder wordt alleen aangeroepen vanuit een `queue.sync`-blok en
+    // mag zelf dus niet opnieuw locken: `queue` is serieel, en er nog een keer
+    // synchroon op wachten van binnenuit is een deadlock die als crash eindigt.
+
+    private func loadLocked() -> MealPlan {
+        if let cached { return cached }
+        let plan = readLocked() ?? migrateLegacyLocked() ?? MealPlan(dishes: [], anchorDate: Date(), log: [])
+        cached = plan
+        return plan
+    }
+
+    private func readLocked() -> MealPlan? {
         guard let fileURL, let data = try? Data(contentsOf: fileURL) else { return nil }
         do {
             return try JSONDecoder.plan.decode(MealPlan.self, from: data)
@@ -87,11 +87,26 @@ final class DishStore: @unchecked Sendable {
         }
     }
 
+    private func writeLocked(_ plan: MealPlan) {
+        guard let fileURL else {
+            // Zonder werkende App Group draait de app door op de cache; beter
+            // een sessie zonder widget dan een app die niets meer opslaat.
+            Log.store.error("App Group \(self.appGroup, privacy: .public) niet beschikbaar, planning niet bewaard")
+            return
+        }
+        do {
+            let data = try JSONEncoder.plan.encode(plan)
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            Log.store.error("Opslaan mislukt: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
     // MARK: - Migratie
 
     /// Zet de opslag van vóór versie 2 om: twee losse `UserDefaults`-sleutels met
     /// gerechten en afgeronde gerechten, zonder ankerdatum.
-    private func migrateLegacyData() -> MealPlan? {
+    private func migrateLegacyLocked() -> MealPlan? {
         guard let defaults = UserDefaults(suiteName: appGroup) else { return nil }
         let legacyDishes = defaults.data(forKey: "dishes").flatMap { try? JSONDecoder().decode([LegacyDish].self, from: $0) }
         let legacyWatch = defaults.data(forKey: "watchDishes").flatMap { try? JSONDecoder().decode([LegacyDish].self, from: $0) }
@@ -106,7 +121,7 @@ final class DishStore: @unchecked Sendable {
             log: (legacyCompleted ?? []).map { $0.migratedServed() }
         )
         Log.store.info("Oude planning omgezet: \(plan.dishes.count) gerechten, \(plan.log.count) in logboek")
-        save(plan)
+        writeLocked(plan)
         return plan
     }
 
