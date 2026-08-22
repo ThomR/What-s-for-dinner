@@ -83,7 +83,10 @@ final class CloudSync {
         }
         makeEngine(for: .privateDatabase)
         makeEngine(for: .sharedDatabase)
-        await fetchChanges()
+        // Bewust géén fetchChanges() hier. Met `automaticallySync` plant de
+        // engine zijn eigen rondes, en zelf vragen op een moment dat er nog geen
+        // zones bekend zijn levert alleen een lege ronde op — dat is de
+        // "Attempted to acquire an empty collection of resources" in de log.
     }
 
     private func isSignedIn() async -> Bool {

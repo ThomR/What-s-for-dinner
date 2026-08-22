@@ -10,7 +10,6 @@ struct DinnerApp: App {
 
     init() {
         Self.configureNavigationBarAppearance()
-        WatchSessionManager.shared.activate()
     }
 
     var body: some Scene {
@@ -18,6 +17,10 @@ struct DinnerApp: App {
             ContentView()
                 .environmentObject(store)
                 .task {
+                    // Na het eerste beeldje: het activeren van de Watch-sessie
+                    // hoeft niemand af te wachten.
+                    WatchSessionManager.shared.activate()
+
                     // Elke wijziging van de planning gaat één keer naar de Watch.
                     PlanSyncBridge.shared.observe { plan in
                         WatchSessionManager.shared.send(plan)

@@ -161,7 +161,10 @@ final class PlanStore: ObservableObject {
         let previous = lastPersisted
         lastPersisted = plan
         store.save(plan)
-        WidgetCenter.shared.reloadAllTimelines()
+        // De widget bijwerken gaat via XPC naar een andere daemon. Bij het
+        // opstarten loopt dit mee vóór het eerste beeldje, en niemand wacht op
+        // het antwoord — dus niet op de hoofdactor blijven staan.
+        Task { WidgetCenter.shared.reloadAllTimelines() }
         PlanSyncBridge.shared.planDidChange(plan)
         #if canImport(CloudKit) && os(iOS)
         CloudSync.shared.localPlanDidChange(from: previous, to: plan)
@@ -176,7 +179,7 @@ final class PlanStore: ObservableObject {
         guard stored != plan else { return }
         plan = stored
         lastPersisted = stored
-        WidgetCenter.shared.reloadAllTimelines()
+        Task { WidgetCenter.shared.reloadAllTimelines() }
         PlanSyncBridge.shared.planDidChange(stored)
     }
 
