@@ -1,22 +1,38 @@
 import SwiftUI
 
-/// De zwevende knop om een gerecht toe te voegen.
-struct FloatingButtons: View {
+/// De zwevende balk onderaan: toevoegen links, instellingen rechts.
+///
+/// De navigatiebalk is daarmee helemaal leeg, zodat de titel bovenaan kan staan
+/// in plaats van onder een rij knoppen.
+struct FloatingActionBar: View {
     let onAdd: () -> Void
+    let onSettings: () -> Void
 
     var body: some View {
-        Button(action: onAdd) {
-            HStack(spacing: 8) {
-                Text(LocalizedStringKey("floating_button"))
-                    .fontWeight(.semibold)
-                Image(systemName: "plus")
-                    .font(.body.weight(.bold))
+        HStack(spacing: 12) {
+            Button(action: onAdd) {
+                HStack(spacing: 8) {
+                    Text(LocalizedStringKey("floating_button"))
+                        .fontWeight(.semibold)
+                    Image(systemName: "plus")
+                        .font(.body.weight(.bold))
+                }
+                .fontDesign(.rounded)
+                .foregroundStyle(.primary)
             }
-            .fontDesign(.rounded)
-            // Neutrale tekst, zodat het glas het werk doet en niet de kleur.
-            .foregroundStyle(.primary)
+            .modifier(FloatingButtonAppearance())
+
+            Spacer(minLength: 8)
+
+            Button(action: onSettings) {
+                Image(systemName: "gearshape.fill")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.primary)
+            }
+            .modifier(FloatingButtonAppearance())
+            .accessibilityLabel(LocalizedStringKey("settings_title"))
         }
-        .modifier(FloatingButtonAppearance())
+        .padding(.horizontal)
     }
 }
 
@@ -27,9 +43,6 @@ private struct FloatingButtonAppearance: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26, *) {
             content
-                // .glass en niet .glassProminent: doorschijnend, met wat
-                // eronder ligt er doorheen. De gevulde variant is bedoeld voor
-                // een knop die alles moet overstemmen.
                 .buttonStyle(.glass)
                 .buttonBorderShape(.capsule)
                 .controlSize(.large)
@@ -37,7 +50,6 @@ private struct FloatingButtonAppearance: ViewModifier {
             content
                 .padding(.horizontal, 20)
                 .padding(.vertical, 14)
-                .foregroundStyle(.primary)
                 .background(.regularMaterial, in: Capsule())
         }
     }
@@ -46,6 +58,6 @@ private struct FloatingButtonAppearance: ViewModifier {
 #Preview {
     ZStack {
         Color(.systemGroupedBackground)
-        FloatingButtons(onAdd: {})
+        FloatingActionBar(onAdd: {}, onSettings: {})
     }
 }

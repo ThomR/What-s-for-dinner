@@ -10,8 +10,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         // Zonder registratie stuurt CloudKit geen meldingen en merk je pas iets
-        // van andermans wijziging als je de app zelf opent.
-        application.registerForRemoteNotifications()
+        // van andermans wijziging als je de app zelf opent. Zonder de bijbehorende
+        // entitlement heeft registreren geen zin.
+        if CloudAvailability.isEnabled {
+            application.registerForRemoteNotifications()
+        }
         return true
     }
 
@@ -46,6 +49,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ windowScene: UIWindowScene,
         userDidAcceptCloudKitShareWith metadata: CKShare.Metadata
     ) {
+        guard CloudAvailability.isEnabled else { return }
         Task {
             do {
                 _ = try await CloudSharing.container.accept(metadata)

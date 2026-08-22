@@ -7,9 +7,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var editorMode: DishEditorView.Mode?
-    @State private var showResetAlert = false
     @State private var showSettings = false
-    @State private var shareItem: ShareItem?
 
     var body: some View {
         NavigationStack {
@@ -23,11 +21,13 @@ struct ContentView: View {
             // Als inset en niet als laag eroverheen: zo kan het laatste gerecht
             // langs de knop scrollen in plaats van eronder te verdwijnen.
             .safeAreaInset(edge: .bottom) {
-                FloatingButtons(onAdd: { editorMode = .add })
-                    .padding(.bottom, 8)
+                FloatingActionBar(
+                    onAdd: { editorMode = .add },
+                    onSettings: { showSettings = true }
+                )
+                .padding(.bottom, 8)
             }
             .navigationTitle(LocalizedStringKey("title"))
-            .toolbar { toolbarContent }
             .sheet(item: $editorMode) { mode in
                 DishEditorView(mode: mode) { name in
                     switch mode {
@@ -38,15 +38,6 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView().environmentObject(store)
-            }
-            .sheet(item: $shareItem) { item in
-                ShareSheet(activityItems: [DishListActivityItemSource(fileURL: item.url)])
-            }
-            .alert(LocalizedStringKey("reset_alert_title"), isPresented: $showResetAlert) {
-                Button(LocalizedStringKey("yes"), role: .destructive) {
-                    withAnimation { store.clearQueue() }
-                }
-                Button(LocalizedStringKey("cancel"), role: .cancel) {}
             }
             #if DEBUG
             // Voor het maken van schermafbeeldingen vanaf de opdrachtregel:
@@ -115,37 +106,6 @@ struct ContentView: View {
         .listStyle(.insetGrouped)
         .animation(.default, value: store.scheduled)
     }
-
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarTrailing) {
-            Button {
-                showSettings = true
-            } label: {
-                Image(systemName: "gearshape.fill")
-            }
-            .accessibilityLabel(LocalizedStringKey("settings_title"))
-
-            Menu {
-                Button {
-                    shareItem = DishListExport.write(store.plan.dishes).map(ShareItem.init)
-                } label: {
-                    Label(LocalizedStringKey("share"), systemImage: "square.and.arrow.up")
-                }
-                .disabled(store.isEmpty)
-
-                Button(role: .destructive) {
-                    showResetAlert = true
-                } label: {
-                    Label(LocalizedStringKey("reset"), systemImage: "trash")
-                }
-                .disabled(store.isEmpty)
-            } label: {
-                Image(systemName: "ellipsis")
-            }
-            .accessibilityLabel(LocalizedStringKey("more_actions"))
-        }
-    }
 }
 
 /// Zodat `.sheet(item:)` op de bewerkmodus kan werken.
@@ -156,12 +116,6 @@ extension DishEditorView.Mode: Identifiable {
         case .edit(let dish): return dish.id.uuidString
         }
     }
-}
-
-/// Een gedeeld bestand, zodat `.sheet(item:)` er een identiteit voor heeft.
-private struct ShareItem: Identifiable {
-    let id = UUID()
-    let url: URL
 }
 
 #Preview {

@@ -28,7 +28,12 @@ final class CloudSync {
         case sharedDatabase
     }
 
-    private let container = CKContainer(identifier: CloudSchema.containerIdentifier)
+    /// Pas aanmaken als er echt gesynchroniseerd gaat worden.
+    ///
+    /// `CKContainer(identifier:)` stopt het programma als het proces de
+    /// iCloud-entitlement niet heeft — het gooit geen fout, het crasht. Alleen
+    /// al het aanraken van deze klasse mag dat dus niet uitlokken.
+    private lazy var container = CKContainer(identifier: CloudSchema.containerIdentifier)
     private let store: DishStore
     private var engines: [Scope: CKSyncEngine] = [:]
     private var stateStores: [Scope: SyncStateStore] = [:]
@@ -62,6 +67,10 @@ final class CloudSync {
 
     /// Zet de synchronisatie aan. Veilig om vaker aan te roepen.
     func start() {
+        guard CloudAvailability.isEnabled else {
+            Log.sync.info("Gebouwd zonder CloudKit, synchronisatie blijft uit")
+            return
+        }
         guard !isStarted else { return }
         isStarted = true
         Task { await configureEngines() }
@@ -128,12 +137,14 @@ final class CloudSync {
     /// volgorde aanroept en stopt het het programma met "BUG IN CLIENT OF
     /// CLOUDKIT". Vanuit een delegate mag dit dus nooit anders.
     func scheduleFetch() {
+        guard CloudAvailability.isEnabled else { return }
         Task.detached { [self] in await fetchChanges() }
     }
 
     /// Haalt wijzigingen op. Aanroepen bij het openen van de app en bij een
     /// stille pushmelding — nooit rechtstreeks vanuit een delegate-callback.
     func fetchChanges() async {
+        guard CloudAvailability.isEnabled else { return }
         for engine in engines.values {
             do {
                 try await engine.fetchChanges()

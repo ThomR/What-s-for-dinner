@@ -11,14 +11,21 @@ import CloudKit
 @available(iOS 17.0, *)
 enum CloudSharing {
 
-    static let container = CKContainer(identifier: CloudSchema.containerIdentifier)
+    /// Berekend en niet opgeslagen: zie de opmerking bij `CloudSync.container`.
+    /// Alleen aanroepen als `CloudAvailability.isEnabled` waar is.
+    static var container: CKContainer {
+        CKContainer(identifier: CloudSchema.containerIdentifier)
+    }
 
     enum SharingError: LocalizedError {
+        case unavailable
         case notSignedIn
         case alreadyParticipant
 
         var errorDescription: String? {
             switch self {
+            case .unavailable:
+                return String(localized: "share_error_unavailable")
             case .notSignedIn:
                 return String(localized: "share_error_no_icloud")
             case .alreadyParticipant:
@@ -29,6 +36,7 @@ enum CloudSharing {
 
     /// De uitnodiging voor je eigen lijst; maakt hem aan als die er nog niet is.
     static func shareForOwnList() async throws -> CKShare {
+        guard CloudAvailability.isEnabled else { throw SharingError.unavailable }
         guard try await container.accountStatus() == .available else {
             throw SharingError.notSignedIn
         }
@@ -63,6 +71,7 @@ enum CloudSharing {
 
     /// De bestaande uitnodiging, als je er al een hebt gemaakt.
     static func existingShareIfAny() async throws -> CKShare? {
+        guard CloudAvailability.isEnabled else { throw SharingError.unavailable }
         guard try await container.accountStatus() == .available else { return nil }
         let zoneID = CKRecordZone.ID(zoneName: CloudSchema.zoneName, ownerName: CKCurrentUserDefaultName)
         return try await existingShare(in: container.privateCloudDatabase, zoneID: zoneID)

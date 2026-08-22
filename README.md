@@ -86,12 +86,11 @@ is not sent anywhere.
 **6. Sharing and third parties**
 
 We share nothing with third parties. Data leaves your device only when you choose
-to: by inviting someone to your list, or by exporting the list yourself.
+to invite someone to your list.
 
 **7. Your rights and choices**
 
 - Delete your data at any time by clearing the list, or by removing the app.
-- If you export your meal list, you are responsible for how you share and store that file.
 - No app permissions are required beyond what is needed for core functionality.
 
 **8. Changes to this Privacy Policy**

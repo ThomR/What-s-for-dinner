@@ -25,17 +25,8 @@ struct OpslagTests {
         #expect(json.contains("2026-08-"), "verwachtte een ISO-datum, kreeg: \(json)")
     }
 
-    @Test("Een gedeelde lijst komt er hetzelfde weer uit")
-    func exportRondreis() throws {
-        let dishes = [gerecht("Pizza", emoji: "🍕"), gerecht("Soep", emoji: "🍲")]
-        let data = try JSONEncoder.plan.encode(dishes)
-        let terug = DishListExport.read(data)
-        #expect(terug?.map(\.name) == ["Pizza", "Soep"])
-        #expect(terug?.map(\.emoji) == ["🍕", "🍲"])
-    }
-
-    @Test("Een lijst uit versie 1 wordt nog gelezen")
-    func oudeLijstLezen() throws {
+    @Test("Een lijst uit een gedeeld bestand wordt gelezen")
+    func gedeeldBestandLezen() throws {
         // Versie 1 schreef geen addedAt en gebruikte een getal voor completedDate.
         let oud = """
         [{"id":"0E4B8B54-2C6B-4E5E-9B0E-6F7A9F1E2D3C","name":"Pizza","emoji":"🍕","completedDate":null},

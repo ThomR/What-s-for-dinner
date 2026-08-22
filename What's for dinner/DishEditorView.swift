@@ -52,17 +52,20 @@ struct DishEditorView: View {
                             .font(.title2)
                             .animation(.default, value: previewEmoji)
                     }
-                } footer: {
-                    if EmojiIntelligence.isAvailable {
-                        Text(LocalizedStringKey("emoji_intelligence_hint"))
-                    }
                 }
             }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(LocalizedStringKey("cancel")) { dismiss() }
+                    // Een kruisje in plaats van "Annuleer": dat laat ruimte voor
+                    // de titel, die anders niet fatsoenlijk paste.
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                    .accessibilityLabel(LocalizedStringKey("cancel"))
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(saveTitle, action: save)
@@ -72,7 +75,7 @@ struct DishEditorView: View {
             }
             .onAppear { isFocused = true }
         }
-        .presentationDetents([.height(220)])
+        .presentationDetents([.height(180)])
     }
 
     private var title: LocalizedStringKey {

@@ -1,25 +1,11 @@
 import Foundation
 
-/// Het delen van een gerechtenlijst als JSON-bestand.
+/// Het inlezen van een gedeelde gerechtenlijst.
 ///
-/// Blijft bestaan naast het delen via iCloud: handig om een lijst naar iemand te
-/// sturen die de app niet heeft, of om een reservekopie te maken.
+/// Delen gaat sinds versie 2 via iCloud. Een lijst als JSON-bestand versturen
+/// kan niet meer, maar inlezen blijft: iemand kan nog een bestand hebben liggen
+/// dat een oudere versie heeft gemaakt.
 enum DishListExport {
-
-    static let fileName = "gerechtenlijst.json"
-
-    /// Schrijft de lijst naar een tijdelijk bestand en geeft de locatie terug.
-    static func write(_ dishes: [Dish]) -> URL? {
-        guard !dishes.isEmpty else { return nil }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        do {
-            try JSONEncoder.plan.encode(dishes).write(to: url, options: .atomic)
-            return url
-        } catch {
-            Log.store.error("Exporteren mislukt: \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
-    }
 
     /// Leest een gedeelde lijst. Accepteert zowel het huidige formaat als dat van
     /// versie 1, zodat een bestand van een oudere installatie blijft werken.

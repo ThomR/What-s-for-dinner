@@ -110,6 +110,10 @@ struct SharingSettingsView: View {
     // MARK: - Acties
 
     private func reload() async {
+        guard CloudAvailability.isEnabled else {
+            state = .failed(String(localized: "share_error_unavailable"))
+            return
+        }
         if CloudSync.shared.activeScope == .sharedDatabase {
             state = .sharedWithMe
             return

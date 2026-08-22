@@ -39,9 +39,13 @@ project) en `XA392BM9XT` (het personal team, dat Vermogen gebruikt). Xcode noemt
 in de foutmelding alleen de naam, wat het spoor bijster maakt.
 
 Moet je in zo'n periode toch op een toestel bouwen, zet dan in *Build Settings*
-de instelling `DINNER_ENTITLEMENTS` op `WhatsForDinner-Lokaal.entitlements`. Dat
-bestand laat iCloud en push weg; de app werkt volledig, alleen het delen blijft
-uit. Terugzetten op `What's for dinner.entitlements` zodra het account rond is.
+de instelling `DINNER_CLOUDKIT` op `NO`. Die ene schakelaar doet twee dingen
+tegelijk: hij kiest `WhatsForDinner-Lokaal.entitlements` (zonder iCloud en push)
+én hij zet een vlag in `Info.plist` waaraan de code ziet dat er niet
+gesynchroniseerd mag worden. Dat moet samen gaan: `CKContainer(identifier:)`
+stopt het programma als de entitlement ontbreekt — het gooit geen fout die je
+kunt opvangen. De app werkt met `NO` volledig, alleen delen meldt netjes dat het
+niet kan. Zet hem terug op `YES` zodra het account rond is.
 
 ## 1. Capabilities in Xcode
 
