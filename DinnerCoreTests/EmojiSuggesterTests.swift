@@ -153,3 +153,42 @@ struct EmojiSuggesterTaalTests {
         #expect(EmojiSuggester.suggest(for: naam).contains(verwacht), "\(naam) gaf \(EmojiSuggester.suggest(for: naam))")
     }
 }
+
+/// De twee regels die voorkomen dat er onzin naast een goede treffer komt te
+/// staan. Zonder deze regels kreeg "pizza" er een paddenstoel bij en leverde
+/// "pierogi" ook een taart op, omdat dat woord met "pie" begint.
+@Suite("Emoji zonder bijvangst")
+struct EmojiRuisTests {
+
+    private func emojis(_ naam: String) -> [String] {
+        EmojiSuggester.suggest(for: naam).split(separator: " ").map(String.init)
+    }
+
+    @Test("Een woord dat zelf een begrip is wordt niet in stukken geknipt")
+    func heelWoordWordtNietGeknipt() {
+        let uitkomst = emojis("pierogi")
+        #expect(uitkomst == ["🥟"], "kreeg \(uitkomst)")
+    }
+
+    @Test("Bekende gerechten leveren precies één emoji op", arguments: [
+        "pizza", "pasta", "soep", "rijst", "vis", "taart", "sushi", "burrito",
+    ])
+    func eenDuidelijkeTreffer(naam: String) {
+        #expect(emojis(naam).count == 1, "\(naam) gaf \(emojis(naam))")
+    }
+
+    @Test("Meerdere emoji blijven als ze allebei kloppen", arguments: [
+        ("spaghetti carbonara", ["🍝", "🥓"]),
+        ("tomatensoep", ["🍅", "🍲"]),
+    ])
+    func meerdereTreffers(naam: String, verwacht: [String]) {
+        #expect(emojis(naam) == verwacht, "\(naam) gaf \(emojis(naam))")
+    }
+
+    @Test("De gegenereerde laag springt nog wel bij als er niets handmatigs past")
+    func vangnetWerktNog() {
+        // "watermeloen" staat niet in de handmatige lijst, alleen in de
+        // Unicode-data. Zonder vangnet zou dit het standaardbord opleveren.
+        #expect(EmojiSuggester.suggest(for: "watermeloen") == "🍉")
+    }
+}

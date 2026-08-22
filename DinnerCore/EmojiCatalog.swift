@@ -86,6 +86,10 @@ enum EmojiCatalog {
     /// dus handmatige mappings staan vooraan.
     static let all: [EmojiKeywords] = curated + generated
 
+    /// Elk trefwoord dat in de catalogus voorkomt. Gebruikt om te zien of een
+    /// getypt woord op zichzelf al een bekend begrip is.
+    static let allKeywords: Set<String> = Set(all.flatMap(\.keywords))
+
     /// Alle emoji die als suggestie kunnen voorkomen, zonder dubbele.
     static let allEmoji: [String] = {
         var seen = Set<String>()
