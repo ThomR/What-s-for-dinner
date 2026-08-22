@@ -27,11 +27,11 @@ struct SharingSheet: UIViewControllerRepresentable {
         }
 
         func cloudSharingControllerDidSaveShare(_ controller: UICloudSharingController) {
-            Task { await CloudSync.shared.fetchChanges() }
+            CloudSync.shared.scheduleFetch()
         }
 
         func cloudSharingControllerDidStopSharing(_ controller: UICloudSharingController) {
-            Task { await CloudSync.shared.fetchChanges() }
+            CloudSync.shared.scheduleFetch()
         }
     }
 }

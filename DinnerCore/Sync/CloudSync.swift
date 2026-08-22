@@ -119,8 +119,20 @@ final class CloudSync {
 
     // MARK: - Ophalen en versturen
 
+    /// Start een ophaalronde los van de huidige taak.
+    ///
+    /// Nadrukkelijk `Task.detached` en geen gewone `Task`. Een gewone taak erft
+    /// de task-locals van zijn aanroeper, en CloudKit markeert daarmee dat je
+    /// binnen een delegate-callback zit. Duik je van daaruit opnieuw de engine
+    /// in, dan kan CKSyncEngine niet meer garanderen dat het de callbacks op
+    /// volgorde aanroept en stopt het het programma met "BUG IN CLIENT OF
+    /// CLOUDKIT". Vanuit een delegate mag dit dus nooit anders.
+    func scheduleFetch() {
+        Task.detached { [self] in await fetchChanges() }
+    }
+
     /// Haalt wijzigingen op. Aanroepen bij het openen van de app en bij een
-    /// stille pushmelding.
+    /// stille pushmelding — nooit rechtstreeks vanuit een delegate-callback.
     func fetchChanges() async {
         for engine in engines.values {
             do {
@@ -271,7 +283,7 @@ final class CloudSync {
     fileprivate func handleAccountChange(_ changeType: CKSyncEngine.Event.AccountChange.ChangeType) {
         switch changeType {
         case .signIn:
-            Task { await fetchChanges() }
+            scheduleFetch()
         case .signOut, .switchAccounts:
             // De records van de vorige gebruiker zeggen niets over de nieuwe.
             for store in stateStores.values { store.reset() }
