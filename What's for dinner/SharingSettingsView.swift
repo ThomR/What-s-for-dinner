@@ -17,7 +17,6 @@ struct SharingSettingsView: View {
     }
 
     @SwiftUI.State private var state: State = .loading
-    @SwiftUI.State private var activeShare: PresentedShare?
     @SwiftUI.State private var isWorking = false
     @SwiftUI.State private var confirmStop = false
 
@@ -30,9 +29,6 @@ struct SharingSettingsView: View {
             Text(LocalizedStringKey("sharing_footer")).font(.caption)
         }
         .task { await reload() }
-        .sheet(item: $activeShare) { presented in
-            SharingSheet(share: presented.share, container: CloudSharing.container)
-        }
         .alert(LocalizedStringKey("sharing_stop_confirm"), isPresented: $confirmStop) {
             Button(LocalizedStringKey("sharing_stop"), role: .destructive) {
                 Task { await stopSharing() }
@@ -65,7 +61,7 @@ struct SharingSettingsView: View {
                     .fontDesign(.rounded)
             }
             Button {
-                activeShare = PresentedShare(share: share)
+                show(share)
             } label: {
                 Label(LocalizedStringKey("sharing_manage"), systemImage: "person.2")
                     .fontDesign(.rounded)
@@ -131,10 +127,17 @@ struct SharingSettingsView: View {
         defer { isWorking = false }
         do {
             let share = try await CloudSharing.shareForOwnList()
-            activeShare = PresentedShare(share: share)
             state = .sharedByMe(share)
+            show(share)
         } catch {
             state = .failed(error.localizedDescription)
+        }
+    }
+
+    /// Het systeemvenster openen en daarna opnieuw kijken wat er gedeeld is.
+    private func show(_ share: CKShare) {
+        CloudSharingPresenter.present(share: share, container: CloudSharing.container) {
+            Task { await reload() }
         }
     }
 
@@ -157,9 +160,4 @@ struct SharingSettingsView: View {
     }
 }
 
-/// Een uitnodiging om te tonen. `CKShare` kan zelf niet `Identifiable` zijn:
-/// `CKRecord` heeft al een genest type dat `ID` heet.
-struct PresentedShare: Identifiable {
-    let id = UUID()
-    let share: CKShare
-}
+
