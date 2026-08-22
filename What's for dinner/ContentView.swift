@@ -10,7 +10,18 @@ struct ContentView: View {
     @State private var showSettings = false
 
     var body: some View {
-        NavigationStack {
+        // Geen NavigationStack meer. Er staat niets meer in de werkbalk, en een
+        // lege werkbalk reserveert nog steeds een rij boven de grote titel —
+        // daardoor begon het scherm zo'n vijftig punten te laag.
+        VStack(alignment: .leading, spacing: 0) {
+            Text(LocalizedStringKey("title"))
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .fontDesign(.rounded)
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+
             Group {
                 if store.isEmpty {
                     emptyStateView
@@ -18,6 +29,10 @@ struct ContentView: View {
                     dishesListView
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // De grijze achtergrond kwam van de List en hield op bij de titel.
+            // Nu dekt hij het hele scherm en laat de List de zijne los.
+            .scrollContentBackground(.hidden)
             // Als inset en niet als laag eroverheen: zo kan het laatste gerecht
             // langs de knop scrollen in plaats van eronder te verdwijnen.
             .safeAreaInset(edge: .bottom) {
@@ -27,7 +42,6 @@ struct ContentView: View {
                 )
                 .padding(.bottom, 8)
             }
-            .navigationTitle(LocalizedStringKey("title"))
             .sheet(item: $editorMode) { mode in
                 DishEditorView(mode: mode) { name in
                     switch mode {
@@ -62,6 +76,8 @@ struct ContentView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color(.systemGroupedBackground))
     }
 
     private var emptyStateView: some View {

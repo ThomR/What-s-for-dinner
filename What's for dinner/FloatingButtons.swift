@@ -20,7 +20,7 @@ struct FloatingActionBar: View {
                 .fontDesign(.rounded)
                 .foregroundStyle(.primary)
             }
-            .modifier(FloatingButtonAppearance())
+            .modifier(FloatingButtonAppearance(shape: .capsule))
 
             Spacer(minLength: 8)
 
@@ -29,7 +29,7 @@ struct FloatingActionBar: View {
                     .font(.body.weight(.semibold))
                     .foregroundStyle(.primary)
             }
-            .modifier(FloatingButtonAppearance())
+            .modifier(FloatingButtonAppearance(shape: .circle))
             .accessibilityLabel(LocalizedStringKey("settings_title"))
         }
         .padding(.horizontal)
@@ -40,17 +40,31 @@ struct FloatingActionBar: View {
 /// langsschuift en licht op bij het indrukken. Daaronder valt het terug op een
 /// materiaal-capsule, want die effecten bestaan daar simpelweg niet.
 private struct FloatingButtonAppearance: ViewModifier {
+    enum Shape {
+        case capsule
+        case circle
+    }
+
+    let shape: Shape
+
     func body(content: Content) -> some View {
         if #available(iOS 26, *) {
             content
                 .buttonStyle(.glass)
-                .buttonBorderShape(.capsule)
+                .buttonBorderShape(shape == .circle ? .circle : .capsule)
                 .controlSize(.large)
         } else {
-            content
-                .padding(.horizontal, 20)
-                .padding(.vertical, 14)
-                .background(.regularMaterial, in: Capsule())
+            switch shape {
+            case .capsule:
+                content
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 14)
+                    .background(.regularMaterial, in: Capsule())
+            case .circle:
+                content
+                    .frame(width: 52, height: 52)
+                    .background(.regularMaterial, in: Circle())
+            }
         }
     }
 }
