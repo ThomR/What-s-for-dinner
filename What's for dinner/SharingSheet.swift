@@ -24,7 +24,8 @@ enum CloudSharingPresenter {
         activeDelegate = delegate
 
         let controller = UICloudSharingController(share: share, container: container)
-        controller.availablePermissions = [.allowReadWrite, .allowPrivate]
+        // Kijken én wijzigen aanbieden, zodat de eigenaar per persoon kiest.
+        controller.availablePermissions = [.allowReadWrite, .allowReadOnly, .allowPrivate]
         controller.delegate = delegate
         host.present(controller, animated: true)
     }

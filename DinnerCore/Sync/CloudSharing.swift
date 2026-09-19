@@ -93,9 +93,18 @@ enum CloudSharing {
     }
 
     /// Verlaat de lijst van iemand anders.
+    ///
+    /// Een deelnemer vertrekt door de uitnodiging uit zijn eigen gedeelde
+    /// database te verwijderen. De lijst zelf blijft bij de eigenaar.
     static func leaveSharedList() async throws {
+        guard CloudAvailability.isEnabled else { throw SharingError.unavailable }
         guard let zoneID = await CloudSync.shared.sharedZoneID else { return }
-        _ = try await container.sharedCloudDatabase.modifyRecordZones(saving: [], deleting: [zoneID])
+        let database = container.sharedCloudDatabase
+        if let zone = try? await database.recordZone(for: zoneID), let reference = zone.share {
+            _ = try await database.modifyRecords(saving: [], deleting: [reference.recordID])
+        } else {
+            _ = try await database.modifyRecordZones(saving: [], deleting: [zoneID])
+        }
     }
 }
 #endif

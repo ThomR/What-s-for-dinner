@@ -11,6 +11,10 @@ final class PlanStore: ObservableObject {
     /// Het begin van de dag waartegen de weergave rekent. Verandert bij een
     /// dagwissel, zodat de hele lijst in één keer verspringt.
     @Published private(set) var today: Date
+    /// De lijst is van een ander en je mag hem alleen bekijken.
+    @Published private(set) var isReadOnly: Bool
+    /// De lijst is van een ander (en je mag hem misschien wel wijzigen).
+    @Published private(set) var isSharedList: Bool
 
     private let store: DishStore
     /// De vorige stand, om te bepalen wat er naar iCloud moet.
@@ -20,17 +24,26 @@ final class PlanStore: ObservableObject {
     private let now: () -> Date
     /// Injecteerbaar zodat tests niet van de gedeelde instellingen afhangen.
     private let autoAdvance: () -> Bool
+    /// Idem: of de lijst van een ander is, en of je hem alleen mag bekijken.
+    private let sharing: () -> (shared: Bool, readOnly: Bool)
 
     init(
         store: DishStore = .shared,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init,
-        autoAdvance: @escaping () -> Bool = { Preferences.autoAdvance }
+        autoAdvance: @escaping () -> Bool = { Preferences.autoAdvance },
+        sharing: @escaping () -> (shared: Bool, readOnly: Bool) = {
+            (Preferences.usesSharedList, Preferences.isReadOnlyList)
+        }
     ) {
         self.store = store
         self.calendar = calendar
         self.now = now
         self.autoAdvance = autoAdvance
+        self.sharing = sharing
+        let state = sharing()
+        self.isSharedList = state.shared
+        self.isReadOnly = state.readOnly
         Preferences.migrateIfNeeded()
         let loaded = store.load()
         self.plan = loaded
@@ -63,6 +76,7 @@ final class PlanStore: ObservableObject {
     /// Zet de planning op vandaag. Aanroepen bij opstarten en zodra de app weer
     /// naar voren komt — de dag kan zijn verstreken terwijl de app weg was.
     func refresh() {
+        syncSharingState()
         store.invalidateCache()
         let moment = now()
         let startOfToday = calendar.startOfDay(for: moment)
@@ -80,9 +94,21 @@ final class PlanStore: ObservableObject {
         }
     }
 
+    /// Of je in een gedeelde lijst zit en wat je daar mag, kan veranderen door
+    /// iets dat de eigenaar doet; dat komt binnen via iCloud.
+    private func syncSharingState() {
+        let state = sharing()
+        if isReadOnly != state.readOnly { isReadOnly = state.readOnly }
+        if isSharedList != state.shared { isSharedList = state.shared }
+    }
+
     // MARK: - Bewerkingen
+    //
+    // Elke bewerking weigert stil als je alleen mag kijken. De knoppen zijn dan
+    // al verborgen; dit is de vangrail voor als er toch iets doorheen glipt.
 
     func add(name: String) {
+        guard !isReadOnly else { return }
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let dish = Dish(name: trimmed, emoji: EmojiSuggester.suggest(for: trimmed), addedAt: now())
@@ -97,6 +123,7 @@ final class PlanStore: ObservableObject {
     }
 
     func rename(_ dish: Dish, to name: String) {
+        guard !isReadOnly else { return }
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, let index = plan.dishes.firstIndex(where: { $0.id == dish.id }) else { return }
         guard plan.dishes[index].name != trimmed else { return }
@@ -108,23 +135,27 @@ final class PlanStore: ObservableObject {
 
     /// Streept een gerecht af: het verhuist naar het logboek.
     func serve(_ dish: Dish) {
+        guard !isReadOnly else { return }
         plan = PlanSchedule.serving(plan, dishID: dish.id, at: now(), calendar: calendar, autoAdvance: autoAdvance())
         persist()
     }
 
     /// Verwijdert zonder het in het logboek te zetten.
     func remove(_ dish: Dish) {
+        guard !isReadOnly else { return }
         plan = PlanSchedule.removing(plan, dishID: dish.id)
         persist()
     }
 
     func move(fromOffsets source: IndexSet, toOffset destination: Int) {
+        guard !isReadOnly else { return }
         plan.dishes.move(fromOffsets: source, toOffset: destination)
         persist()
     }
 
     /// Zet een gegeten gerecht terug achteraan de wachtrij.
     func restore(_ meal: ServedMeal) {
+        guard !isReadOnly else { return }
         guard let index = plan.log.firstIndex(where: { $0.id == meal.id }) else { return }
         let removed = plan.log.remove(at: index)
         if plan.dishes.isEmpty {
@@ -136,17 +167,20 @@ final class PlanStore: ObservableObject {
 
     /// Leegt de wachtrij. Het logboek blijft staan — dat is de geschiedenis.
     func clearQueue() {
+        guard !isReadOnly else { return }
         plan.dishes.removeAll()
         plan.anchorDate = calendar.startOfDay(for: now())
         persist()
     }
 
     func clearLog() {
+        guard !isReadOnly else { return }
         plan.log.removeAll()
         persist()
     }
 
     func replaceAll(with dishes: [Dish]) {
+        guard !isReadOnly else { return }
         plan.dishes = dishes
         plan.anchorDate = calendar.startOfDay(for: now())
         persist()
@@ -171,6 +205,7 @@ final class PlanStore: ObservableObject {
     /// Neemt over wat er uit iCloud binnenkwam. Niet terugsturen: dan zou elke
     /// ontvangen wijziging meteen weer een verzending worden.
     func adoptRemoteChanges() {
+        syncSharingState()
         store.invalidateCache()
         let stored = store.load()
         guard stored != plan else { return }

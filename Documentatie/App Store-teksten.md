@@ -1,4 +1,27 @@
-# App Store-teksten voor 2.0
+# App Store-teksten
+
+## 2.0.1 — releaseopmerkingen (Nederlands)
+
+• Samen plannen werkt nu echt: wie je uitnodigt, doet na het accepteren mee met
+  jouw lijst in plaats van zijn eigen lijst te blijven zien.
+• Je kiest per persoon of die de lijst mag aanpassen of alleen mag bekijken.
+• In de instellingen zie je wie er meedoet en wie de uitnodiging nog open heeft
+  staan.
+• Opgelost: streep je 's avonds zelf het gerecht van vandaag af, dan werd om
+  middernacht ook het gerecht van morgen afgestreept, met de datum van vandaag.
+
+## 2.0.1 — releaseopmerkingen (Engels)
+
+• Planning together now really works: once someone accepts your invitation, they
+  join your list instead of keeping their own.
+• Choose per person whether they can make changes or only view the list.
+• Settings show who has joined and whose invitation is still open.
+• Fixed: ticking off today's meal yourself in the evening also ticked off
+  tomorrow's meal at midnight, dated today.
+
+---
+
+# Teksten voor 2.0
 
 Bijgewerkt op 2026-08-22. Wat hier staat komt overeen met wat de app dóét —
 de "lock een gerecht"-regel uit de oude tekst is geschrapt omdat die functie

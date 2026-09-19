@@ -20,7 +20,21 @@ struct ContentView: View {
                 .fontDesign(.rounded)
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
+                .padding(.bottom, store.isSharedList ? 0 : 8)
+
+            if store.isSharedList {
+                // Zodat je ziet dat dit niet je eigen lijst is, en of je hem mag
+                // aanpassen — anders lijkt het alsof de knoppen kapot zijn.
+                Label(
+                    LocalizedStringKey(store.isReadOnly ? "shared_list_caption_readonly" : "shared_list_caption"),
+                    systemImage: store.isReadOnly ? "eye" : "person.2.fill"
+                )
+                .font(.subheadline)
+                .fontDesign(.rounded)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 20)
                 .padding(.bottom, 8)
+            }
 
             Group {
                 if store.isEmpty {
@@ -40,7 +54,7 @@ struct ContentView: View {
             // langs de knop scrollen in plaats van eronder te verdwijnen.
             .safeAreaInset(edge: .bottom) {
                 FloatingActionBar(
-                    onAdd: { editorMode = .add },
+                    onAdd: store.isReadOnly ? nil : { editorMode = .add },
                     onSettings: { showSettings = true }
                 )
                 .padding(.bottom, 8)
@@ -95,14 +109,17 @@ struct ContentView: View {
             ForEach(store.scheduled) { item in
                 DishRow(item: item, now: store.today)
                     .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                        if !store.isReadOnly {
                         Button {
                             editorMode = .edit(item.dish)
                         } label: {
                             Label(LocalizedStringKey("edit"), systemImage: "pencil")
                         }
                         .tint(.blue)
+                        }
                     }
                     .swipeActions(edge: .trailing) {
+                        if !store.isReadOnly {
                         Button {
                             withAnimation { store.serve(item.dish) }
                         } label: {
@@ -115,11 +132,12 @@ struct ContentView: View {
                         } label: {
                             Label(LocalizedStringKey("delete"), systemImage: "trash")
                         }
+                        }
                     }
             }
-            .onMove { source, destination in
+            .onMove(perform: store.isReadOnly ? nil : { source, destination in
                 store.move(fromOffsets: source, toOffset: destination)
-            }
+            })
         }
         // .insetGrouped is de standaard: grijze achtergrond, witte container.
         .listStyle(.insetGrouped)

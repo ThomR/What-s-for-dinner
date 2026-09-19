@@ -2,7 +2,8 @@ import UIKit
 import CloudKit
 
 /// Nodig voor twee dingen die SwiftUI zelf niet aanbiedt: stille pushmeldingen
-/// van CloudKit, en het accepteren van een uitnodiging voor een gedeelde lijst.
+/// van CloudKit, en het koppelen van de scene-delegate die uitnodigingen
+/// voor een gedeelde lijst opvangt.
 final class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(
@@ -44,20 +45,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         Log.sync.error("Pushregistratie mislukt: \(error.localizedDescription, privacy: .public)")
     }
 
-    /// Iemand tikt op de uitnodiging die je hebt gestuurd.
-    func windowScene(
-        _ windowScene: UIWindowScene,
-        userDidAcceptCloudKitShareWith metadata: CKShare.Metadata
-    ) {
-        guard CloudAvailability.isEnabled else { return }
-        Task {
-            do {
-                _ = try await CloudSharing.container.accept(metadata)
-                await CloudSync.shared.fetchChanges()
-                Log.sync.info("Uitnodiging geaccepteerd")
-            } catch {
-                Log.sync.error("Uitnodiging niet geaccepteerd: \(error.localizedDescription, privacy: .public)")
-            }
-        }
+    /// Koppelt de scene-delegate, waar iOS uitnodigingen voor een gedeelde lijst
+    /// aflevert. SwiftUI bouwt het venster daarna gewoon zelf op.
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        let configuration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        configuration.delegateClass = SceneDelegate.self
+        return configuration
     }
 }

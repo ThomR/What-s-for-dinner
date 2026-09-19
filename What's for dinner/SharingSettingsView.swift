@@ -26,7 +26,12 @@ struct SharingSettingsView: View {
         } header: {
             Text(LocalizedStringKey("sharing_header")).font(.subheadline)
         } footer: {
-            Text(LocalizedStringKey("sharing_footer")).font(.caption)
+            // De lijst van een ander staat in zíjn iCloud, niet in de jouwe.
+            if case .sharedWithMe = state {
+                Text(LocalizedStringKey("sharing_footer_participant")).font(.caption)
+            } else {
+                Text(LocalizedStringKey("sharing_footer")).font(.caption)
+            }
         }
         .task { await reload() }
         .alert(LocalizedStringKey("sharing_stop_confirm"), isPresented: $confirmStop) {
@@ -56,9 +61,8 @@ struct SharingSettingsView: View {
             .disabled(isWorking)
 
         case .sharedByMe(let share):
-            ForEach(participants(in: share), id: \.self) { name in
-                Label(name, systemImage: "person.fill")
-                    .fontDesign(.rounded)
+            ForEach(participants(in: share), id: \.self) { participant in
+                participantRow(participant)
             }
             Button {
                 show(share)
@@ -74,8 +78,18 @@ struct SharingSettingsView: View {
             }
 
         case .sharedWithMe:
-            Label(LocalizedStringKey("sharing_joined"), systemImage: "person.2.fill")
-                .fontDesign(.rounded)
+            VStack(alignment: .leading, spacing: 2) {
+                if let owner = Preferences.sharedListOwnerName {
+                    Text(LocalizedStringKey("sharing_joined_owner \(owner)"))
+                        .fontDesign(.rounded)
+                } else {
+                    Text(LocalizedStringKey("sharing_joined"))
+                        .fontDesign(.rounded)
+                }
+                Text(LocalizedStringKey(Preferences.sharedListReadOnly ? "sharing_permission_view" : "sharing_permission_edit"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             Button(role: .destructive) {
                 Task { await leave() }
             } label: {
@@ -90,17 +104,38 @@ struct SharingSettingsView: View {
         }
     }
 
-    /// De namen van de mensen die meedoen, zonder jezelf.
-    private func participants(in share: CKShare) -> [String] {
-        share.participants
-            .filter { $0.role != .owner }
-            .compactMap { participant in
-                let identity = participant.userIdentity
-                if let components = identity.nameComponents {
-                    return PersonNameComponentsFormatter.localizedString(from: components, style: .default)
+    /// Iedereen behalve jezelf, en niet wie er al uit is gehaald.
+    private func participants(in share: CKShare) -> [CKShare.Participant] {
+        share.participants.filter { $0.role != .owner && $0.acceptanceStatus != .removed }
+    }
+
+    /// Eén deelnemer: naam, of hij al meedoet, en wat hij mag.
+    ///
+    /// Wie de uitnodiging nog niet heeft geaccepteerd heeft voor CloudKit nog
+    /// geen naam. In 2.0 leverde dat een rij op met alleen een poppetje.
+    private func participantRow(_ participant: CKShare.Participant) -> some View {
+        let joined = participant.acceptanceStatus == .accepted
+        let status: LocalizedStringKey = joined ? "sharing_status_joined" : "sharing_status_invited"
+        let permission: LocalizedStringKey = participant.permission == .readWrite
+            ? "sharing_permission_edit"
+            : "sharing_permission_view"
+
+        return HStack {
+            Image(systemName: joined ? "person.fill.checkmark" : "person.badge.clock")
+                .foregroundStyle(joined ? Color.accentColor : Color.secondary)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: 2) {
+                if let name = CloudSync.displayName(of: participant) {
+                    Text(verbatim: name).fontDesign(.rounded)
+                } else {
+                    Text(LocalizedStringKey("sharing_someone")).fontDesign(.rounded)
                 }
-                return identity.lookupInfo?.emailAddress ?? identity.lookupInfo?.phoneNumber
+                (Text(status) + Text(verbatim: " · ") + Text(permission))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
+        }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Acties

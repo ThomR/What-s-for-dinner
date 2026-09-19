@@ -44,8 +44,10 @@ final class CloudSync {
         CKRecordZone.ID(zoneName: CloudSchema.zoneName, ownerName: CKCurrentUserDefaultName)
     }
 
-    /// De zone van de gedeelde lijst, zodra we weten dat die er is.
-    private(set) var sharedZoneID: CKRecordZone.ID?
+    /// De zone van de gedeelde lijst. Blijft bewaard tussen twee starts.
+    private(set) var sharedZoneID: CKRecordZone.ID? = Preferences.sharedZone.map {
+        CKRecordZone.ID(zoneName: $0.name, ownerName: $0.owner)
+    }
 
     /// Waar de app op dit moment mee werkt. Blijft bewaard tussen twee starts.
     private(set) var activeScope: Scope = Preferences.usesSharedList ? .sharedDatabase : .privateDatabase
@@ -84,6 +86,7 @@ final class CloudSync {
         makeEngine(for: .privateDatabase)
         makeEngine(for: .sharedDatabase)
         uploadUnsyncedRecords()
+        await refreshSharedListDetails()
         // Bewust géén fetchChanges() hier. Met `automaticallySync` plant de
         // engine zijn eigen rondes, en zelf vragen op een moment dat er nog geen
         // zones bekend zijn levert alleen een lege ronde op — dat is de
@@ -189,7 +192,7 @@ final class CloudSync {
     /// Meld een lokale wijziging aan. Wat er precies veranderd is bepaalt welke
     /// records er verstuurd worden.
     func localPlanDidChange(from old: MealPlan, to new: MealPlan) {
-        guard let engine = engines[activeScope], let zoneID = activeZoneID else { return }
+        guard canSend, let engine = engines[activeScope], let zoneID = activeZoneID else { return }
         let changes = PlanProjection.changes(from: old, to: new)
         guard !changes.isEmpty else { return }
 
@@ -279,6 +282,7 @@ final class CloudSync {
             sharedZoneID = zoneID
             activeScope = .sharedDatabase
             Preferences.usesSharedList = true
+            Preferences.sharedZone = (zoneID.zoneName, zoneID.ownerName)
             if isNieuw {
                 // Je eigen lijst blijft veilig in je eigen zone staan, maar hij
                 // mag niet mee de lijst van de ander in. Zonder dit zou je bij
@@ -332,6 +336,91 @@ final class CloudSync {
         Log.sync.info("Wijziging uit iCloud verwerkt: \(merged.dishes.count) gerechten")
     }
 
+    // MARK: - Meedoen aan een gedeelde lijst
+
+    /// Iemand heeft op een uitnodiging getikt.
+    ///
+    /// Komt binnen via de scene-delegate, bij een warme én een koude start.
+    func accept(_ metadata: CKShare.Metadata) async {
+        guard CloudAvailability.isEnabled else { return }
+        // Tik je op de link van je eigen lijst, dan valt er niets te accepteren.
+        guard metadata.participantRole != .owner else {
+            Log.sync.info("Eigen uitnodiging geopend, niets te doen")
+            return
+        }
+        do {
+            let share = try await container.accept(metadata)
+            joined(zoneID: share.recordID.zoneID, share: share)
+            Log.sync.info("Uitnodiging geaccepteerd")
+        } catch {
+            report(error)
+        }
+    }
+
+    /// Vanaf nu is de lijst van de ander de lijst die de app toont.
+    private func joined(zoneID: CKRecordZone.ID, share: CKShare) {
+        let wasShared = activeScope == .sharedDatabase && sharedZoneID == zoneID
+        sharedZoneID = zoneID
+        activeScope = .sharedDatabase
+        Preferences.usesSharedList = true
+        Preferences.sharedZone = (zoneID.zoneName, zoneID.ownerName)
+        remember(share)
+
+        if !wasShared {
+            // Je eigen lijst blijft veilig in je eigen zone staan, maar hij mag
+            // niet mee de lijst van de ander in.
+            store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
+            onRemoteChange?()
+        }
+        scheduleFetch()
+    }
+
+    /// Onthoudt wie de eigenaar is en of je mag wijzigen.
+    private func remember(_ share: CKShare) {
+        if let permission = share.currentUserParticipant?.permission, permission != .unknown {
+            Preferences.sharedListReadOnly = permission != .readWrite
+        }
+        Preferences.sharedListOwnerName = Self.displayName(of: share.owner)
+        onRemoteChange?()
+    }
+
+    /// Haalt bij het opstarten op of je nog meedoet en met welke rechten. De
+    /// eigenaar kan dat intussen hebben veranderd, of het delen hebben gestopt.
+    private func refreshSharedListDetails() async {
+        guard activeScope == .sharedDatabase, let zoneID = sharedZoneID else { return }
+        let database = container.sharedCloudDatabase
+        do {
+            let zone = try await database.recordZone(for: zoneID)
+            guard let reference = zone.share,
+                  let share = try await database.record(for: reference.recordID) as? CKShare else { return }
+            remember(share)
+        } catch let error as CKError where error.code == .zoneNotFound || error.code == .unknownItem {
+            // Alleen bij "bestaat niet meer", nooit bij een netwerkfout: anders
+            // zou een slechte verbinding je uit de gedeelde lijst gooien.
+            Log.sync.info("Gedeelde lijst bestaat niet meer, terug naar de eigen lijst")
+            stoppedUsingSharedList()
+        } catch {
+            Log.sync.error("Gedeelde lijst niet bijgewerkt: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
+    /// Een leesbare naam voor een deelnemer, of `nil` als CloudKit die (nog) niet
+    /// kent — dat is zo zolang iemand de uitnodiging niet heeft geaccepteerd.
+    static func displayName(of participant: CKShare.Participant) -> String? {
+        let identity = participant.userIdentity
+        if let components = identity.nameComponents {
+            let name = PersonNameComponentsFormatter.localizedString(from: components, style: .default)
+            if !name.trimmingCharacters(in: .whitespaces).isEmpty { return name }
+        }
+        return identity.lookupInfo?.emailAddress ?? identity.lookupInfo?.phoneNumber
+    }
+
+    /// Of wijzigingen naar iCloud mogen. Wie alleen mag kijken stuurt niets —
+    /// CloudKit zou het toch weigeren, en de lijst zou dan lokaal afwijken.
+    private var canSend: Bool {
+        !(activeScope == .sharedDatabase && Preferences.sharedListReadOnly)
+    }
+
     /// De gedeelde lijst is verlaten: terug naar je eigen lijst.
     ///
     /// Beide engines worden opnieuw opgebouwd met een schone toestand. Dat is
@@ -341,7 +430,7 @@ final class CloudSync {
     func stoppedUsingSharedList() {
         sharedZoneID = nil
         activeScope = .privateDatabase
-        Preferences.usesSharedList = false
+        Preferences.forgetSharedList()
 
         // De lokale planning is nog die van de ander.
         store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
@@ -365,7 +454,7 @@ final class CloudSync {
             for store in stateStores.values { store.reset() }
             sharedZoneID = nil
             activeScope = .privateDatabase
-            Preferences.usesSharedList = false
+            Preferences.forgetSharedList()
         @unknown default:
             break
         }

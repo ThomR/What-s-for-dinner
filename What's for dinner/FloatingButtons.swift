@@ -5,11 +5,13 @@ import SwiftUI
 /// De navigatiebalk is daarmee helemaal leeg, zodat de titel bovenaan kan staan
 /// in plaats van onder een rij knoppen.
 struct FloatingActionBar: View {
-    let onAdd: () -> Void
+    /// `nil` als je niets mag toevoegen; dan verdwijnt de knop.
+    let onAdd: (() -> Void)?
     let onSettings: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
+            if let onAdd {
             Button(action: onAdd) {
                 HStack(spacing: 8) {
                     Text(LocalizedStringKey("floating_button"))
@@ -21,6 +23,7 @@ struct FloatingActionBar: View {
                 .foregroundStyle(.primary)
             }
             .modifier(FloatingButtonAppearance(shape: .capsule))
+            }
 
             Spacer(minLength: 8)
 

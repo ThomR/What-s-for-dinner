@@ -12,6 +12,10 @@ enum Preferences {
         static let autoAdvance = "autoCompleteDish"
         static let didMigrate = "didMigratePreferences"
         static let usesSharedList = "usesSharedList"
+        static let sharedZoneName = "sharedZoneName"
+        static let sharedZoneOwner = "sharedZoneOwner"
+        static let sharedListReadOnly = "sharedListReadOnly"
+        static let sharedListOwnerName = "sharedListOwnerName"
     }
 
     static let defaults: UserDefaults = {
@@ -51,6 +55,46 @@ enum Preferences {
     static var usesSharedList: Bool {
         get { defaults.bool(forKey: Key.usesSharedList) }
         set { defaults.set(newValue, forKey: Key.usesSharedList) }
+    }
+
+    /// Welke gedeelde zone het is, als naam en eigenaar. Zonder dit weet de app
+    /// na een herstart wel dát hij de lijst van een ander toont, maar niet
+    /// wélke — en dan gaan wijzigingen nergens heen.
+    static var sharedZone: (name: String, owner: String)? {
+        get {
+            guard let name = defaults.string(forKey: Key.sharedZoneName),
+                  let owner = defaults.string(forKey: Key.sharedZoneOwner) else { return nil }
+            return (name, owner)
+        }
+        set {
+            defaults.set(newValue?.name, forKey: Key.sharedZoneName)
+            defaults.set(newValue?.owner, forKey: Key.sharedZoneOwner)
+        }
+    }
+
+    /// Of je in de gedeelde lijst alleen mag kijken. De eigenaar bepaalt dit.
+    static var sharedListReadOnly: Bool {
+        get { defaults.bool(forKey: Key.sharedListReadOnly) }
+        set { defaults.set(newValue, forKey: Key.sharedListReadOnly) }
+    }
+
+    /// De naam van de eigenaar van de lijst waaraan je meedoet, om te tonen.
+    static var sharedListOwnerName: String? {
+        get { defaults.string(forKey: Key.sharedListOwnerName) }
+        set { defaults.set(newValue, forKey: Key.sharedListOwnerName) }
+    }
+
+    /// Of de lijst die je ziet van een ander is en je er niets aan mag veranderen.
+    static var isReadOnlyList: Bool {
+        usesSharedList && sharedListReadOnly
+    }
+
+    /// Alles vergeten over een gedeelde lijst: terug naar je eigen.
+    static func forgetSharedList() {
+        usesSharedList = false
+        sharedZone = nil
+        sharedListReadOnly = false
+        sharedListOwnerName = nil
     }
 
     /// Haalt instellingen van vóór versie 2 uit de standaard-defaults op.
