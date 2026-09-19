@@ -6,6 +6,9 @@ struct DinnerWidgetEntry: TimelineEntry {
     let date: Date
     let today: Dish?
     let tomorrow: Dish?
+    /// Het gerecht van vandaag is al afgestreept; "vandaag" is dan niet leeg
+    /// maar klaar.
+    var todayEaten: Bool = false
 }
 
 /// Levert de tijdlijn voor de widget.
@@ -49,10 +52,9 @@ struct DinnerWidgetProvider: TimelineProvider {
         let calendar = Calendar.current
 
         func pair(at date: Date) -> DinnerWidgetEntry {
-            let next = PlanSchedule.upcomingDishes(
-                in: plan, at: date, calendar: calendar, autoAdvance: autoAdvance, count: 2
-            )
-            return DinnerWidgetEntry(date: date, today: next.first, tomorrow: next.dropFirst().first)
+            let days = PlanSchedule.dishesForComingDays(2, in: plan, at: date, calendar: calendar, autoAdvance: autoAdvance)
+            let eaten = autoAdvance && PlanSchedule.dayOffset(in: plan, at: date, calendar: calendar) < 0
+            return DinnerWidgetEntry(date: date, today: days[0], tomorrow: days[1], todayEaten: eaten)
         }
 
         guard autoAdvance else {
@@ -79,8 +81,16 @@ struct DinnerWidgetView: View {
         }
     }
 
+    /// Is vandaag al gegeten, dan laat de kleine widget het volgende gerecht
+    /// zien — "vandaag: al gegeten" is op dat formaat weinig behulpzaam.
     private var smallBody: some View {
-        block(title: "today", dish: entry.today, emojiFont: .largeTitle, nameFont: .title2)
+        let showTomorrow = entry.today == nil && entry.todayEaten && entry.tomorrow != nil
+        return block(
+            title: showTomorrow ? "tomorrow" : "today",
+            dish: showTomorrow ? entry.tomorrow : entry.today,
+            emojiFont: .largeTitle,
+            nameFont: .title2
+        )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .containerBackground(.fill.tertiary, for: .widget)
     }
@@ -88,7 +98,7 @@ struct DinnerWidgetView: View {
     /// Twee gelijke helften: links vandaag, rechts morgen.
     private var mediumBody: some View {
         HStack(spacing: 0) {
-            block(title: "today", dish: entry.today, emojiFont: .largeTitle, nameFont: .title3)
+            block(title: "today", dish: entry.today, emojiFont: .largeTitle, nameFont: .title3, eaten: entry.todayEaten)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
 
             Divider()
@@ -101,7 +111,7 @@ struct DinnerWidgetView: View {
         .containerBackground(.fill.tertiary, for: .widget)
     }
 
-    private func block(title: LocalizedStringKey, dish: Dish?, emojiFont: Font, nameFont: Font) -> some View {
+    private func block(title: LocalizedStringKey, dish: Dish?, emojiFont: Font, nameFont: Font, eaten: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
                 .font(.subheadline)
@@ -125,7 +135,7 @@ struct DinnerWidgetView: View {
                         .minimumScaleFactor(0.5)
                 }
             } else {
-                Text(LocalizedStringKey("no_dish"))
+                Text(LocalizedStringKey(eaten ? "eaten_today" : "no_dish"))
                     .font(.headline)
                     .fontDesign(.rounded)
                     .foregroundStyle(.secondary)

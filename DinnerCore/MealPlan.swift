@@ -58,28 +58,40 @@ enum PlanSchedule {
     /// Het gerecht van vandaag, zonder de planning te wijzigen. Dit is wat de
     /// widget en de complicatie tonen.
     static func currentDish(in plan: MealPlan, at now: Date, calendar: Calendar = .current, autoAdvance: Bool) -> Dish? {
-        guard autoAdvance else { return plan.dishes.first }
-        let index = servedCount(in: plan, at: now, calendar: calendar)
-        return index < plan.dishes.count ? plan.dishes[index] : nil
+        dishesForComingDays(1, in: plan, at: now, calendar: calendar, autoAdvance: autoAdvance)[0]
     }
 
-    /// De eerstvolgende gerechten vanaf een bepaald moment: `[0]` is vandaag,
-    /// `[1]` morgen, enzovoort. Korter dan gevraagd als de lijst opraakt.
+    /// Hoeveel dagen het anker achter ligt op vandaag, met teken.
     ///
-    /// Hier bouwen de widget en de complicatie hun weergave mee op, dus dit hoort
-    /// in de kern te staan en niet in een extensie waar geen test bij kan.
-    static func upcomingDishes(
+    /// Negatief betekent dat het anker in de toekomst ligt: het gerecht van
+    /// vandaag is al gegeten en het bovenste gerecht is voor morgen of later.
+    static func dayOffset(in plan: MealPlan, at now: Date, calendar: Calendar = .current) -> Int {
+        let anchor = calendar.startOfDay(for: plan.anchorDate)
+        let today = calendar.startOfDay(for: now)
+        return calendar.dateComponents([.day], from: anchor, to: today).day ?? 0
+    }
+
+    /// Het gerecht per dag, vanaf vandaag: `[0]` is vandaag, `[1]` morgen.
+    ///
+    /// Een plek is `nil` als er voor die dag niets gepland staat — omdat het
+    /// gerecht van vandaag al gegeten is, of omdat de lijst opraakt. Hier bouwen
+    /// de widget en de complicatie hun weergave mee op.
+    ///
+    /// Zonder automatisch afvinken bestaat "vandaag" niet echt en zijn het
+    /// gewoon de bovenste gerechten van de lijst.
+    static func dishesForComingDays(
+        _ count: Int,
         in plan: MealPlan,
         at now: Date,
         calendar: Calendar = .current,
-        autoAdvance: Bool,
-        count: Int
-    ) -> [Dish] {
+        autoAdvance: Bool
+    ) -> [Dish?] {
         guard count > 0 else { return [] }
-        let start = autoAdvance ? servedCount(in: plan, at: now, calendar: calendar) : 0
-        guard start < plan.dishes.count else { return [] }
-        let end = min(start + count, plan.dishes.count)
-        return Array(plan.dishes[start..<end])
+        let start = autoAdvance ? dayOffset(in: plan, at: now, calendar: calendar) : 0
+        return (0..<count).map { day in
+            let index = start + day
+            return plan.dishes.indices.contains(index) ? plan.dishes[index] : nil
+        }
     }
 
     /// De planning zoals die er vandaag uitziet: alles wat volgens de kalender al
@@ -97,14 +109,9 @@ enum PlanSchedule {
             return updated
         }
 
-        // Een anker in de toekomst kan alleen ontstaan door een klok die is
-        // teruggezet of door een apparaat in een andere tijdzone. Dan zou het
-        // bovenste gerecht "over drie dagen" zijn; vandaag is de enige zinnige
-        // uitkomst.
-        if calendar.startOfDay(for: plan.anchorDate) > today {
-            updated.anchorDate = today
-            return updated
-        }
+        // Een anker in de toekomst blijft staan: dan is het gerecht van vandaag
+        // al gegeten en is het bovenste gerecht voor morgen. servedCount levert
+        // dan 0 op, dus er gebeurt niets tot die dag er is.
 
         let served = servedCount(in: plan, at: now, calendar: calendar)
         if served > 0 {
@@ -116,11 +123,47 @@ enum PlanSchedule {
         }
 
         // Is de wachtrij leeg gelopen, dan begint een nieuw gerecht vandaag en
-        // niet op de dag waarop de lijst toevallig opraakte.
-        updated.anchorDate = updated.dishes.isEmpty
-            ? today
-            : plannedDate(offset: served, anchorDate: plan.anchorDate, calendar: calendar)
+        // niet op de dag waarop de lijst toevallig opraakte — tenzij vandaag al
+        // gegeten is, dan is morgen de eerste vrije dag.
+        let next = plannedDate(offset: served, anchorDate: plan.anchorDate, calendar: calendar)
+        updated.anchorDate = updated.dishes.isEmpty ? max(today, next) : next
 
+        return updated
+    }
+
+    /// Een gerecht is gegeten: het gaat naar het logboek.
+    ///
+    /// Was het het bovenste gerecht, dan houdt de rest zijn dag. In 2.0 schoof
+    /// het volgende gerecht hier naar vandaag, en werd het om middernacht óók
+    /// met de datum van vandaag afgestreept — twee gerechten op één dag.
+    static func serving(
+        _ plan: MealPlan,
+        dishID: UUID,
+        at now: Date,
+        calendar: Calendar = .current,
+        autoAdvance: Bool
+    ) -> MealPlan {
+        guard let index = plan.dishes.firstIndex(where: { $0.id == dishID }) else { return plan }
+        var updated = plan
+        let today = calendar.startOfDay(for: now)
+        let planned = plannedDate(offset: index, anchorDate: plan.anchorDate, calendar: calendar)
+        // Wie vooruit eet, eet vandaag — niet op de dag waarvoor het gepland stond.
+        updated.log.append(ServedMeal(dish: plan.dishes[index], servedOn: min(planned, today)))
+        updated.dishes.remove(at: index)
+
+        if index == 0 {
+            updated.anchorDate = autoAdvance
+                ? plannedDate(offset: 1, anchorDate: plan.anchorDate, calendar: calendar)
+                : today
+        }
+        return updated
+    }
+
+    /// Een gerecht is geschrapt zonder gegeten te zijn. Het volgende neemt zijn
+    /// dag over, dus het anker blijft staan.
+    static func removing(_ plan: MealPlan, dishID: UUID) -> MealPlan {
+        var updated = plan
+        updated.dishes.removeAll { $0.id == dishID }
         return updated
     }
 

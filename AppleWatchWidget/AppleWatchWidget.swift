@@ -4,6 +4,8 @@ import SwiftUI
 struct WatchDinnerWidgetEntry: TimelineEntry {
     let date: Date
     let dish: Dish?
+    /// Of `dish` het gerecht van morgen is, omdat dat van vandaag al op is.
+    var isTomorrow: Bool = false
 }
 
 /// Complicatie-tijdlijn voor de Watch.
@@ -41,10 +43,13 @@ struct WatchDinnerWidgetProvider: TimelineProvider {
 
         return (0...Self.daysAhead).map { offset in
             let date = offset == 0 ? now : PlanSchedule.plannedDate(offset: offset, anchorDate: now, calendar: calendar)
-            return WatchDinnerWidgetEntry(
-                date: date,
-                dish: PlanSchedule.currentDish(in: plan, at: date, calendar: calendar, autoAdvance: true)
-            )
+            let days = PlanSchedule.dishesForComingDays(2, in: plan, at: date, calendar: calendar, autoAdvance: true)
+            // Na het afstrepen van vandaag toont de complicatie wat er morgen is.
+            let eaten = PlanSchedule.dayOffset(in: plan, at: date, calendar: calendar) < 0
+            if days[0] == nil, eaten, let tomorrow = days[1] {
+                return WatchDinnerWidgetEntry(date: date, dish: tomorrow, isTomorrow: true)
+            }
+            return WatchDinnerWidgetEntry(date: date, dish: days[0])
         }
     }
 }
@@ -83,7 +88,7 @@ struct WatchDinnerWidgetView: View {
 
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
-                Text(LocalizedStringKey("today"))
+                Text(LocalizedStringKey(entry.isTomorrow ? "tomorrow" : "today"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 HStack(spacing: 4) {

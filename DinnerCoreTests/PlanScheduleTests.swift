@@ -141,14 +141,18 @@ struct PlanScheduleTests {
         #expect(nieuw.anchorDate == testCalendar.startOfDay(for: datum(2026, 8, 20)))
     }
 
-    @Test("Een anker in de toekomst wordt naar vandaag getrokken")
+    // Tot en met 2.0 werd een anker in de toekomst naar vandaag teruggezet. Dat
+    // was fout: een anker op morgen betekent dat het gerecht van vandaag al
+    // gegeten is, en terugzetten liet het volgende gerecht óók vandaag afstrepen.
+    @Test("Een anker in de toekomst blijft staan: vandaag is al gegeten")
     func ankerInDeToekomst() {
-        let plan = planning(vanaf: datum(2026, 9, 1), "Pizza")
+        let plan = planning(vanaf: datum(2026, 8, 21), "Pizza", "Soep")
         let nieuw = PlanSchedule.advanced(
             plan, to: datum(2026, 8, 20), calendar: testCalendar, autoAdvance: true
         )
-        #expect(nieuw.anchorDate == testCalendar.startOfDay(for: datum(2026, 8, 20)))
-        #expect(nieuw.dishes.map(\.name) == ["Pizza"])
+        #expect(nieuw.anchorDate == testCalendar.startOfDay(for: datum(2026, 8, 21)))
+        #expect(nieuw.dishes.map(\.name) == ["Pizza", "Soep"])
+        #expect(nieuw.log.isEmpty)
     }
 
     @Test("Doorschuiven over de zomertijd heen eet precies één gerecht")
@@ -199,50 +203,51 @@ struct PlanScheduleTests {
 /// Wat de widget en de complicatie tonen. Die code draait in een extensie, dus
 /// de berekening eronder hoort in de kern te staan waar een test erbij kan.
 @Suite("Vooruitkijken voor de widget")
-struct UpcomingDishesTests {
+struct DishesForComingDaysTests {
+
+    private func namen(_ dagen: [Dish?]) -> [String?] { dagen.map { $0?.name } }
 
     @Test("Vandaag en morgen zijn de eerste twee gerechten")
     func vandaagEnMorgen() {
         let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep", "Pasta")
-        let next = PlanSchedule.upcomingDishes(
-            in: plan, at: datum(2026, 8, 20), calendar: testCalendar, autoAdvance: true, count: 2
-        )
-        #expect(next.map(\.name) == ["Pizza", "Soep"])
+        let dagen = PlanSchedule.dishesForComingDays(2, in: plan, at: datum(2026, 8, 20), calendar: testCalendar, autoAdvance: true)
+        #expect(namen(dagen) == ["Pizza", "Soep"])
     }
 
     @Test("Na twee dagen schuift het paar mee")
     func schuiftMee() {
         let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep", "Pasta", "Zalm")
-        let next = PlanSchedule.upcomingDishes(
-            in: plan, at: datum(2026, 8, 22), calendar: testCalendar, autoAdvance: true, count: 2
-        )
-        #expect(next.map(\.name) == ["Pasta", "Zalm"])
+        let dagen = PlanSchedule.dishesForComingDays(2, in: plan, at: datum(2026, 8, 22), calendar: testCalendar, autoAdvance: true)
+        #expect(namen(dagen) == ["Pasta", "Zalm"])
     }
 
-    @Test("Zonder automatisch doorschuiven blijft het bij de bovenste twee")
+    @Test("Zonder automatisch afvinken zijn het de bovenste twee")
     func handmatigeModus() {
         let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep", "Pasta")
-        let next = PlanSchedule.upcomingDishes(
-            in: plan, at: datum(2026, 8, 25), calendar: testCalendar, autoAdvance: false, count: 2
-        )
-        #expect(next.map(\.name) == ["Pizza", "Soep"])
+        let dagen = PlanSchedule.dishesForComingDays(2, in: plan, at: datum(2026, 8, 25), calendar: testCalendar, autoAdvance: false)
+        #expect(namen(dagen) == ["Pizza", "Soep"])
+    }
+
+    @Test("Is vandaag al gegeten, dan is vandaag leeg en morgen gevuld")
+    func vandaagAlGegeten() {
+        // Anker op morgen: het gerecht van vandaag is al afgestreept.
+        let plan = planning(vanaf: datum(2026, 8, 21), "Soep", "Pasta")
+        let dagen = PlanSchedule.dishesForComingDays(2, in: plan, at: datum(2026, 8, 20), calendar: testCalendar, autoAdvance: true)
+        #expect(namen(dagen) == [nil, "Soep"])
+        #expect(PlanSchedule.dayOffset(in: plan, at: datum(2026, 8, 20), calendar: testCalendar) == -1)
     }
 
     @Test("Is er nog maar één gerecht, dan blijft morgen leeg")
     func laatsteGerecht() {
         let plan = planning(vanaf: datum(2026, 8, 20), "Pizza", "Soep")
-        let next = PlanSchedule.upcomingDishes(
-            in: plan, at: datum(2026, 8, 21), calendar: testCalendar, autoAdvance: true, count: 2
-        )
-        #expect(next.map(\.name) == ["Soep"])
+        let dagen = PlanSchedule.dishesForComingDays(2, in: plan, at: datum(2026, 8, 21), calendar: testCalendar, autoAdvance: true)
+        #expect(namen(dagen) == ["Soep", nil])
     }
 
     @Test("Een opgedroogde lijst levert niets op in plaats van een crash")
     func lijstOp() {
         let plan = planning(vanaf: datum(2026, 8, 20), "Pizza")
-        let next = PlanSchedule.upcomingDishes(
-            in: plan, at: datum(2026, 8, 30), calendar: testCalendar, autoAdvance: true, count: 2
-        )
-        #expect(next.isEmpty)
+        let dagen = PlanSchedule.dishesForComingDays(2, in: plan, at: datum(2026, 8, 30), calendar: testCalendar, autoAdvance: true)
+        #expect(namen(dagen) == [nil, nil])
     }
 }

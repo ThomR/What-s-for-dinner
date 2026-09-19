@@ -18,11 +18,19 @@ final class PlanStore: ObservableObject {
     private let calendar: Calendar
     /// Injecteerbaar zodat tests niet van de echte klok afhangen.
     private let now: () -> Date
+    /// Injecteerbaar zodat tests niet van de gedeelde instellingen afhangen.
+    private let autoAdvance: () -> Bool
 
-    init(store: DishStore = .shared, calendar: Calendar = .current, now: @escaping () -> Date = Date.init) {
+    init(
+        store: DishStore = .shared,
+        calendar: Calendar = .current,
+        now: @escaping () -> Date = Date.init,
+        autoAdvance: @escaping () -> Bool = { Preferences.autoAdvance }
+    ) {
         self.store = store
         self.calendar = calendar
         self.now = now
+        self.autoAdvance = autoAdvance
         Preferences.migrateIfNeeded()
         let loaded = store.load()
         self.plan = loaded
@@ -62,7 +70,7 @@ final class PlanStore: ObservableObject {
             today = startOfToday
         }
         let stored = store.load()
-        let advanced = PlanSchedule.advanced(stored, to: moment, calendar: calendar, autoAdvance: Preferences.autoAdvance)
+        let advanced = PlanSchedule.advanced(stored, to: moment, calendar: calendar, autoAdvance: autoAdvance())
         if advanced != plan {
             plan = advanced
         }
@@ -78,9 +86,10 @@ final class PlanStore: ObservableObject {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let dish = Dish(name: trimmed, emoji: EmojiSuggester.suggest(for: trimmed), addedAt: now())
-        // Een gerecht dat bij een lege lijst komt is vanaf vandaag aan de beurt.
+        // Een gerecht dat bij een lege lijst komt is vanaf vandaag aan de beurt,
+        // of vanaf morgen als het gerecht van vandaag al gegeten is.
         if plan.dishes.isEmpty {
-            plan.anchorDate = calendar.startOfDay(for: now())
+            plan.anchorDate = max(plan.anchorDate, calendar.startOfDay(for: now()))
         }
         plan.dishes.append(dish)
         persist()
@@ -97,27 +106,15 @@ final class PlanStore: ObservableObject {
         refineEmoji(for: dish.id, name: trimmed, current: plan.dishes[index].emoji)
     }
 
-    /// Streept een gerecht af: het verhuist naar het logboek met de dag waarop
-    /// het gepland stond.
+    /// Streept een gerecht af: het verhuist naar het logboek.
     func serve(_ dish: Dish) {
-        guard let index = plan.dishes.firstIndex(where: { $0.id == dish.id }) else { return }
-        let date = PlanSchedule.plannedDate(offset: index, anchorDate: plan.anchorDate, calendar: calendar)
-        plan.log.append(ServedMeal(dish: plan.dishes[index], servedOn: min(date, calendar.startOfDay(for: now()))))
-        plan.dishes.remove(at: index)
-        // Het gerecht van vandaag is weg, dus de rest schuift een dag naar voren.
-        if index == 0, !plan.dishes.isEmpty {
-            plan.anchorDate = calendar.startOfDay(for: now())
-        }
+        plan = PlanSchedule.serving(plan, dishID: dish.id, at: now(), calendar: calendar, autoAdvance: autoAdvance())
         persist()
     }
 
     /// Verwijdert zonder het in het logboek te zetten.
     func remove(_ dish: Dish) {
-        guard let index = plan.dishes.firstIndex(where: { $0.id == dish.id }) else { return }
-        plan.dishes.remove(at: index)
-        if index == 0, !plan.dishes.isEmpty {
-            plan.anchorDate = calendar.startOfDay(for: now())
-        }
+        plan = PlanSchedule.removing(plan, dishID: dish.id)
         persist()
     }
 
@@ -131,7 +128,7 @@ final class PlanStore: ObservableObject {
         guard let index = plan.log.firstIndex(where: { $0.id == meal.id }) else { return }
         let removed = plan.log.remove(at: index)
         if plan.dishes.isEmpty {
-            plan.anchorDate = calendar.startOfDay(for: now())
+            plan.anchorDate = max(plan.anchorDate, calendar.startOfDay(for: now()))
         }
         plan.dishes.append(removed.restored(at: now()))
         persist()
