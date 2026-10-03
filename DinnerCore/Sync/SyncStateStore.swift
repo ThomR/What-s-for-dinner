@@ -81,9 +81,23 @@ final class SyncStateStore: @unchecked Sendable {
     }
 
     func setSystemFields(_ data: Data?, for recordName: String) {
+        setSystemFields([(recordName, data)])
+    }
+
+    /// Een hele ronde in één keer. Elke wijziging herschrijft het hele bestand,
+    /// en een ophaalronde levert er soms honderden tegelijk: de eerste keer na
+    /// het meedoen aan een lijst, of de eenmalige reparatie in 2.0.2. Per record
+    /// schrijven was dan honderden keer een steeds groter bestand.
+    ///
+    /// Een lijst van paren en geen woordenboek: `nil` in een `[String: Data?]`
+    /// zetten haalt de sleutel weg in plaats van "verwijder dit" te bewaren.
+    func setSystemFields(_ updates: [(recordName: String, data: Data?)]) {
+        guard !updates.isEmpty else { return }
         queue.sync {
             var fields = loadSystemFields()
-            fields[recordName] = data
+            for update in updates {
+                fields[update.recordName] = update.data
+            }
             persistSystemFields(fields)
         }
     }

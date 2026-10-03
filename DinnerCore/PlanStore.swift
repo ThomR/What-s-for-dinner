@@ -204,6 +204,9 @@ final class PlanStore: ObservableObject {
 
     /// Neemt over wat er uit iCloud binnenkwam. Niet terugsturen: dan zou elke
     /// ontvangen wijziging meteen weer een verzending worden.
+    ///
+    /// Widgets en Watch heeft `CloudSync` dan al bijgewerkt — die draait ook
+    /// als er geen scherm is. Dit is alleen nog voor wat je ziet.
     func adoptRemoteChanges() {
         syncSharingState()
         store.invalidateCache()
@@ -211,8 +214,6 @@ final class PlanStore: ObservableObject {
         guard stored != plan else { return }
         plan = stored
         lastPersisted = stored
-        Task { WidgetCenter.shared.reloadAllTimelines() }
-        PlanSyncBridge.shared.planDidChange(stored)
     }
 
     /// Vraagt het taalmodel om een betere emoji als de woordenlijst er niet

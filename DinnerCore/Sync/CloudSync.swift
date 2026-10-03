@@ -2,6 +2,7 @@ import Foundation
 
 #if canImport(CloudKit) && os(iOS)
 import CloudKit
+import WidgetKit
 
 /// Houdt de planning gelijk tussen jouw toestellen én met degene met wie je hem
 /// deelt.
@@ -52,12 +53,9 @@ final class CloudSync {
     /// Waar de app op dit moment mee werkt. Blijft bewaard tussen twee starts.
     private(set) var activeScope: Scope = Preferences.usesSharedList ? .sharedDatabase : .privateDatabase
 
-    /// Wordt aangeroepen als iCloud een wijziging aanlevert, zodat de UI kan
-    /// bijwerken.
+    /// Wordt aangeroepen als iCloud een wijziging aanlevert, zodat het scherm
+    /// kan bijwerken. Widgets en Watch hangen hier niet van af; zie `adopt(_:)`.
     var onRemoteChange: (@MainActor () -> Void)?
-
-    /// Of er iets is misgegaan dat de gebruiker mag weten.
-    @Published private(set) var lastError: String?
 
     private init(store: DishStore = .phoneStore) {
         self.store = store
@@ -65,17 +63,22 @@ final class CloudSync {
 
     // MARK: - Starten
 
-    private var isStarted = false
+    /// Het opzetten van de engines. Bewaard, zodat een ophaalronde erop kan
+    /// wachten in plaats van in een lege lijst engines te kijken.
+    private var startTask: Task<Void, Never>?
 
     /// Zet de synchronisatie aan. Veilig om vaker aan te roepen.
+    ///
+    /// Hoort bij het opstarten van de app, niet bij het eerste scherm. Een
+    /// stille push van je partner start de app op de achtergrond zonder
+    /// venster; de engine moet er dan al zijn om de wijziging op te halen.
     func start() {
         guard CloudAvailability.isEnabled else {
             Log.sync.info("Gebouwd zonder CloudKit, synchronisatie blijft uit")
             return
         }
-        guard !isStarted else { return }
-        isStarted = true
-        Task { await configureEngines() }
+        guard startTask == nil else { return }
+        startTask = Task { await configureEngines() }
     }
 
     private func configureEngines() async {
@@ -219,6 +222,10 @@ final class CloudSync {
     /// stille pushmelding — nooit rechtstreeks vanuit een delegate-callback.
     func fetchChanges() async {
         guard CloudAvailability.isEnabled else { return }
+        // Bij een koude start door een push loopt het opzetten nog; zonder te
+        // wachten valt er niets op te halen en blijft de widget achter.
+        start()
+        await startTask?.value
         for engine in engines.values {
             do {
                 try await engine.fetchChanges()
@@ -335,12 +342,14 @@ final class CloudSync {
         var order = PlanProjection.order(of: plan)
         var anchor = plan.anchorDate
 
-        for record in modifications {
-            // Systeemvelden bewaren voor de volgende keer dat we dit record sturen.
-            let archiver = NSKeyedArchiver(requiringSecureCoding: true)
-            record.encodeSystemFields(with: archiver)
-            stateStore.setSystemFields(archiver.encodedData, for: record.recordID.recordName)
+        // Systeemvelden bewaren voor de volgende keer dat we een record sturen,
+        // en weggooien voor wat er niet meer is — in één keer geschreven.
+        stateStore.setSystemFields(
+            modifications.map { ($0.recordID.recordName, Self.systemFields(of: $0)) }
+                + deletions.map { ($0.recordName, nil) }
+        )
 
+        for record in modifications {
             switch CloudSchema.RecordName.kind(of: record.recordID.recordName) {
             case .plan:
                 if let stored = record[CloudSchema.Field.order] as? [String] {
@@ -367,7 +376,6 @@ final class CloudSync {
         // Per naam, niet per id: een gerecht en zijn logregel hebben dezelfde
         // id, dus het verwijderen van het gerecht mag de logregel niet meenemen.
         for recordID in deletions {
-            stateStore.setSystemFields(nil, for: recordID.recordName)
             switch CloudSchema.RecordName.kind(of: recordID.recordName) {
             case .dish(let id): dishes[id] = nil
             case .meal(let id): meals[id] = nil
@@ -377,9 +385,28 @@ final class CloudSync {
 
         let merged = PlanProjection.rebuild(dishes: dishes, order: order, anchorDate: anchor, log: meals)
         guard merged != plan else { return }
-        store.save(merged)
-        onRemoteChange?()
+        adopt(merged)
         Log.sync.info("Wijziging uit iCloud verwerkt: \(merged.dishes.count) gerechten")
+    }
+
+    /// Een planning die niet van dit toestel komt: bewaren en overal tonen.
+    ///
+    /// Widgets en Watch worden hier bijgewerkt en niet via het scherm. Na een
+    /// stille push draait de app zonder venster, en dan zou niemand het
+    /// doorgeven — de wijziging van je partner verscheen pas op je Watch en
+    /// beginscherm als je de app zelf opende.
+    private func adopt(_ plan: MealPlan) {
+        store.save(plan)
+        WidgetCenter.shared.reloadAllTimelines()
+        PlanSyncBridge.shared.planDidChange(plan)
+        onRemoteChange?()
+    }
+
+    /// De systeemvelden van een record, zoals `SyncStateStore` ze bewaart.
+    nonisolated fileprivate static func systemFields(of record: CKRecord) -> Data {
+        let archiver = NSKeyedArchiver(requiringSecureCoding: true)
+        record.encodeSystemFields(with: archiver)
+        return archiver.encodedData
     }
 
     // MARK: - Meedoen aan een gedeelde lijst
@@ -415,8 +442,7 @@ final class CloudSync {
         if !wasShared {
             // Je eigen lijst blijft veilig in je eigen zone staan, maar hij mag
             // niet mee de lijst van de ander in.
-            store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
-            onRemoteChange?()
+            adopt(MealPlan(dishes: [], anchorDate: Date(), log: []))
         }
         scheduleFetch()
     }
@@ -479,8 +505,7 @@ final class CloudSync {
         Preferences.forgetSharedList()
 
         // De lokale planning is nog die van de ander.
-        store.save(MealPlan(dishes: [], anchorDate: Date(), log: []))
-        onRemoteChange?()
+        adopt(MealPlan(dishes: [], anchorDate: Date(), log: []))
 
         for scope in [Scope.privateDatabase, .sharedDatabase] {
             stateStores[scope]?.reset()
@@ -523,9 +548,7 @@ final class CloudSync {
             // schrijver: neem de systeemvelden van de server over, zodat onze
             // versie er alsnog overheen mag.
             guard let server = failure.error.serverRecord else { return report(failure.error) }
-            let archiver = NSKeyedArchiver(requiringSecureCoding: true)
-            server.encodeSystemFields(with: archiver)
-            stateStore.setSystemFields(archiver.encodedData, for: recordID.recordName)
+            stateStore.setSystemFields(Self.systemFields(of: server), for: recordID.recordName)
 
         case .unknownItem:
             // Het record bestaat niet meer op de server, maar wel bij ons.
@@ -544,7 +567,6 @@ final class CloudSync {
 
     fileprivate func report(_ error: Error) {
         Log.sync.error("Synchronisatiefout: \(error.localizedDescription, privacy: .public)")
-        lastError = error.localizedDescription
     }
 }
 
@@ -577,17 +599,13 @@ private final class EngineDelegate: NSObject, CKSyncEngineDelegate {
             await owner.apply(modifications: records, deletions: deleted, scope: scope, stateStore: stateStore)
 
         case .sentRecordZoneChanges(let sent):
-            for saved in sent.savedRecords {
-                let archiver = NSKeyedArchiver(requiringSecureCoding: true)
-                saved.encodeSystemFields(with: archiver)
-                stateStore.setSystemFields(archiver.encodedData, for: saved.recordID.recordName)
-            }
             // De systeemvelden van een verwijderd record wijzen naar iets wat
             // niet meer bestaat. Blijven ze staan, dan botst een record met
             // dezelfde naam dat later opnieuw wordt aangemaakt.
-            for recordID in sent.deletedRecordIDs {
-                stateStore.setSystemFields(nil, for: recordID.recordName)
-            }
+            stateStore.setSystemFields(
+                sent.savedRecords.map { ($0.recordID.recordName, CloudSync.systemFields(of: $0)) }
+                    + sent.deletedRecordIDs.map { ($0.recordName, nil) }
+            )
             for failure in sent.failedRecordSaves {
                 await owner.retryOrReport(failure, scope: scope, stateStore: stateStore)
             }

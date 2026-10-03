@@ -17,23 +17,17 @@ struct DinnerApp: App {
             ContentView()
                 .environmentObject(store)
                 .task {
-                    // Na het eerste beeldje: het activeren van de Watch-sessie
-                    // hoeft niemand af te wachten.
-                    WatchSessionManager.shared.activate()
-
-                    // Elke wijziging van de planning gaat één keer naar de Watch.
-                    PlanSyncBridge.shared.observe { plan in
-                        WatchSessionManager.shared.send(plan)
-                    }
+                    // Synchronisatie en Watch-sessie zijn al gestart in de
+                    // AppDelegate. Hier alleen wat het scherm aangaat.
                     WatchSessionManager.shared.send(store.plan)
 
-                    // iCloud houdt de lijst gelijk met je partner; komt er iets
-                    // binnen, dan neemt de app dat over en gaat het door naar
-                    // de Watch en de widgets.
+                    // Komt er iets uit iCloud binnen, dan werkt het scherm bij.
+                    // Eén keer meteen ophalen: de sync draaide al vóór dit
+                    // scherm er was en kan iets hebben binnengehaald.
                     CloudSync.shared.onRemoteChange = {
                         store.adoptRemoteChanges()
                     }
-                    CloudSync.shared.start()
+                    store.adoptRemoteChanges()
                 }
                 .onOpenURL(perform: handleIncomingFile)
                 .alert(

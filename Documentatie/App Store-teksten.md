@@ -9,6 +9,8 @@
   jullie weer precies dezelfde lijst zien.
 • Een wijziging die iCloud weigert wordt opnieuw aangeboden in plaats van
   stilletjes blijven liggen.
+• Wat de ander aanpast verschijnt nu ook op je widget en Apple Watch als je de
+  app een tijd niet hebt geopend.
 
 ## 2.0.2 — releaseopmerkingen (Engels)
 
@@ -19,6 +21,8 @@
   exactly the same list again.
 • A change that iCloud rejects is now retried instead of quietly being left
   behind.
+• Changes made by the other person now reach your widget and Apple Watch even
+  when you haven't opened the app for a while.
 
 ## 2.0.1 — releaseopmerkingen (Nederlands)
 

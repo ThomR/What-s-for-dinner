@@ -1,15 +1,27 @@
 import UIKit
 import CloudKit
 
-/// Nodig voor twee dingen die SwiftUI zelf niet aanbiedt: stille pushmeldingen
-/// van CloudKit, en het koppelen van de scene-delegate die uitnodigingen
-/// voor een gedeelde lijst opvangt.
+/// Nodig voor wat SwiftUI zelf niet aanbiedt: stille pushmeldingen van
+/// CloudKit, het koppelen van de scene-delegate die uitnodigingen voor een
+/// gedeelde lijst opvangt, en opstartwerk dat niet op een venster mag wachten.
 final class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        // Hier en niet in het eerste scherm. Wijzigt je partner iets, dan start
+        // iOS de app met een stille push op de achtergrond, zónder venster. Stond
+        // dit in het scherm, dan was er dan geen sync-engine om de wijziging op
+        // te halen en niemand om hem naar de Watch te sturen — je zag hem pas
+        // als je de app zelf opende. Allebei asynchroon, dus het eerste beeldje
+        // wacht er niet op.
+        WatchSessionManager.shared.activate()
+        PlanSyncBridge.shared.observe { plan in
+            WatchSessionManager.shared.send(plan)
+        }
+        CloudSync.shared.start()
+
         // Zonder registratie stuurt CloudKit geen meldingen en merk je pas iets
         // van andermans wijziging als je de app zelf opent. Zonder de bijbehorende
         // entitlement heeft registreren geen zin.
