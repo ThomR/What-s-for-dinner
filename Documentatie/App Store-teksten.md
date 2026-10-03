@@ -1,5 +1,25 @@
 # App Store-teksten
 
+## 2.0.2 — releaseopmerkingen (Nederlands)
+
+• Opgelost: zette je een gerecht terug uit de geschiedenis, dan verdween het bij
+  de persoon met wie je de lijst deelt. Omgekeerd bleef een gerecht dat jij had
+  afgestreept soms op zijn lijst staan.
+• Bij het bijwerken wordt je lijst eenmalig opnieuw met iCloud vergeleken, zodat
+  jullie weer precies dezelfde lijst zien.
+• Een wijziging die iCloud weigert wordt opnieuw aangeboden in plaats van
+  stilletjes blijven liggen.
+
+## 2.0.2 — releaseopmerkingen (Engels)
+
+• Fixed: restoring a meal from your history removed it for the person you share
+  the list with. The other way round, a meal you ticked off sometimes stayed on
+  their list.
+• After updating, your list is reconciled with iCloud once, so you both see
+  exactly the same list again.
+• A change that iCloud rejects is now retried instead of quietly being left
+  behind.
+
 ## 2.0.1 — releaseopmerkingen (Nederlands)
 
 • Samen plannen werkt nu echt: wie je uitnodigt, doet na het accepteren mee met

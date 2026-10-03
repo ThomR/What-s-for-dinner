@@ -85,6 +85,7 @@ final class CloudSync {
         }
         makeEngine(for: .privateDatabase)
         makeEngine(for: .sharedDatabase)
+        repairRecordNames()
         uploadUnsyncedRecords()
         await refreshSharedListDetails()
         // Bewust géén fetchChanges() hier. Met `automaticallySync` plant de
@@ -110,15 +111,53 @@ final class CloudSync {
         guard let engine = engines[.privateDatabase], let stateStore = stateStores[.privateDatabase] else { return }
 
         let plan = store.load()
-        let ids = plan.dishes.map(\.id) + plan.log.map(\.id)
-        var pending = ids
-            .filter { stateStore.systemFields(for: $0.uuidString) == nil }
-            .map { CKSyncEngine.PendingRecordZoneChange.saveRecord(CKRecord.ID(recordName: $0.uuidString, zoneID: privateZoneID)) }
+        let names = plan.dishes.map { CloudSchema.RecordName.dish($0.id) }
+            + plan.log.map { CloudSchema.RecordName.meal($0.id) }
+        var pending = names
+            .filter { stateStore.systemFields(for: $0) == nil }
+            .map { CKSyncEngine.PendingRecordZoneChange.saveRecord(privateRecordID($0)) }
 
         guard !pending.isEmpty else { return }
-        pending.append(.saveRecord(CKRecord.ID(recordName: CloudSchema.planRecordName, zoneID: privateZoneID)))
+        pending.append(.saveRecord(privateRecordID(CloudSchema.planRecordName)))
         engine.state.add(pendingRecordZoneChanges: pending)
         Log.sync.info("\(pending.count) records voor het eerst naar iCloud gezet")
+    }
+
+    /// Zet eenmalig de hele eigen lijst opnieuw op de server.
+    ///
+    /// Nodig na 2.0.1. Daar deelde een logregel zijn recordnaam met het gerecht
+    /// waar hij uit kwam (zie `CloudSchema.RecordName`), met twee gevolgen die
+    /// zichzelf niet herstellen: een gerecht dat je uit de geschiedenis
+    /// terugzette werd op de server verwijderd en verdween bij je partner, en
+    /// een gegeten gerecht bleef als `Dish`-record staan en kwam bij de ander
+    /// weer in de wachtrij. Opnieuw opsturen zet het eerste recht; het
+    /// verwijderen van de oude logrecords het tweede.
+    private func repairRecordNames() {
+        guard activeScope == .privateDatabase, !Preferences.didRepairRecordNames else { return }
+        guard let engine = engines[.privateDatabase] else { return }
+
+        let plan = store.load()
+        let queued = Set(plan.dishes.map(\.id))
+        var pending = plan.dishes.map {
+            CKSyncEngine.PendingRecordZoneChange.saveRecord(privateRecordID(CloudSchema.RecordName.dish($0.id)))
+        }
+        for meal in plan.log {
+            pending.append(.saveRecord(privateRecordID(CloudSchema.RecordName.meal(meal.id))))
+            // Alleen als het gerecht niet óók in de wachtrij staat: dan is dat
+            // record een echt gerecht en moet het blijven.
+            if !queued.contains(meal.id) {
+                pending.append(.deleteRecord(privateRecordID(CloudSchema.RecordName.dish(meal.id))))
+            }
+        }
+        pending.append(.saveRecord(privateRecordID(CloudSchema.planRecordName)))
+
+        engine.state.add(pendingRecordZoneChanges: pending)
+        Preferences.didRepairRecordNames = true
+        Log.sync.info("Eenmalige reparatie: \(pending.count) records opnieuw naar iCloud")
+    }
+
+    private func privateRecordID(_ recordName: String) -> CKRecord.ID {
+        CKRecord.ID(recordName: recordName, zoneID: privateZoneID)
     }
 
     private func isSignedIn() async -> Bool {
@@ -196,24 +235,17 @@ final class CloudSync {
         let changes = PlanProjection.changes(from: old, to: new)
         guard !changes.isEmpty else { return }
 
-        var pending: [CKSyncEngine.PendingRecordZoneChange] = []
-        for id in changes.changedDishes {
-            pending.append(.saveRecord(CKRecord.ID(recordName: id.uuidString, zoneID: zoneID)))
+        func recordID(_ name: String) -> CKRecord.ID {
+            CKRecord.ID(recordName: name, zoneID: zoneID)
         }
-        for id in changes.removedDishes {
-            pending.append(.deleteRecord(CKRecord.ID(recordName: id.uuidString, zoneID: zoneID)))
-        }
-        for id in changes.changedMeals {
-            pending.append(.saveRecord(CKRecord.ID(recordName: id.uuidString, zoneID: zoneID)))
-        }
-        for id in changes.removedMeals {
-            pending.append(.deleteRecord(CKRecord.ID(recordName: id.uuidString, zoneID: zoneID)))
-        }
-        if changes.metadataChanged || !changes.changedDishes.isEmpty || !changes.removedDishes.isEmpty {
-            // De volgorde staat in het plan-record, dus dat moet ook mee zodra
-            // er een gerecht bij komt of verdwijnt.
-            pending.append(.saveRecord(CKRecord.ID(recordName: CloudSchema.planRecordName, zoneID: zoneID)))
-        }
+
+        // Een gerecht en zijn logregel hebben dezelfde id maar een eigen
+        // recordnaam. Afstrepen verstuurt dus een verwijdering én een nieuw
+        // record, en niet twee opdrachten voor hetzelfde record — waarvan
+        // CloudKit er één zou laten vallen.
+        let records = CloudSchema.RecordName.records(for: changes)
+        let pending = records.save.map { CKSyncEngine.PendingRecordZoneChange.saveRecord(recordID($0)) }
+            + records.delete.map { CKSyncEngine.PendingRecordZoneChange.deleteRecord(recordID($0)) }
 
         engine.state.add(pendingRecordZoneChanges: pending)
     }
@@ -230,39 +262,43 @@ final class CloudSync {
 
         func base(type: String) -> CKRecord {
             // Systeemvelden hergebruiken, anders ziet CloudKit elke wijziging
-            // als een nieuw record en botst het met wat er al staat.
+            // als een nieuw record en botst het met wat er al staat. Maar nooit
+            // over een ander recordtype heen: het type van een record staat
+            // vast, en 2.0.1 schreef daardoor logregels in `Dish`-records.
             if let data = stateStore.systemFields(for: recordID.recordName),
                let archiver = try? NSKeyedUnarchiver(forReadingFrom: data) {
                 archiver.requiresSecureCoding = true
                 if let record = CKRecord(coder: archiver) {
                     archiver.finishDecoding()
-                    return record
+                    if record.recordType == type { return record }
                 }
             }
             return CKRecord(recordType: type, recordID: recordID)
         }
 
-        if recordID.recordName == CloudSchema.planRecordName {
+        switch CloudSchema.RecordName.kind(of: recordID.recordName) {
+        case .plan:
             let record = base(type: CloudSchema.RecordType.plan)
             record[CloudSchema.Field.anchorDate] = plan.anchorDate as CKRecordValue
             record[CloudSchema.Field.order] = PlanProjection.order(of: plan).map(\.uuidString) as CKRecordValue
             return record
-        }
 
-        guard let id = UUID(uuidString: recordID.recordName) else { return nil }
-
-        if let dish = plan.dishes.first(where: { $0.id == id }) {
+        case .dish(let id):
+            guard let dish = plan.dishes.first(where: { $0.id == id }) else { return nil }
             let record = base(type: CloudSchema.RecordType.dish)
             dish.write(to: record)
             return record
-        }
-        if let meal = plan.log.first(where: { $0.id == id }) {
+
+        case .meal(let id):
+            guard let meal = plan.log.first(where: { $0.id == id }) else { return nil }
             let record = base(type: CloudSchema.RecordType.meal)
             meal.write(to: record)
             return record
+
+        case nil:
+            // Onbekende naam; die hebben wij niet geschreven.
+            return nil
         }
-        // Het gerecht is lokaal alweer weg; niets te versturen.
-        return nil
     }
 
     // MARK: - Binnengekomen wijzigingen verwerken
@@ -305,28 +341,38 @@ final class CloudSync {
             record.encodeSystemFields(with: archiver)
             stateStore.setSystemFields(archiver.encodedData, for: record.recordID.recordName)
 
-            switch record.recordType {
-            case CloudSchema.RecordType.dish:
-                if let dish = Dish(record: record) { dishes[dish.id] = dish }
-            case CloudSchema.RecordType.meal:
-                if let meal = ServedMeal(record: record) { meals[meal.id] = meal }
-            case CloudSchema.RecordType.plan:
+            switch CloudSchema.RecordName.kind(of: record.recordID.recordName) {
+            case .plan:
                 if let stored = record[CloudSchema.Field.order] as? [String] {
                     order = stored.compactMap(UUID.init(uuidString:))
                 }
                 if let stored = record[CloudSchema.Field.anchorDate] as? Date {
                     anchor = stored
                 }
-            default:
+            case .dish(let id):
+                // Een logregel van vóór 2.0.2 staat onder de naam van het
+                // gerecht; alleen het recordtype verraadt dat het er een is.
+                if let meal = ServedMeal(record: record, id: id) {
+                    meals[id] = meal
+                } else if let dish = Dish(record: record) {
+                    dishes[id] = dish
+                }
+            case .meal(let id):
+                if let meal = ServedMeal(record: record, id: id) { meals[id] = meal }
+            case nil:
                 break
             }
         }
 
+        // Per naam, niet per id: een gerecht en zijn logregel hebben dezelfde
+        // id, dus het verwijderen van het gerecht mag de logregel niet meenemen.
         for recordID in deletions {
             stateStore.setSystemFields(nil, for: recordID.recordName)
-            guard let id = UUID(uuidString: recordID.recordName) else { continue }
-            dishes[id] = nil
-            meals[id] = nil
+            switch CloudSchema.RecordName.kind(of: recordID.recordName) {
+            case .dish(let id): dishes[id] = nil
+            case .meal(let id): meals[id] = nil
+            case .plan, nil: break
+            }
         }
 
         let merged = PlanProjection.rebuild(dishes: dishes, order: order, anchorDate: anchor, log: meals)
@@ -460,6 +506,42 @@ final class CloudSync {
         }
     }
 
+    /// Een record dat de server weigerde.
+    ///
+    /// Twee gevallen mogen niet blijven liggen: dan synchroniseert juist dat ene
+    /// gerecht nooit meer terwijl de rest van de lijst gewoon doorloopt, en zien
+    /// jullie twee verschillende lijsten zonder dat er iets te zien is.
+    fileprivate func retryOrReport(
+        _ failure: CKSyncEngine.Event.SentRecordZoneChanges.FailedRecordSave,
+        scope: Scope,
+        stateStore: SyncStateStore
+    ) {
+        let recordID = failure.record.recordID
+        switch failure.error.code {
+        case .serverRecordChanged:
+            // De ander was eerder. Bij een lijstje voor twee wint de laatste
+            // schrijver: neem de systeemvelden van de server over, zodat onze
+            // versie er alsnog overheen mag.
+            guard let server = failure.error.serverRecord else { return report(failure.error) }
+            let archiver = NSKeyedArchiver(requiringSecureCoding: true)
+            server.encodeSystemFields(with: archiver)
+            stateStore.setSystemFields(archiver.encodedData, for: recordID.recordName)
+
+        case .unknownItem:
+            // Het record bestaat niet meer op de server, maar wel bij ons.
+            // Onze systeemvelden wijzen naar iets wat weg is; vergeet ze, dan
+            // wordt het record opnieuw aangemaakt. Zo komt een gerecht terug dat
+            // 2.0.1 bij het terugzetten uit de geschiedenis weggooide.
+            stateStore.setSystemFields(nil, for: recordID.recordName)
+
+        default:
+            return report(failure.error)
+        }
+
+        Log.sync.info("Record opnieuw aangeboden na \(failure.error.code.rawValue)")
+        engines[scope]?.state.add(pendingRecordZoneChanges: [.saveRecord(recordID)])
+    }
+
     fileprivate func report(_ error: Error) {
         Log.sync.error("Synchronisatiefout: \(error.localizedDescription, privacy: .public)")
         lastError = error.localizedDescription
@@ -500,8 +582,14 @@ private final class EngineDelegate: NSObject, CKSyncEngineDelegate {
                 saved.encodeSystemFields(with: archiver)
                 stateStore.setSystemFields(archiver.encodedData, for: saved.recordID.recordName)
             }
+            // De systeemvelden van een verwijderd record wijzen naar iets wat
+            // niet meer bestaat. Blijven ze staan, dan botst een record met
+            // dezelfde naam dat later opnieuw wordt aangemaakt.
+            for recordID in sent.deletedRecordIDs {
+                stateStore.setSystemFields(nil, for: recordID.recordName)
+            }
             for failure in sent.failedRecordSaves {
-                await owner.report(failure.error)
+                await owner.retryOrReport(failure, scope: scope, stateStore: stateStore)
             }
 
         default:

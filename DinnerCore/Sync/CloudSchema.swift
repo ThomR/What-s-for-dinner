@@ -33,6 +33,61 @@ enum CloudSchema {
     /// Er is precies één plan-record per zone, met een vaste naam zodat beide
     /// kanten hetzelfde record bijwerken in plaats van er twee te maken.
     static let planRecordName = "plan"
+
+    /// Hoe een record heet in iCloud.
+    ///
+    /// Een gerecht en zijn logregel houden met opzet dezelfde `id`: streept de
+    /// app op twee toestellen om middernacht hetzelfde gerecht af, dan is dat
+    /// daardoor één logregel en niet twee. In iCloud mogen ze diezelfde naam
+    /// juist *niet* delen. Een record heeft één type, en een naam die van
+    /// `Dish` naar `ServedMeal` verhuist levert in één keer een bewaar- én een
+    /// verwijderopdracht voor hetzelfde record op. CloudKit houdt daar maar één
+    /// van over, en in 2.0.1 was dat bij terugzetten uit de geschiedenis de
+    /// verwijdering — het gerecht verdween dan bij je partner terwijl het bij
+    /// jou op de lijst bleef staan.
+    enum RecordName {
+        /// Logregels staan onder een eigen naam. Gerechten houden de blote
+        /// uuid, zodat records die er al staan niet opnieuw hoeven.
+        static let mealPrefix = "served-"
+
+        static func dish(_ id: UUID) -> String { id.uuidString }
+        static func meal(_ id: UUID) -> String { mealPrefix + id.uuidString }
+
+        enum Kind: Equatable {
+            case plan
+            case dish(UUID)
+            case meal(UUID)
+        }
+
+        /// Waar een recordnaam over gaat. `nil` bij een naam die we niet kennen.
+        ///
+        /// Een blote uuid is een gerecht. Logregels van vóór deze versie staan
+        /// ook onder een blote uuid; die zijn alleen aan hun recordtype te
+        /// herkennen, niet aan hun naam.
+        static func kind(of recordName: String) -> Kind? {
+            if recordName == planRecordName { return .plan }
+            if recordName.hasPrefix(mealPrefix) {
+                return UUID(uuidString: String(recordName.dropFirst(mealPrefix.count))).map(Kind.meal)
+            }
+            return UUID(uuidString: recordName).map(Kind.dish)
+        }
+
+        /// Welke records er bij een lokale wijziging naar iCloud moeten.
+        ///
+        /// Staat hier en niet in `CloudSync`, zodat de regel waar het in 2.0.1
+        /// op misging te testen is zonder iCloud: dezelfde naam mag nooit in
+        /// beide lijsten staan.
+        static func records(for changes: PlanChanges) -> (save: [String], delete: [String]) {
+            var save = changes.changedDishes.map(dish) + changes.changedMeals.map(meal)
+            let delete = changes.removedDishes.map(dish) + changes.removedMeals.map(meal)
+            // De volgorde staat in het plan-record, dus dat moet ook mee zodra
+            // er een gerecht bij komt of verdwijnt.
+            if changes.metadataChanged || !changes.changedDishes.isEmpty || !changes.removedDishes.isEmpty {
+                save.append(planRecordName)
+            }
+            return (save, delete)
+        }
+    }
 }
 
 #if canImport(CloudKit)
@@ -69,9 +124,11 @@ extension ServedMeal {
         record[CloudSchema.Field.servedOn] = servedOn as CKRecordValue
     }
 
-    init?(record: CKRecord) {
+    /// Leest een logregel. `id` komt niet uit de recordnaam maar van buiten:
+    /// logregels staan onder hun eigen naam (`served-<uuid>`), en records van
+    /// vóór deze versie onder de blote uuid van het gerecht.
+    init?(record: CKRecord, id: UUID) {
         guard record.recordType == CloudSchema.RecordType.meal,
-              let id = UUID(uuidString: record.recordID.recordName),
               let name = record[CloudSchema.Field.name] as? String,
               let emoji = record[CloudSchema.Field.emoji] as? String,
               let servedOn = record[CloudSchema.Field.servedOn] as? Date

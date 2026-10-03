@@ -16,6 +16,7 @@ enum Preferences {
         static let sharedZoneOwner = "sharedZoneOwner"
         static let sharedListReadOnly = "sharedListReadOnly"
         static let sharedListOwnerName = "sharedListOwnerName"
+        static let didRepairRecordNames = "didRepairRecordNames"
     }
 
     static let defaults: UserDefaults = {
@@ -95,6 +96,13 @@ enum Preferences {
         sharedZone = nil
         sharedListReadOnly = false
         sharedListOwnerName = nil
+    }
+
+    /// Of de eenmalige reparatie van de recordnamen in iCloud al gedaan is.
+    /// Zie `CloudSync.repairRecordNames()`.
+    static var didRepairRecordNames: Bool {
+        get { defaults.bool(forKey: Key.didRepairRecordNames) }
+        set { defaults.set(newValue, forKey: Key.didRepairRecordNames) }
     }
 
     /// Haalt instellingen van vóór versie 2 uit de standaard-defaults op.
