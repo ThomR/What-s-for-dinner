@@ -14,11 +14,20 @@ enum PlanProjection {
     /// Gerechten die nog niet in de bekende volgorde staan — net toegevoegd door
     /// de ander — komen achteraan, op tijd van toevoegen. Zo verdwijnt een
     /// gerecht nooit doordat de volgorde nog niet is bijgewerkt.
+    ///
+    /// De ankerdatum hoort bij het eerste gerecht van `order`. Staan daar
+    /// gerechten vooraan die hier al gegeten zijn, dan is die volgorde ouder dan
+    /// wat dit toestel weet, en schuift het anker één dag op per gegeten
+    /// gerecht — net als bij afstrepen. In 2.0.2 bleef het anker staan: kwam
+    /// woensdagavond nog een wijziging van je partner binnen nadat de app op
+    /// donderdag al had doorgeschoven, dan stond het donderdaggerecht op
+    /// woensdag, en werd het bij de volgende start óók afgevinkt.
     static func rebuild(
         dishes: [UUID: Dish],
         order: [UUID],
         anchorDate: Date,
-        log: [UUID: ServedMeal]
+        log: [UUID: ServedMeal],
+        calendar: Calendar = .current
     ) -> MealPlan {
         var used = Set<UUID>()
         var ordered: [Dish] = []
@@ -32,11 +41,26 @@ enum PlanProjection {
             .filter { !used.contains($0.id) }
             .sorted { ($0.addedAt, $0.id.uuidString) < ($1.addedAt, $1.id.uuidString) }
 
-        return MealPlan(
+        var plan = MealPlan(
             dishes: ordered + leftovers,
             anchorDate: anchorDate,
             log: log.values.sorted { ($0.servedOn, $0.id.uuidString) < ($1.servedOn, $1.id.uuidString) }
-        )
+        ).normalized()
+
+        let queued = Set(plan.dishes.map(\.id))
+        let served = Set(plan.log.map(\.id))
+        var seen = Set<UUID>()
+        var eaten = 0
+        for id in order where seen.insert(id).inserted {
+            if queued.contains(id) { break }
+            // Alleen gegeten gerechten tellen. Een geschrapt gerecht geeft zijn
+            // dag door aan het volgende, zie `PlanSchedule.removing`.
+            if served.contains(id) { eaten += 1 }
+        }
+        if eaten > 0 {
+            plan.anchorDate = PlanSchedule.plannedDate(offset: eaten, anchorDate: anchorDate, calendar: calendar)
+        }
+        return plan
     }
 
     /// De volgorde zoals die opgeslagen moet worden.
@@ -44,14 +68,22 @@ enum PlanProjection {
         plan.dishes.map(\.id)
     }
 
+    /// Op id, zonder te crashen op een id die twee keer voorkomt —
+    /// `Dictionary(uniqueKeysWithValues:)` stopt dan het programma, en een
+    /// planning met een dubbele id liet de app in 2.0.2 bij elke start crashen.
+    /// Bij dubbelen wint de laatste.
+    static func byID<Item: Identifiable>(_ items: [Item]) -> [Item.ID: Item] {
+        Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
+    }
+
     /// Welke records er veranderd of verdwenen zijn tussen twee planningen.
     /// Hiermee weet de synchronisatie wat er verstuurd moet worden zonder elke
     /// keer alles opnieuw op te sturen.
     static func changes(from old: MealPlan, to new: MealPlan) -> PlanChanges {
-        let oldDishes = Dictionary(uniqueKeysWithValues: old.dishes.map { ($0.id, $0) })
-        let newDishes = Dictionary(uniqueKeysWithValues: new.dishes.map { ($0.id, $0) })
-        let oldMeals = Dictionary(uniqueKeysWithValues: old.log.map { ($0.id, $0) })
-        let newMeals = Dictionary(uniqueKeysWithValues: new.log.map { ($0.id, $0) })
+        let oldDishes = byID(old.dishes)
+        let newDishes = byID(new.dishes)
+        let oldMeals = byID(old.log)
+        let newMeals = byID(new.log)
 
         return PlanChanges(
             changedDishes: newDishes.values.filter { oldDishes[$0.id] != $0 }.map(\.id).sorted { $0.uuidString < $1.uuidString },

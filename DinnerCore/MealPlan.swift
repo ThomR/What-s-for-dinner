@@ -23,6 +23,47 @@ struct MealPlan: Codable, Equatable, Sendable {
     static let empty = MealPlan(dishes: [], anchorDate: .distantPast, log: [])
 
     var isEmpty: Bool { dishes.isEmpty }
+
+    /// Zet een gerecht in het logboek, in plaats van een eerdere regel met
+    /// dezelfde id. Twee regels met één id lieten de app in 2.0.2 bij elke
+    /// start crashen.
+    mutating func logServed(_ meal: ServedMeal) {
+        log.removeAll { $0.id == meal.id }
+        log.append(meal)
+    }
+
+    /// Dezelfde planning, maar met elke id hooguit één keer in de wachtrij en
+    /// één keer in het logboek, en nooit in allebei.
+    ///
+    /// Zo'n dubbele id ontstond als iCloud een al gegeten gerecht terugbracht
+    /// (een "zombie": het `Dish`-record was nooit verwijderd). Staat een gerecht
+    /// zowel in de wachtrij als in het logboek, dan wint wat het laatst
+    /// gebeurde: is het na het eten opnieuw toegevoegd, dan is het teruggezet
+    /// uit de geschiedenis; anders is het een zombie en hoort het weg.
+    func normalized() -> MealPlan {
+        var latestMeal: [UUID: ServedMeal] = [:]
+        for meal in log where (latestMeal[meal.id]?.servedOn ?? .distantPast) <= meal.servedOn {
+            latestMeal[meal.id] = meal
+        }
+
+        var queued = Set<UUID>()
+        var queue: [Dish] = []
+        for dish in dishes where queued.insert(dish.id).inserted {
+            if let meal = latestMeal[dish.id] {
+                guard dish.addedAt > meal.servedOn else { continue }
+                latestMeal[dish.id] = nil
+            }
+            queue.append(dish)
+        }
+
+        var logged = Set<UUID>()
+        let cleanedLog = log.filter { latestMeal[$0.id] == $0 && logged.insert($0.id).inserted }
+
+        var updated = self
+        updated.dishes = queue
+        updated.log = cleanedLog
+        return updated
+    }
 }
 
 /// Alle datumrekenkunde rond een planning. Bewust vrij van globale toestand:
@@ -117,7 +158,7 @@ enum PlanSchedule {
         if served > 0 {
             for offset in 0..<served {
                 let date = plannedDate(offset: offset, anchorDate: plan.anchorDate, calendar: calendar)
-                updated.log.append(ServedMeal(dish: plan.dishes[offset], servedOn: date))
+                updated.logServed(ServedMeal(dish: plan.dishes[offset], servedOn: date))
             }
             updated.dishes.removeFirst(served)
         }
@@ -148,7 +189,7 @@ enum PlanSchedule {
         let today = calendar.startOfDay(for: now)
         let planned = plannedDate(offset: index, anchorDate: plan.anchorDate, calendar: calendar)
         // Wie vooruit eet, eet vandaag — niet op de dag waarvoor het gepland stond.
-        updated.log.append(ServedMeal(dish: plan.dishes[index], servedOn: min(planned, today)))
+        updated.logServed(ServedMeal(dish: plan.dishes[index], servedOn: min(planned, today)))
         updated.dishes.remove(at: index)
 
         if index == 0 {

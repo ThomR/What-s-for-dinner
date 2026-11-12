@@ -89,7 +89,8 @@ final class CloudSync {
         makeEngine(for: .privateDatabase)
         makeEngine(for: .sharedDatabase)
         repairRecordNames()
-        uploadUnsyncedRecords()
+        sendChangesMadeBeforeStart()
+        reconcileRecords()
         await refreshSharedListDetails()
         // Bewust géén fetchChanges() hier. Met `automaticallySync` plant de
         // engine zijn eigen rondes, en zelf vragen op een moment dat er nog geen
@@ -97,17 +98,23 @@ final class CloudSync {
         // "Attempted to acquire an empty collection of resources" in de log.
     }
 
-    /// Zet alles klaar wat iCloud nog nooit heeft gezien.
+    /// Brengt iCloud in lijn met de lijst op dit toestel: zet erin wat iCloud
+    /// nog nooit heeft gezien, en haalt eruit wat hier niet meer bestaat.
     ///
-    /// Zonder dit blijft de container leeg tot je toevallig een gerecht wijzigt:
-    /// records worden alleen ingepland bij een wijziging, en een lijst die al
-    /// bestond vóór deze versie is nooit gewijzigd. Dan is er ook niets om te
-    /// delen en toont het CloudKit-dashboard een lege container.
+    /// Het eerste, omdat de container anders leeg blijft tot je toevallig een
+    /// gerecht wijzigt: records worden alleen ingepland bij een wijziging, en
+    /// een lijst die al bestond vóór 2.0 is nooit gewijzigd. Dan is er ook
+    /// niets om te delen en toont het CloudKit-dashboard een lege container.
     ///
-    /// Of een record al bekend is, blijkt uit de bewaarde systeemvelden. Dat is
-    /// betrouwbaarder dan een eigen "al geüpload"-vlag, want die kan liegen als
-    /// het versturen mislukte.
-    private func uploadUnsyncedRecords() {
+    /// Het tweede, omdat 2.0.2 bij een koude start het afvinken van die nacht
+    /// nooit verstuurde (zie `sendChangesMadeBeforeStart`). Het logrecord kwam
+    /// er via hier wel, maar het gerecht bleef ook staan, en na herinstalleren
+    /// stonden al die gegeten gerechten weer in de wachtrij.
+    ///
+    /// Of een record in iCloud staat, blijkt uit de bewaarde systeemvelden. Dat
+    /// is betrouwbaarder dan een eigen "al geüpload"-vlag, want die kan liegen
+    /// als het versturen mislukte.
+    private func reconcileRecords() {
         // Alleen voor je eigen lijst. Ben je deelnemer, dan is de lijst van de
         // ander en horen zijn records niet in jouw zone.
         guard activeScope == .privateDatabase else { return }
@@ -116,14 +123,26 @@ final class CloudSync {
         let plan = store.load()
         let names = plan.dishes.map { CloudSchema.RecordName.dish($0.id) }
             + plan.log.map { CloudSchema.RecordName.meal($0.id) }
-        var pending = names
-            .filter { stateStore.systemFields(for: $0) == nil }
-            .map { CKSyncEngine.PendingRecordZoneChange.saveRecord(privateRecordID($0)) }
+        let known = Set(stateStore.knownRecordNames())
 
-        guard !pending.isEmpty else { return }
+        let unsent = names.filter { !known.contains($0) }
+        // Alleen gerechten en logregels; het plan-record blijft altijd. Een
+        // logregel van vóór 2.0.2 staat onder de blote uuid van zijn gerecht
+        // en verdwijnt hier dus ook, net als in `repairRecordNames`.
+        let current = Set(names)
+        let stale = known.filter { name in
+            switch CloudSchema.RecordName.kind(of: name) {
+            case .dish, .meal: return !current.contains(name)
+            case .plan, nil: return false
+            }
+        }
+
+        guard !unsent.isEmpty || !stale.isEmpty else { return }
+        var pending = unsent.map { CKSyncEngine.PendingRecordZoneChange.saveRecord(privateRecordID($0)) }
+            + stale.sorted().map { CKSyncEngine.PendingRecordZoneChange.deleteRecord(privateRecordID($0)) }
         pending.append(.saveRecord(privateRecordID(CloudSchema.planRecordName)))
         engine.state.add(pendingRecordZoneChanges: pending)
-        Log.sync.info("\(pending.count) records voor het eerst naar iCloud gezet")
+        Log.sync.info("\(unsent.count) records voor het eerst naar iCloud, \(stale.count) opgeruimd")
     }
 
     /// Zet eenmalig de hele eigen lijst opnieuw op de server.
@@ -235,10 +254,23 @@ final class CloudSync {
         }
     }
 
+    /// De stand van vóór de eerste wijziging die kwam voordat de engines er
+    /// waren. Zie `sendChangesMadeBeforeStart`.
+    private var unsentSince: MealPlan?
+
     /// Meld een lokale wijziging aan. Wat er precies veranderd is bepaalt welke
     /// records er verstuurd worden.
     func localPlanDidChange(from old: MealPlan, to new: MealPlan) {
-        guard canSend, let engine = engines[activeScope], let zoneID = activeZoneID else { return }
+        guard canSend else { return }
+        guard let engine = engines[activeScope], let zoneID = activeZoneID else {
+            // De engines komen pas na het opvragen van de accountstatus, en bij
+            // een koude start op een nieuwe dag schuift de planning al eerder
+            // door. In 2.0.2 ging dat afvinken hier verloren.
+            if CloudAvailability.isEnabled, unsentSince == nil {
+                unsentSince = old
+            }
+            return
+        }
         let changes = PlanProjection.changes(from: old, to: new)
         guard !changes.isEmpty else { return }
 
@@ -255,6 +287,14 @@ final class CloudSync {
             + records.delete.map { CKSyncEngine.PendingRecordZoneChange.deleteRecord(recordID($0)) }
 
         engine.state.add(pendingRecordZoneChanges: pending)
+    }
+
+    /// Verstuurt alsnog wat er veranderde voordat de engines er waren, als één
+    /// wijziging van de stand van toen naar die van nu.
+    private func sendChangesMadeBeforeStart() {
+        guard let baseline = unsentSince else { return }
+        unsentSince = nil
+        localPlanDidChange(from: baseline, to: store.load())
     }
 
     private var activeZoneID: CKRecordZone.ID? {
@@ -337,8 +377,8 @@ final class CloudSync {
         guard scope == activeScope else { return }
 
         let plan = store.load()
-        var dishes = Dictionary(uniqueKeysWithValues: plan.dishes.map { ($0.id, $0) })
-        var meals = Dictionary(uniqueKeysWithValues: plan.log.map { ($0.id, $0) })
+        var dishes = PlanProjection.byID(plan.dishes)
+        var meals = PlanProjection.byID(plan.log)
         var order = PlanProjection.order(of: plan)
         var anchor = plan.anchorDate
 

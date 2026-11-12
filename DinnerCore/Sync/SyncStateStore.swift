@@ -80,6 +80,11 @@ final class SyncStateStore: @unchecked Sendable {
         queue.sync { loadSystemFields()[recordName] }
     }
 
+    /// De namen van alle records waarvan we weten dat ze in iCloud staan.
+    func knownRecordNames() -> [String] {
+        queue.sync { Array(loadSystemFields().keys) }
+    }
+
     func setSystemFields(_ data: Data?, for recordName: String) {
         setSystemFields([(recordName, data)])
     }

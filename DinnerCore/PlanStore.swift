@@ -84,12 +84,18 @@ final class PlanStore: ObservableObject {
             today = startOfToday
         }
         let stored = store.load()
-        let advanced = PlanSchedule.advanced(stored, to: moment, calendar: calendar, autoAdvance: autoAdvance())
+        // Eerst opschonen: een planning met een dubbele id is wat de app in
+        // 2.0.2 bij elke start liet crashen. Het verschil gaat gewoon mee naar
+        // iCloud, zodat een teruggekeerd gerecht daar ook verdwijnt.
+        let advanced = PlanSchedule.advanced(stored.normalized(), to: moment, calendar: calendar, autoAdvance: autoAdvance())
         if advanced != plan {
             plan = advanced
         }
+        // Altijd, ook als er niets doorschuift: wat op schijf staat is wat er
+        // verstuurd is of uit iCloud kwam, en de volgende bewerking moet
+        // daartegen vergeleken worden.
+        lastPersisted = stored
         if advanced != stored {
-            lastPersisted = stored
             persist()
         }
     }
@@ -158,6 +164,9 @@ final class PlanStore: ObservableObject {
         guard !isReadOnly else { return }
         guard let index = plan.log.firstIndex(where: { $0.id == meal.id }) else { return }
         let removed = plan.log.remove(at: index)
+        // Stond het gerecht door een oude iCloud-fout óók nog in de wachtrij,
+        // dan niet nog een keer: twee keer dezelfde id laat de app crashen.
+        plan.dishes.removeAll { $0.id == removed.id }
         if plan.dishes.isEmpty {
             plan.anchorDate = max(plan.anchorDate, calendar.startOfDay(for: now()))
         }
@@ -202,18 +211,18 @@ final class PlanStore: ObservableObject {
         #endif
     }
 
-    /// Neemt over wat er uit iCloud binnenkwam. Niet terugsturen: dan zou elke
-    /// ontvangen wijziging meteen weer een verzending worden.
+    /// Neemt over wat er uit iCloud binnenkwam.
+    ///
+    /// Gewoon `refresh()`: wat binnenkomt kan van gisteren zijn en moet dan
+    /// eerst doorschuiven naar vandaag. In 2.0.2 werd het hier zonder meer
+    /// getoond, en bleef de app op woensdag staan tot je hem herstartte.
+    /// Alleen dat doorschuiven gaat terug naar iCloud; wat er binnenkwam niet,
+    /// want dat staat al op schijf en `refresh()` vergelijkt daarmee.
     ///
     /// Widgets en Watch heeft `CloudSync` dan al bijgewerkt — die draait ook
-    /// als er geen scherm is. Dit is alleen nog voor wat je ziet.
+    /// als er geen scherm is. Dit is voor wat je ziet.
     func adoptRemoteChanges() {
-        syncSharingState()
-        store.invalidateCache()
-        let stored = store.load()
-        guard stored != plan else { return }
-        plan = stored
-        lastPersisted = stored
+        refresh()
     }
 
     /// Vraagt het taalmodel om een betere emoji als de woordenlijst er niet
